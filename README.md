@@ -19,6 +19,7 @@ Project structure will be updated as the implementation progresses.
 | Step | Description                  | Branch              |
 | ---- | ---------------------------- | ------------------- |
 | 1    | Project initialized with npm | `feat/init-project` |
+| 2    | ESLint configured            | `feat/eslint`       |
 
 ---
 
@@ -48,7 +49,7 @@ npm install
 ## ✅ To-Do List
 
 - [x] Project Initialization
-- [ ] ESLint Configuration
+- [x] ESLint Configuration
 - [ ] Cypress Setup
 - [ ] UI Tests
 - [ ] API Tests
