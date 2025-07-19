@@ -16,10 +16,11 @@ Project structure will be updated as the implementation progresses.
 
 ## ✅ Completed Activities
 
-| Step | Description                  | Branch              |
-| ---- | ---------------------------- | ------------------- |
-| 1    | Project initialized with npm | `feat/init-project` |
-| 2    | ESLint configured            | `feat/eslint`       |
+| Step | Description                       | Branch              |
+| ---- | --------------------------------- | ------------------- |
+| 1    | Project initialized with npm      | `feat/init-project` |
+| 2    | ESLint configured                 | `feat/eslint`       |
+| 3    | Cypress installed and initialized | `feat/cypress`      |
 
 ---
 
