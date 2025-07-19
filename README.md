@@ -39,8 +39,8 @@ npm install
 ## 🧩 Best Practices
 
 - Page Object Model (POM) for UI tests
-- ESLint for code quality and style guide
-- Conventional Commits for clear history
+- ESLint for code quality, with enforced LF line endings via rule and `.gitattributes`
+- Commit messages following Conventional Commits
 - One branch per activity/task
 - Use of Pull Requests to merge into main branch
 
