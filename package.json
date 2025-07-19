@@ -17,5 +17,10 @@
   "bugs": {
     "url": "https://github.com/plivero/qa-automation-challenge/issues"
   },
-  "homepage": "https://github.com/plivero/qa-automation-challenge#readme"
+  "homepage": "https://github.com/plivero/qa-automation-challenge#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.31.0",
+    "eslint": "^9.31.0",
+    "globals": "^16.3.0"
+  }
 }
