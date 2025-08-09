@@ -14,4 +14,23 @@ export class ProductsPage {
       "exist"
     );
   }
+
+  search(term) {
+    cy.get("#search_product").clear().type(term); // digita no campo de busca
+    cy.get("#submit_search").click(); // clica no botão Search
+  }
+
+  assertSearchResults() {
+    cy.contains("Searched Products").should("be.visible"); // título da seção de resultados
+    // garante que retornou pelo menos 1 card visível
+    cy.get(".features_items .col-sm-4:visible")
+      .its("length")
+      .should("be.gt", 0);
+  }
+
+  assertNoSearchResults() {
+    cy.contains("Searched Products").should("be.visible"); // seção apareceu
+    cy.get(".features_items .col-sm-4:visible") // cards da busca
+      .should("have.length", 0); // zero resultados
+  }
 }
