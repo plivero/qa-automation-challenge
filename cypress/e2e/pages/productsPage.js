@@ -33,4 +33,27 @@ export class ProductsPage {
     cy.get(".features_items .col-sm-4:visible") // cards da busca
       .should("have.length", 0); // zero resultados
   }
+  openDetailsByName(name) {
+    // encontra o card pelo nome e clica em "View Product"
+    cy.contains(".productinfo", new RegExp(name, "i"))
+      .parents(".product-image-wrapper")
+      .contains("View Product")
+      .click();
+  }
+  // Adiciona o PRIMEIRO item visível da lista ao carrinho
+  addFirstItemToCart() {
+    cy.get(".product-image-wrapper") // pega os cards
+      .first() // primeiro card
+      .within(() => {
+        cy.contains("Add to cart").click({ force: true });
+      });
+
+    // confirma o modal de “Added!”
+    cy.contains("Added!").should("be.visible");
+  }
+
+  // No modal que aparece depois do Add to cart, abre o carrinho
+  openCartFromModal() {
+    cy.contains("View Cart").click();
+  }
 }
