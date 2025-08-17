@@ -1,6 +1,6 @@
-import { ProductsPage } from "../pages/productsPage";
-import { ProductDetailsPage } from "../pages/productDetailsPage";
-import { CartPage } from "../pages/cartPage";
+import { ProductsPage } from "../../pages/productsPage";
+import { ProductDetailsPage } from "../../pages/productDetailsPage";
+import { CartPage } from "../../pages/cartPage";
 
 const products = new ProductsPage();
 const details = new ProductDetailsPage();
