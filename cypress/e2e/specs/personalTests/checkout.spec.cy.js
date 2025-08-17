@@ -1,9 +1,9 @@
 // @ts-check
 /// <reference types="cypress" />
 
-import { ProductsPage } from "../pages/productsPage";
-import { CartPage } from "../pages/cartPage";
-import { LoginPage } from "../pages/loginPage";
+import { ProductsPage } from "../../pages/productsPage";
+import { CartPage } from "../../pages/cartPage";
+import { LoginPage } from "../../pages/loginPage";
 
 const products = new ProductsPage();
 const cart = new CartPage();

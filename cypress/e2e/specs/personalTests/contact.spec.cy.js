@@ -1,8 +1,8 @@
 // @ts-check
 /// <reference types="cypress" />
 
-import { HomePage } from "../pages/homePage";
-import { ContactUsPage } from "../pages/contactUsPage";
+import { HomePage } from "../../pages/homePage";
+import { ContactUsPage } from "../../pages/contactUsPage";
 
 const home = new HomePage();
 const contact = new ContactUsPage();

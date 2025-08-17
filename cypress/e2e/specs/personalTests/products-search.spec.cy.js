@@ -1,6 +1,6 @@
 // cypress/e2e/specs/products-search.spec.cy.js
 
-import { ProductsPage } from "../pages/productsPage";
+import { ProductsPage } from "../../pages/productsPage";
 
 const products = new ProductsPage();
 
