@@ -24,12 +24,12 @@ export class CartPage {
       .click({ force: true });
   }
 
-  // ✅ versão estável e sem warning de "possibly undefined"
+  // stable version and without "possibly undefined" warning
   assertEmpty() {
-    // 1) primeiro garante que não há linhas visíveis
+    // 1) first ensure there are no visible rows
     cy.get(".cart_info tbody tr:visible").should("have.length", 0);
 
-    // 2) opcional: se a página exibir alguma mensagem de vazio, valide
+    // 2) optional: if the page shows an empty message, validate it
     cy.get("body").then(($body) => {
       const bodyText = $body.text();
       const hasEmptyMsg = /cart is empty|no products/i.test(bodyText);

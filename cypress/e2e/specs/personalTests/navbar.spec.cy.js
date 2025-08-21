@@ -14,7 +14,7 @@ describe("Navbar Links", () => {
     "Contact us",
   ];
 
-  // Teste agrupado com todos os itens de uma vez
+  // Grouped test with all items at once
   it("should display all expected navbar items", () => {
     home.visit();
 
@@ -23,7 +23,7 @@ describe("Navbar Links", () => {
     });
   });
 
-  // Testes separados, um it() para cada item
+  // Separate tests, one it() for each item
   describe("Each Navbar Link individually", () => {
     beforeEach(() => {
       home.visit();

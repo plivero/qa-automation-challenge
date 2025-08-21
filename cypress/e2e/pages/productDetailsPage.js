@@ -3,8 +3,8 @@
 
 export class ProductDetailsPage {
   /**
-   * Valida a página de detalhes do produto.
-   * Se "nameFragment" for passado, checa que o nome aparece no bloco.
+   * Validates the product details page.
+   * If "nameFragment" is provided, checks that the product name appears in the block.
    */
   assertDetails(nameFragment) {
     cy.get(".product-information").should("be.visible");
@@ -17,7 +17,7 @@ export class ProductDetailsPage {
 
     cy.get(".product-information").within(() => {
       cy.contains(/category/i).should("be.visible");
-      cy.contains(/Rs\.\s*\d/).should("be.visible"); // preço no formato "Rs. 1000"
+      cy.contains(/Rs\.\s*\d/).should("be.visible"); // price format "Rs. 1000"
       cy.contains(/availability/i).should("be.visible");
       cy.contains(/condition/i).should("be.visible");
       cy.contains(/brand/i).should("be.visible");
@@ -25,7 +25,7 @@ export class ProductDetailsPage {
   }
 
   setQuantity(qty) {
-    // campo de quantidade nos detalhes do produto
+    // quantity input field on product details
     cy.get("#quantity").clear().type(String(qty));
   }
 

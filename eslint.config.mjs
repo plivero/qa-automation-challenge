@@ -4,10 +4,10 @@ import globals from "globals";
 import { defineConfig } from "eslint/config";
 
 export default defineConfig([
-  // Regras gerais do projeto
+  // Project rules
   {
     files: ["**/*.{js,mjs,cjs}"],
-    extends: ["plugin:@eslint/js/recommended", "js/recommended"], // mantém sua base
+    extends: ["plugin:@eslint/js/recommended", "js/recommended"], // keep the base
     rules: {
       "linebreak-style": ["error", "unix"],
     },
@@ -19,7 +19,7 @@ export default defineConfig([
     },
   },
 
-  // Overrides para os arquivos do Cypress (pages e specs)
+  // Overrides for Cypress files (pages e specs)
   {
     files: ["cypress/**/*.{js,mjs,cjs}"],
     languageOptions: {
@@ -30,7 +30,7 @@ export default defineConfig([
         cy: "readonly",
         Cypress: "readonly",
         expect: "readonly", // <- Chai
-        assert: "readonly", // opcional (Chai assert)
+        assert: "readonly", // optional (Chai assert)
       },
     },
   },

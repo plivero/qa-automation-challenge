@@ -1,8 +1,7 @@
-// cypress/e2e/api/get-user-detail.api.cy.js
 describe("API 14 - GET user account detail by email", () => {
-  it("retorna os detalhes do usuário do .env", () => {
+  it("returns the details of the user from .env", () => {
     const email = Cypress.env("USER_EMAIL");
-    if (!email) throw new Error("USER_EMAIL não definido no .env");
+    if (!email) throw new Error("USER_EMAIL not defined in .env");
 
     cy.request({
       method: "GET",

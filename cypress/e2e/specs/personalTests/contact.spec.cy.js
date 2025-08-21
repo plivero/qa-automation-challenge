@@ -7,34 +7,34 @@ import { ContactUsPage } from "../../pages/contactUsPage";
 const home = new HomePage();
 const contact = new ContactUsPage();
 
-describe("Contact Us - Envio de formulário", () => {
-  it("preenche e envia com sucesso usando credenciais do env", () => {
+describe("Contact Us - Form submission", () => {
+  it("fills and submits successfully using env credentials", () => {
     const name = Cypress.env("USER_NAME");
     const email = Cypress.env("USER_EMAIL");
 
     if (!name || !email) {
       throw new Error(
-        "Credenciais ausentes. Defina USER_NAME e USER_EMAIL em cypress.env.json"
+        "Missing credentials. Define USER_NAME and USER_EMAIL in cypress.env.json"
       );
     }
 
-    // navega via navbar (mais real)
+    // navigate via navbar (more realistic)
     home.visit();
     home.getNavMenuItem("Contact us").click();
 
-    // garante que está na página de contato
+    // ensure we are on the contact page
     cy.url().should("include", "/contact_us");
 
-    // preenche e envia (usa suas credenciais)
+    // fill and submit (using env credentials)
     contact.fillForm({
       name,
       email,
       subject: "Automation Exercise - Contact",
-      message: "Mensagem de teste enviada pelo Cypress.",
+      message: "Test message sent by Cypress.",
     });
     contact.submit();
 
-    // valida sucesso
+    // validate success
     contact.assertSuccess();
   });
 });

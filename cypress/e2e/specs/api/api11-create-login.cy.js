@@ -1,6 +1,5 @@
-// cypress/e2e/api/create-account.api.cy.js
 describe("API 11 - Create/Register User Account", () => {
-  it("deve criar conta nova e mostrar todos os dados no log", () => {
+  it("should create a new account and display all data in the log", () => {
     const uniqueEmail = `test_${Date.now()}@example.com`;
     const password = "123456";
 
@@ -24,7 +23,7 @@ describe("API 11 - Create/Register User Account", () => {
       mobile_number: "+1234567890",
     };
 
-    // loga o request completo
+    // log the full request
     cy.log("===== REQUEST BODY =====");
     Object.entries(bodyReq).forEach(([k, v]) => cy.log(`${k}: ${v}`));
 
@@ -51,7 +50,7 @@ describe("API 11 - Create/Register User Account", () => {
       } else if (status === 200) {
         expect(data.message).to.match(/user created/i);
       } else {
-        throw new Error(`Status inesperado: ${status}`);
+        throw new Error(`Unexpected status: ${status}`);
       }
     });
   });

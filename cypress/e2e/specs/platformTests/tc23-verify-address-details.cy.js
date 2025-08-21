@@ -2,7 +2,7 @@
 
 describe("UI Platform - TC23: Verify address details in checkout", () => {
   it("checks delivery & billing addresses match the signup data", () => {
-    // --- signup data (o que esperamos ver no checkout) ---
+    // --- signup data (what we expect to see in checkout) ---
     const first = "Addr";
     const last = "User";
     const fullName = `${first} ${last}`;
@@ -22,14 +22,14 @@ describe("UI Platform - TC23: Verify address details in checkout", () => {
 
     // 2) (baseUrl)
 
-    // 3) Home visível
+    // 3) Home visible
     cy.get('img[src="/static/images/home/logo.png"]').should("be.visible");
 
     // 4) Click 'Signup / Login'
     cy.get('a[href="/login"]').first().click({ force: true });
     cy.location("pathname").should("include", "/login");
 
-    // 5) Signup + criar conta
+    // 5) Signup + create account
     cy.contains("New User Signup!").should("be.visible");
     cy.get('[data-qa="signup-name"]').type(fullName);
     cy.get('[data-qa="signup-email"]').type(email);
@@ -80,10 +80,10 @@ describe("UI Platform - TC23: Verify address details in checkout", () => {
     // 11) Proceed To Checkout
     cy.contains(/Proceed To Checkout/i).click();
 
-    // 12) Delivery address = dados do signup (seleciona o <ul>, não o <li> do título)
+    // 12) Delivery address = signup data (selects the <ul>, not the <li> title)
     const mustHave = [fullName, address1, city, state, zipcode, country];
 
-    // tenta por id direto; se não houver, usa o título e sobe pro <ul>
+    // try direct id; if not present, use the title and go up to <ul>
     cy.get("ul#address_delivery").then(($ul) => {
       if ($ul.length) {
         cy.wrap($ul).as("deliveryBox");
@@ -98,7 +98,7 @@ describe("UI Platform - TC23: Verify address details in checkout", () => {
       cy.get("@deliveryBox").should("contain.text", txt);
     });
 
-    // 13) Billing address = dados do signup
+    // 13) Billing address = signup data
     cy.get("ul#address_invoice").then(($ul) => {
       if ($ul.length) {
         cy.wrap($ul).as("billingBox");

@@ -6,7 +6,7 @@ import { HomePage } from "../../pages/homePage";
 const home = new HomePage();
 
 describe("Footer Subscription", () => {
-  it("envia um e-mail e mostra mensagem de sucesso", () => {
+  it("submits an email and shows success message", () => {
     home.visit();
 
     const email = Cypress.env("USER_EMAIL");

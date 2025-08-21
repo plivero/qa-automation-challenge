@@ -1,13 +1,12 @@
-// cypress/e2e/api/update-account.api.cy.js
 describe("API 13 - Update User Account", () => {
-  it("atualiza a conta do .env (simplificado)", () => {
+  it("updates the account from .env (simplified)", () => {
     const email = Cypress.env("USER_EMAIL");
     const password = Cypress.env("USER_PASSWORD");
 
     const bodyReq = {
       name: "QA Updated",
       email,
-      password, // mantém igual
+      password, // keep the same
       company: "Updated Co",
       address1: "New Street 123",
       city: "Toronto",
@@ -15,7 +14,7 @@ describe("API 13 - Update User Account", () => {
       mobile_number: "+1987654321",
     };
 
-    // loga o objeto inteiro de uma vez
+    // log the entire object at once
     cy.log("REQUEST BODY:", JSON.stringify(bodyReq));
 
     cy.request({

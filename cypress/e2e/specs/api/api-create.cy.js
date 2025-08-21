@@ -1,8 +1,7 @@
-// cypress/e2e/api/create-account-from-env.api.cy.js
-describe("API create - Create Account com dados do .env", () => {
-  it("cria ou reconhece a conta já existente", () => {
+describe("API create - Create Account with data from .env", () => {
+  it("creates or recognizes the already existing account", () => {
     cy.request({
-      log: false, // não loga o body nem segredos
+      log: false,
       method: "POST",
       url: "/api/createAccount",
       form: true,
@@ -29,13 +28,12 @@ describe("API create - Create Account com dados do .env", () => {
     }).then(({ status, body }) => {
       const data = typeof body === "string" ? JSON.parse(body) : body;
 
-      // aceita criado, já existente ou 200 bugado
       if (status === 201) {
         expect(data.message).to.eq("User created!");
       } else if (status === 200) {
         expect(data.message || "").to.match(/user (created|exists)/i);
       } else {
-        throw new Error(`Status inesperado: ${status}`);
+        throw new Error(`Unexpected status: ${status}`);
       }
     });
   });

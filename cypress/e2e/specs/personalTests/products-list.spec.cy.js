@@ -4,10 +4,10 @@ import { ProductsPage } from "../../pages/productsPage";
 const home = new HomePage();
 const products = new ProductsPage();
 
-describe("Products - Lista básica", () => {
-  it("abre a página de Products e exibe a lista", () => {
-    home.visit("/"); // começa da home (estável)
-    home.getNavMenuItem("Products").click(); // navega pela navbar
-    products.assertLoaded(); // valida heading + grid
+describe("Products - Basic list", () => {
+  it("opens the Products page and displays the list", () => {
+    home.visit("/"); // start from home (stable)
+    home.getNavMenuItem("Products").click(); // navigate through navbar
+    products.assertLoaded(); // validate heading + grid
   });
 });

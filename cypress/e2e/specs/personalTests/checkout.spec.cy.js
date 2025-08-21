@@ -25,14 +25,14 @@ describe("Checkout Flow", () => {
       // checkout
       cart.assertLoaded();
       cart.assertHasItems(1);
-      cart.proceedToCheckout(); // click with {force: true} no POM
+      cart.proceedToCheckout(); // click with {force: true} in POM
 
-      // a página mostra um LINK "Register / Login" -> clique nele
+      // the page shows a LINK "Register / Login" -> click it
       cy.contains("a", /Register \/ Login/i)
         .should("be.visible")
         .click();
 
-      // agora sim estamos na tela de login
+      // now we are on the login page
       login.assertOnLoginPage();
     });
   });
@@ -42,10 +42,10 @@ describe("Checkout Flow", () => {
       cy.clearCookies();
       cy.clearLocalStorage();
 
-      // login usando suas credenciais do cypress.env.json
+      // login using credentials from cypress.env.json
       login.visit();
       login.assertOnLoginPage();
-      // use o método existente (não existe fillLogin)
+      // use existing method (there is no fillLogin)
       login.loginWith(Cypress.env("USER_EMAIL"), Cypress.env("USER_PASSWORD"));
       login.assertLoginSuccess();
     });
@@ -61,13 +61,13 @@ describe("Checkout Flow", () => {
       cart.assertHasItems(1);
       cart.proceedToCheckout();
 
-      // opcional: comentário
-      cy.get('textarea[name="message"]').type("Pedido de teste automatizado.");
+      // optional: comment
+      cy.get('textarea[name="message"]').type("Automated test order.");
 
       // place order
       cy.contains(/place order/i).click();
 
-      // pagamento (campos da página de pagamento)
+      // payment (fields on payment page)
       cy.get('[data-qa="name-on-card"]').type(
         Cypress.env("USER_NAME") || "QA User"
       );
@@ -77,7 +77,7 @@ describe("Checkout Flow", () => {
       cy.get('[data-qa="expiry-year"]').type("2030");
       cy.contains(/pay and confirm order/i).click();
 
-      // sucesso
+      // success
       cy.contains(/order has been confirmed/i, { timeout: 10000 }).should(
         "be.visible"
       );

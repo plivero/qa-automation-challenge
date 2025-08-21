@@ -3,7 +3,7 @@
 
 export class LoginPage {
   visit() {
-    cy.visit("/login"); // usa baseUrl do cypress.config.js
+    cy.visit("/login"); // baseUrl from cypress.config.js
   }
 
   get emailInput() {

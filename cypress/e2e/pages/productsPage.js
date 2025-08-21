@@ -3,56 +3,58 @@
 
 export class ProductsPage {
   visit() {
-    cy.visit("/products"); // usa baseUrl
+    cy.visit("/products"); // uses baseUrl
   }
 
   assertLoaded() {
-    // título/heading da página de produtos
+    // page title/heading for products
     cy.contains(/All Products|Products/i).should("be.visible");
-    // grade/lista de produtos visível
+    // product grid/list visible
     cy.get(".features_items, .product-image-wrapper, .single-products").should(
       "exist"
     );
   }
 
   search(term) {
-    cy.get("#search_product").clear().type(term); // digita no campo de busca
-    cy.get("#submit_search").click(); // clica no botão Search
+    cy.get("#search_product").clear().type(term); // type in the search field
+    cy.get("#submit_search").click(); // click the Search button
   }
 
   assertSearchResults() {
-    cy.contains("Searched Products").should("be.visible"); // título da seção de resultados
-    // garante que retornou pelo menos 1 card visível
+    cy.contains("Searched Products").should("be.visible"); // results section title
+    // ensure at least 1 visible card is returned
     cy.get(".features_items .col-sm-4:visible")
       .its("length")
       .should("be.gt", 0);
   }
 
   assertNoSearchResults() {
-    cy.contains("Searched Products").should("be.visible"); // seção apareceu
-    cy.get(".features_items .col-sm-4:visible") // cards da busca
-      .should("have.length", 0); // zero resultados
+    cy.contains("Searched Products").should("be.visible"); // section is displayed
+    cy.get(".features_items .col-sm-4:visible") // search result cards
+      .should("have.length", 0); // zero results
   }
+
   openDetailsByName(name) {
-    // encontra o card pelo nome e clica em "View Product"
+    // find the card by name and click "View Product"
     cy.contains(".productinfo", new RegExp(name, "i"))
       .parents(".product-image-wrapper")
       .contains("View Product")
       .click();
   }
-  // Adiciona o PRIMEIRO item visível da lista ao carrinho
+
+  // Adds the FIRST visible item from the list to the cart
   addFirstItemToCart() {
-    cy.get(".product-image-wrapper") // pega os cards
-      .first() // primeiro card
+    cy.get(".product-image-wrapper") // get product cards
+      .first() // first card
       .within(() => {
         cy.contains("Add to cart").click({ force: true });
       });
 
-    // confirma o modal de “Added!”
+    // confirm the “Added!” modal
     cy.contains("Added!").should("be.visible");
   }
 
-  // No modal que aparece depois do Add to cart, abre o carrinho
+  // From the modal that appears after Add to cart, open the cart
   openCartFromModal() {
     cy.contains("View Cart").click();
   }

@@ -1,4 +1,3 @@
-// cypress/e2e/platformTests/tc16-PO-login-before-checkout.cy.js
 // Test Case 16: Place Order — Login before Checkout
 
 describe("UI Platform - TC16: Place Order (login before checkout)", () => {
@@ -104,7 +103,7 @@ describe("UI Platform - TC16: Place Order (login before checkout)", () => {
     // 14) Click 'Pay and Confirm Order'
     cy.get('[data-qa="pay-button"]').click();
 
-    // 15) Success (site tem 2 variações de copy)
+    // 15) Success
     cy.contains(/(ORDER PLACED!|Your order has been placed successfully!)/i, {
       timeout: 15000,
     }).should("be.visible");

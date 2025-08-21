@@ -7,7 +7,7 @@ describe("UI Platform - TC20: Search products and verify cart after login", () =
     const password = Cypress.env("USER_PASSWORD");
     const name = Cypress.env("USER_NAME") || "UI Tester";
 
-    // (precondição) cria usuário se não existir
+    // (precondition) create user if not existing
     cy.request({
       method: "POST",
       url: "/api/verifyLogin",
@@ -49,7 +49,7 @@ describe("UI Platform - TC20: Search products and verify cart after login", () =
     // 1) Launch browser
     cy.visit("/");
 
-    // 2) (baseUrl já cobre)
+    // 2) (baseUrl already covers)
 
     // 3) Click on 'Products' button
     cy.get('a[href="/products"]').first().click({ force: true });
@@ -65,7 +65,7 @@ describe("UI Platform - TC20: Search products and verify cart after login", () =
     // 6) Verify 'SEARCHED PRODUCTS' is visible
     cy.contains(/Searched Products/i).should("be.visible");
 
-    // 7) Verify results are related (tolerante: >= 1 match)  <<< FIX AQUI
+    // 7) Verify results are related (tolerant: >= 1 match)
     cy.get(".features_items .productinfo p")
       .should("have.length.greaterThan", 0)
       .then(($ps) => {
