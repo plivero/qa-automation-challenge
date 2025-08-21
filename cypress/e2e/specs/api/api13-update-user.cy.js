@@ -52,7 +52,7 @@ describe("API 13 - Update User Account", () => {
       .then(({ status, body }) => {
         const data = typeof body === "string" ? JSON.parse(body) : body;
 
-        // se a API disser "não encontrado", cria e tenta novamente
+        // if user not found, create and try again
         if (
           (status === 404 || status === 200) &&
           /account not found/i.test(String(data.message))

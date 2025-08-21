@@ -1,0 +1,83 @@
+name: AutoTests (cross-browsers)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-cypress-matrix:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chrome, edge, firefox]
+
+    env:
+      # GitHub Actions > Settings > Secrets and variables
+      CYPRESS_USER_EMAIL: ${{ secrets.CYPRESS_USER_EMAIL }}
+      CYPRESS_USER_PASSWORD: ${{ secrets.CYPRESS_USER_PASSWORD }}
+      CYPRESS_USER_NAME: ${{ secrets.CYPRESS_USER_NAME }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Ensure each browser is available
+      - name: Setup Chrome
+        if: matrix.browser == 'chrome'
+        uses: browser-actions/setup-chrome@v1
+
+      - name: Setup Edge
+        if: matrix.browser == 'edge'
+        uses: browser-actions/setup-edge@v1
+
+      - name: Setup Firefox
+        if: matrix.browser == 'firefox'
+        uses: browser-actions/setup-firefox@v1
+
+      - name: Run Cypress (${{ matrix.browser }})
+        run: |
+          echo "Running tests on ${{ matrix.browser }}"
+          npx cypress run \
+            --browser ${{ matrix.browser }} \
+            --headless \
+            --spec "cypress/e2e/**/*.cy.js" \
+            --reporter junit \
+            --reporter-options "mochaFile=results/test-[hash]-${{ matrix.browser }}.xml,toConsole=true"
+
+      # Upload artifacts per browser (useful for debugging and portfolio)
+      - name: Upload videos (${{ matrix.browser }})
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: videos-${{ matrix.browser }}
+          path: cypress/videos/**
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Upload screenshots (${{ matrix.browser }})
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-${{ matrix.browser }}
+          path: cypress/screenshots/**
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Upload JUnit results (${{ matrix.browser }})
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: junit-${{ matrix.browser }}
+          path: results/*.xml
+          if-no-files-found: ignore
+          retention-days: 7
