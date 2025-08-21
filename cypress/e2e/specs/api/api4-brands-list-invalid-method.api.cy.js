@@ -1,6 +1,5 @@
-// cypress/e2e/api/brands-list-invalid-method.api.cy.js
-describe("API 4 - PUT To All Brands List (método não permitido)", () => {
-  it("deve retornar 405 e mensagem correta", () => {
+describe("API 4 - PUT To All Brands List (method not allowed)", () => {
+  it("should return 405 and correct message", () => {
     cy.request({
       method: "PUT",
       url: "/api/brandsList",
@@ -23,12 +22,12 @@ describe("API 4 - PUT To All Brands List (método não permitido)", () => {
 });
 
 // cypress/e2e/api/brands-list-invalid-method.api.cy.js
-describe("API 4 - PUT To All Brands List (método não permitido)", () => {
-  it("rejeita PUT (status 405 OU body.responseCode 405)", () => {
+describe("API 4 - PUT To All Brands List (method not allowed)", () => {
+  it("rejects PUT (status 405 OR body.responseCode 405)", () => {
     cy.request({
       method: "PUT",
       url: "/api/brandsList",
-      failOnStatusCode: false, // não falha automático em 4xx
+      failOnStatusCode: false, // does not fail automatically on 4xx
     }).then((res) => {
       let data = res.body;
       if (typeof data === "string") {
@@ -37,16 +36,16 @@ describe("API 4 - PUT To All Brands List (método não permitido)", () => {
         } catch {}
       }
 
-      // aceita os 2 jeitos que já vimos a API responder
-      const rejeitou =
+      // accept both response formats we have seen from the API
+      const rejected =
         res.status === 405 ||
         (data && typeof data === "object" && data.responseCode === 405);
 
-      // precisa ter rejeitado de algum modo
-      expect(rejeitou, `status=${res.status} body=${JSON.stringify(data)}`).to
+      // must have been rejected in some way
+      expect(rejected, `status=${res.status} body=${JSON.stringify(data)}`).to
         .be.true;
 
-      // se o body trouxe a msg, valida também
+      // if body includes the message, validate it as well
       if (data && data.responseCode === 405) {
         expect(String(data.message || "")).to.include("not supported");
       }

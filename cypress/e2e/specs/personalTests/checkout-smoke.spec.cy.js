@@ -8,7 +8,7 @@ const products = new ProductsPage();
 const cart = new CartPage();
 
 describe("Checkout - Smoke", () => {
-  it("adiciona item e avança para o checkout", () => {
+  it("adds item and proceeds to checkout", () => {
     products.visit();
     products.addFirstItemToCart();
     products.openCartFromModal();

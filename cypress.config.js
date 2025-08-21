@@ -1,4 +1,4 @@
-// cypress.config.js (CommonJS – o mais seguro)
+// cypress.config.js
 const { defineConfig } = require("cypress");
 
 module.exports = defineConfig({
@@ -7,7 +7,7 @@ module.exports = defineConfig({
     specPattern: "cypress/e2e/specs/**/*.cy.js",
     video: false,
     setupNodeEvents(on, config) {
-      // pode deixar vazio por enquanto
+      // empty
       return config;
     },
   },

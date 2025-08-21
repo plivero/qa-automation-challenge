@@ -1,6 +1,5 @@
-// cypress/e2e/api/verify-login-valid.api.cy.js
-describe("API 7 - Verify Login com dados válidos", () => {
-  it("deve retornar 200 e mensagem 'User exists!'", () => {
+describe("API 7 - Verify Login with valid data", () => {
+  it("should return 200 and message 'User exists!'", () => {
     cy.request({
       method: "POST",
       url: "/api/verifyLogin",
@@ -12,7 +11,7 @@ describe("API 7 - Verify Login com dados válidos", () => {
     }).then(({ status, body }) => {
       expect(status).to.eq(200);
 
-      // body pode vir string ou objeto
+      // body may come as string or object
       const data = typeof body === "string" ? JSON.parse(body) : body;
 
       expect(data).to.have.property("message", "User exists!");

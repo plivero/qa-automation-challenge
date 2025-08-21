@@ -7,7 +7,7 @@ describe("UI Platform - TC2 Login (wrong credentials)", () => {
     password: "123456",
   };
 
-  // Pré-condição: garantir que o usuário existe (via API 11)
+  // Pre-condition: ensure user exists (via API 11)
   before(() => {
     cy.request({
       method: "POST",
@@ -40,15 +40,15 @@ describe("UI Platform - TC2 Login (wrong credentials)", () => {
     // 1-2) Launch + Navigate
     cy.visit("/");
 
-    // 3) Verify home page visível
+    // 3) Verify home page visible
     cy.get('img[src="/static/images/home/logo.png"]', {
       timeout: 10000,
     }).should("be.visible");
 
-    // 4) Click em 'Signup / Login'
+    // 4) Click 'Signup / Login'
     cy.contains("Signup / Login").click();
 
-    // 5) Verify 'Login to your account' visível
+    // 5) Verify 'Login to your account' visible
     cy.contains("Login to your account").should("be.visible");
 
     // 6) Enter correct email and password

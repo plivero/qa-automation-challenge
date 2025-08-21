@@ -1,4 +1,3 @@
-// cypress/e2e/platformTests/tc17-remove-product.cy.js
 // Test Case 17: Remove Products From Cart
 
 describe("UI Platform - TC17: Remove product from cart", () => {

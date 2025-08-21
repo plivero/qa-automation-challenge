@@ -101,7 +101,7 @@ describe("UI Platform - TC14: Place Order (register during checkout)", () => {
     cy.contains(/(ORDER PLACED!|Your order has been placed successfully!)/i, {
       timeout: 15000,
     }).should("be.visible");
-    // opcional: reforço com a linha de confirmação quando presente
+    // optional: reinforce with confirmation line when present
     cy.contains(/order has been confirmed/i).should("exist");
 
     // 19) Delete Account

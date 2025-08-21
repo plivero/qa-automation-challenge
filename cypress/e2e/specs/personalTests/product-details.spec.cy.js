@@ -4,18 +4,18 @@ import { ProductDetailsPage } from "../../pages/productDetailsPage";
 const products = new ProductsPage();
 const productDetails = new ProductDetailsPage();
 
-describe("Products - Detalhes do Produto", () => {
-  it("abre detalhes de um produto e valida as informações", () => {
-    // Visita a página de produtos
+describe("Products - Product Details", () => {
+  it("opens product details and validates the information", () => {
+    // Visit the products page
     products.visit();
     products.assertLoaded();
 
-    // Abre o primeiro produto da lista
+    // Open the first product in the list
     cy.get(".product-image-wrapper").first().contains("View Product").click();
 
-    // Valida os detalhes do produto
+    // Validate product details
     productDetails.assertDetails();
-    // Se quiser validar um nome específico:
+    // If you want to validate a specific name:
     // productDetails.assertDetails('Sleeveless Dress');
   });
 });

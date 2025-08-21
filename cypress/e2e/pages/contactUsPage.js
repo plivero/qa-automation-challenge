@@ -3,14 +3,14 @@
 
 export class ContactUsPage {
   visit() {
-    cy.visit("/contact_us"); // usa baseUrl
+    cy.visit("/contact_us"); // uses baseUrl
   }
 
-  // pega o formulário certo (evita confundir com o footer)
+  // get the correct form (avoid confusing with footer)
   form() {
-    // qualquer um desses funciona; mantenho por seletor semântico do site:
+    // any of these works; keeping semantic site selector:
     return cy.get('form[action="/contact_us"]').first();
-    // alternativa se o site mudar:
+    // alternative if the site changes:
     // return cy.contains('h2', /get in touch/i).parents('div').find('form').first();
   }
 

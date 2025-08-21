@@ -1,14 +1,13 @@
-// cypress/e2e/api/api6-search-no-par.cy.js
-describe("API 6 - Search Product sem parâmetro", () => {
-  it("retorna 400 (correto) ou 200 com lista/erro no corpo (flaky tolerado)", () => {
+describe("API 6 - Search Product without parameter", () => {
+  it("returns 400 (correct) or 200 with list/error in body (flaky tolerated)", () => {
     cy.request({
       method: "POST",
       url: "/api/searchProduct",
       form: true,
-      body: {}, // sem search_product
-      failOnStatusCode: false, // não falhar em 4xx
+      body: {}, // without search_product
+      failOnStatusCode: false, // do not fail on 4xx
     }).then(({ status, body }) => {
-      // body pode vir como string
+      // body may come as string
       const data =
         typeof body === "string"
           ? (() => {
@@ -16,7 +15,7 @@ describe("API 6 - Search Product sem parâmetro", () => {
                 return JSON.parse(body);
               } catch {
                 throw new Error(
-                  `Body não-JSON com status ${status}: ${String(body).slice(
+                  `Non-JSON body with status ${status}: ${String(body).slice(
                     0,
                     200
                   )}`
@@ -26,7 +25,7 @@ describe("API 6 - Search Product sem parâmetro", () => {
           : body;
 
       if (status === 400) {
-        // ✅ Comportamento correto (documentado)
+        // Correct behavior (documented)
         expect(data).to.have.property(
           "message",
           "Bad request, search_product parameter is missing in POST request"
@@ -35,28 +34,27 @@ describe("API 6 - Search Product sem parâmetro", () => {
       }
 
       if (status === 200) {
-        // ✅ Flaky: 200 + lista
+        // Flaky: 200 + list
         if (Array.isArray(data?.products)) {
           expect(data.products.length).to.be.greaterThan(0);
           return;
         }
-        // ✅ Flaky: 200 + erro no corpo
+        // Flaky: 200 + error in body
         if (data?.message) {
           expect(data).to.have.property("responseCode", 400);
           expect(data.message).to.match(/missing in POST request/i);
           return;
         }
-        // ❌ 200 sem products nem message
+        // 200 without products or message
         throw new Error(
-          `200 inesperado sem products/message: ${JSON.stringify(data).slice(
-            0,
-            200
-          )}`
+          `Unexpected 200 without products/message: ${JSON.stringify(
+            data
+          ).slice(0, 200)}`
         );
       }
 
-      // ❌ Qualquer outro status
-      throw new Error(`Status inesperado: ${status}`);
+      // ❌ Any other status
+      throw new Error(`Unexpected status: ${status}`);
     });
   });
 });

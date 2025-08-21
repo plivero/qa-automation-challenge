@@ -1,15 +1,14 @@
-// cypress/e2e/api/delete-account.api.cy.js
 describe("API 12 - DELETE /deleteAccount", () => {
-  it("deve deletar a conta (200)", () => {
+  it("should delete the account (200)", () => {
     const email = Cypress.env("USER_EMAIL");
     const password = Cypress.env("USER_PASSWORD");
 
     if (!email || !password) {
-      throw new Error("USER_EMAIL ou USER_PASSWORD ausentes no .env");
+      throw new Error("USER_EMAIL or USER_PASSWORD missing in .env");
     }
 
     cy.request({
-      log: false, // 👈 esconde request do log
+      log: false, // hide request from log
       method: "DELETE",
       url: "/api/deleteAccount",
       form: true,
@@ -25,7 +24,7 @@ describe("API 12 - DELETE /deleteAccount", () => {
       } else if (typeof body?.responseCode === "number") {
         expect(body.responseCode).to.eq(200);
       } else {
-        throw new Error("Formato de resposta inesperado.");
+        throw new Error("Unexpected response format.");
       }
     });
   });

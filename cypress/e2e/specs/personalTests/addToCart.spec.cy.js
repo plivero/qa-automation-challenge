@@ -4,13 +4,13 @@ import { CartPage } from "../../pages/cartPage";
 const products = new ProductsPage();
 const cart = new CartPage();
 
-describe("Cart - Adicionar produto", () => {
-  it("adiciona o primeiro produto e valida no carrinho", () => {
-    products.visit(); // abre /products
-    products.addFirstItemToCart(); // clica no Add to cart do 1º card
-    products.openCartFromModal(); // clica em "View Cart" no modal
+describe("Cart - Add product", () => {
+  it("adds the first product and validates it in the cart", () => {
+    products.visit(); // open /products
+    products.addFirstItemToCart(); // click Add to cart on the 1st card
+    products.openCartFromModal(); // click "View Cart" in the modal
 
-    cart.assertLoaded(); // confirma que está em /view_cart
-    cart.assertHasItems(1); // garante que há pelo menos 1 item listado
+    cart.assertLoaded(); // confirm that it is on /view_cart
+    cart.assertHasItems(1); // ensure there is at least 1 item listed
   });
 });

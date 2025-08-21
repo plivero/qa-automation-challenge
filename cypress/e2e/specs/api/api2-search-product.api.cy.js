@@ -1,51 +1,51 @@
 // cypress/e2e/api/search-product.api.cy.js
 describe("API 5 - POST To Search Product", () => {
-  it("lista TODOS os produtos quando search_product está vazio", () => {
+  it("lists ALL products when search_product is empty", () => {
     cy.request({
       method: "POST",
       url: "/api/searchProduct",
       form: true,
-      body: { search_product: "" }, // vazio => traz tudo
+      body: { search_product: "" }, // empty => returns all
     }).then((res) => {
       // 1) status
       expect(res.status).to.eq(200);
 
-      // 2) body pode vir string
+      // if body is returned as string, convert to object
       let data = res.body;
       if (typeof data === "string") {
         data = JSON.parse(data);
       }
 
-      // 3) valida estrutura básica
+      // 3) basic structure
       expect(data).to.have.property("products");
       const list = data.products;
       expect(Array.isArray(list)).to.be.true;
       expect(list.length).to.be.greaterThan(0);
 
-      // 4) pega categorias únicas com um for "raiz"
-      const categorias = [];
+      // 4) get unique categories with a "raw" for loop
+      const categories = [];
       for (let i = 0; i < list.length; i++) {
         const p = list[i];
-        const cat = p.category && p.category.category; // pode ser undefined
-        if (cat && categorias.indexOf(cat) === -1) {
-          categorias.push(cat);
+        const cat = p.category && p.category.category; // can be undefined
+        if (cat && categories.indexOf(cat) === -1) {
+          categories.push(cat);
         }
       }
 
-      // 5) pega até 3 exemplos de nomes
-      const exemplos = [];
-      for (let i = 0; i < list.length && exemplos.length < 3; i++) {
-        exemplos.push(list[i].name);
+      // 5) get up to 3 example names
+      const examples = [];
+      for (let i = 0; i < list.length && examples.length < 3; i++) {
+        examples.push(list[i].name);
       }
 
-      // 6) logs simples
-      cy.log(`Total de produtos: ${list.length}`);
-      cy.log(`Categorias distintas: ${categorias.join(", ")}`);
-      cy.log(`Exemplos: ${exemplos.join(" | ")}`);
+      // 6) simple logs
+      cy.log(`Total products: ${list.length}`);
+      cy.log(`Distinct categories: ${categories.join(", ")}`);
+      cy.log(`Examples: ${examples.join(" | ")}`);
     });
   });
 
-  it('busca por "dress" (name OU category deve conter o termo)', () => {
+  it('search for "dress" (name OR category must contain the term)', () => {
     cy.request({
       method: "POST",
       url: "/api/searchProduct",
@@ -77,13 +77,14 @@ describe("API 5 - POST To Search Product", () => {
 
         if (!match) {
           throw new Error(
-            `Item NÃO corresponde a "${term}": ${item.name} | cat=${cat}`
+            `Item does NOT match "${term}": ${item.name} | cat=${cat}`
           );
         }
       });
     });
   });
-  it('busca por "tops" (name OU category deve conter o termo)', () => {
+
+  it('search for "tops" (name OR category must contain the term)', () => {
     cy.request({
       method: "POST",
       url: "/api/searchProduct",
@@ -113,7 +114,7 @@ describe("API 5 - POST To Search Product", () => {
 
         if (!match) {
           throw new Error(
-            `Item NÃO corresponde a "${term}": ${item.name} | cat=${cat}`
+            `Item does NOT match "${term}": ${item.name} | cat=${cat}`
           );
         }
       });

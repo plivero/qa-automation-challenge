@@ -1,4 +1,3 @@
-// cypress/e2e/platformTests/tc24-download-invoice.cy.js
 // Test Case 24: Download Invoice after purchase order
 
 describe("UI Platform - TC24: Download invoice after purchase", () => {

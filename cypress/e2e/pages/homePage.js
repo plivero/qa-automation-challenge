@@ -3,7 +3,7 @@
 
 export class HomePage {
   visit() {
-    // abre a baseUrl definida no cypress.config.js
+    // opens the baseUrl defined in cypress.config.js
     cy.visit("/");
   }
 
@@ -12,14 +12,15 @@ export class HomePage {
   }
 
   getNavMenuItem(text) {
-    // busca pelo item na navbar (case-sensitive do jeito que você passar)
+    // looks for the item in the navbar (case-sensitive as you pass it)
     return cy.get("ul.nav.navbar-nav").contains(text);
   }
+
   subscribeFooter(email) {
-    // escopa no bloco de subscription pra não confundir com outros inputs
-    cy.contains(/subscription/i) // título "SUBSCRIPTION"
-      .parent() // container do título
-      .parent() // sobe pro bloco do footer
+    // scope within the subscription block to avoid confusing with other inputs
+    cy.contains(/subscription/i) // title "SUBSCRIPTION"
+      .parent() // title container
+      .parent() // go up to the footer block
       .within(() => {
         cy.get('input[type="email"]').clear().type(email);
         cy.get('button[type="submit"], button').click();

@@ -1,4 +1,3 @@
-# .github/workflows/autoTests-manual.yml
 name: AutoTests (manual)
 
 on:
