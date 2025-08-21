@@ -1,0 +1,33 @@
+name: AutoTests (daily scheduled)
+
+on:
+  schedule:
+    # Run every day at 12:00 UTC
+    - cron: "0 12 * * *"
+
+jobs:
+  run-cypress:
+    runs-on: ubuntu-latest
+
+    env:
+      CYPRESS_USER_EMAIL: ${{ secrets.CYPRESS_USER_EMAIL }}
+      CYPRESS_USER_PASSWORD: ${{ secrets.CYPRESS_USER_PASSWORD }}
+      CYPRESS_USER_NAME: ${{ secrets.CYPRESS_USER_NAME }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Cypress (Chrome)
+        run: |
+          echo "Running scheduled daily tests on Chrome"
+          npx cypress run --browser chrome --headless --spec "cypress/e2e/**/*.cy.js"
