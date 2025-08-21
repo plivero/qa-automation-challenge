@@ -2,11 +2,6 @@ name: AutoTests (manual)
 
 on:
   workflow_dispatch:
-    inputs:
-      spec_glob:
-        description: "Optional spec glob (e.g. cypress/e2e/platformTests/**/*.cy.js)"
-        required: false
-        default: ""
 
 jobs:
   run-cypress:
@@ -31,10 +26,7 @@ jobs:
       - name: Install deps
         run: npm ci
 
-      - name: Run Cypress (manual spec or all)
-        env:
-          SPEC_GLOB: ${{ github.event.inputs.spec_glob }}
+      - name: Run Cypress (Chrome)
         run: |
-          SPECS="${SPEC_GLOB:-cypress/e2e/**/*.cy.js}"
-          echo "Running specs: $SPECS"
-          npx cypress run --browser chrome --headless --spec "$SPECS"
+          echo "Running all specs on Chrome"
+          npx cypress run --browser chrome --headless --spec "cypress/e2e/**/*.cy.js"
