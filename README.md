@@ -123,65 +123,90 @@ npx cypress run --browser chrome --headless --spec "cypress/e2e/specs/api/*.cy.j
 
 Cypress uses environment variables to keep sensitive data (such as login credentials) out of the test code.
 
-### Local setup
+## Test Strategy
 
-Create a `cypress.env.json` file in the project root (this file is ignored by git):
+### Rationale & Principles
 
-```json
-{
-  "USER_EMAIL": "your_email@example.com",
-  "USER_PASSWORD": "your_password",
-  "USER_NAME": "Your Name"
-}
-```
+The suite was designed using **Risk-Based Testing** and aligned with the **Testing Pyramid**.  
+Priority was given to flows and endpoints with higher impact and known instability (e.g., user account creation/login and API endpoints with inconsistent status/format). Whenever feasible, validations were implemented at the **API level** for faster and more stable feedback, while **UI E2E** covers end-to-end user value.
 
-### GitHub Actions (CI)
+**Why these tests**
 
-In GitHub, go to:
+- Cover **business-critical** paths first (account lifecycle: ensure user → login) and **high-usage** flows (product listing/details/search, cart, checkout-like behaviors present in the platform cases).
+- Address **known risks**: API flakiness (status codes 200 vs 4xx/405), body returned as **string** instead of JSON, and intermittent UI behavior.
+- Provide **idempotent** executions: tests create a user **only if not existing** and proceed otherwise, enabling safe reruns in CI without brittle cleanup.
 
-**Settings > Secrets and variables > Actions**
+**Test design concepts used**
 
-Create the following secrets:
-
-- `CYPRESS_USER_EMAIL`
-- `CYPRESS_USER_PASSWORD`
-- `CYPRESS_USER_NAME`
+- **Positive/Negative/Edge cases** for both UI and API (e.g., valid/invalid search terms, missing parameters, boundary values like empty vs. long inputs).
+- **Equivalence Partitioning & Boundary Value Analysis** to keep the set lean while probing meaningful input classes and limits.
+- **Stability techniques** to reduce flakiness: assertion-driven waits, resilient selectors, tolerant assertions for documented API inconsistencies, and defensive body parsing.
 
 ---
 
-## Test Strategy
-
-The test suite is divided into three main categories:
-
 ### API Tests
 
-- Located in `cypress/e2e/specs/api/`.
-- Cover the key endpoints of the Automation Exercise API:
+**Location:** `cypress/e2e/specs/api/`
+
+**Scope & Selection**
+
+- Validate the key Automation Exercise endpoints:
   - `GET /api/productsList`
-  - `POST /api/productsList` (invalid method handling)
+  - `POST /api/productsList` _(invalid method handling)_
   - `GET /api/brandsList` and invalid methods
-  - `POST /api/searchProduct` (valid terms, invalid/no parameter)
-  - `PUT /api/updateAccount` (with ensureUser logic)
+  - `POST /api/searchProduct` _(valid terms; invalid/no parameter)_
+  - `PUT /api/updateAccount` _(with ensure-user logic via create-if-absent)_
   - `GET /api/getUserDetailByEmail`
-- Built with `failOnStatusCode: false` to handle inconsistent API responses and flakiness.
+- Rationale: API coverage gives **fast feedback** and detects issues earlier (Testing Pyramid). Endpoints with known instability were explicitly covered to ensure reliability of the CI signal.
 
-### Platform Tests
+**Stability & Resilience**
 
-- Located in `cypress/e2e/specs/platformTests/`.
-- Directly mapped to the **official Automation Exercise test cases (TC1–TC26)**.
-- Include flows such as:
-  - User registration and login
-  - Product navigation and details
-  - Cart management (add, update, remove)
-  - Orders & invoices
-  - Categories & brands
-  - Subscription and scrolling features
+- `failOnStatusCode: false` to capture **inconsistent status codes** and assert on either HTTP status **or** payload fields when the server returns `200` with `{ responseCode: 4xx/405 }`.
+- Conditional parsing when `res.body` comes as **string**:
+  ```js
+  const data = typeof res.body === "string" ? JSON.parse(res.body) : res.body;
+  ```
+- Idempotent user workflow: **create if missing**, **confirm if existing**, then proceed to update/verify; allows **safe reruns** without manual reset.
+
+---
+
+### Platform (UI) Tests
+
+**Location:** `cypress/e2e/specs/platformTests/` (mapped to **TC1–TC26**)
+
+**Scope**
+
+- End-to-end coverage of the official site exercises: registration/login, product navigation & details, search, cart (add/update/remove), orders & invoices, categories/brands, subscription, and scrolling features.
+
+**Design & Maintainability**
+
+- **POM (Page Object Model)**: UI interactions encapsulated in `cypress/e2e/pages/` to keep specs readable and facilitate reuse (e.g., account creation/login flows reused across scenarios).
+- **Selectors & waits**: prefer `data-*` when available; otherwise, use stable semantic selectors. Replace fixed sleeps with **assertion-driven waits** (e.g., `should('be.visible')`, `should('contain')`).
+
+**Cross-environment**
+
+- Validated in **headless Chrome** (manual workflow) and **browser matrix** (Chrome, Edge, Firefox). Differences are mitigated by resilient selectors and timing-robust assertions.
+
+---
 
 ### Personal Tests
 
-- Located in `cypress/e2e/specs/personalTests/`.
-- Custom scenarios created for training, exploration, and validation of extra edge cases.
-- Used as a sandbox to experiment with new Cypress approaches before adding them to the main suites.
+**Location:** `cypress/e2e/specs/personalTests/`
+
+**Purpose**
+
+- Exploratory and training scenarios used to assess **edge cases**, experiment with Cypress approaches, or quickly validate hypotheses before promotion.
+
+**Promotion criteria**
+
+- When a personal spec proves valuable and stable, it is **promoted** to the appropriate suite (API or platform) to expand official coverage without bloating the main specs prematurely.
+
+---
+
+### Data, Secrets & Configuration
+
+- Sensitive data lives in `cypress.env.json` (local) and GitHub **Actions Secrets** (CI).
+- This isolates credentials from code and enables reproducible runs across environments.
 
 ---
 
