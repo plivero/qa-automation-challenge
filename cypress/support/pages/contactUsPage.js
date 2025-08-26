@@ -1,17 +1,14 @@
+// cypress/support/pages/contactUsPage.js
 // @ts-check
 /// <reference types="cypress" />
 
 export class ContactUsPage {
   visit() {
-    cy.visit("/contact_us"); // uses baseUrl
+    cy.visit("/contact_us");
   }
 
-  // get the correct form (avoid confusing with footer)
   form() {
-    // any of these works; keeping semantic site selector:
     return cy.get('form[action="/contact_us"]').first();
-    // alternative if the site changes:
-    // return cy.contains('h2', /get in touch/i).parents('div').find('form').first();
   }
 
   fillForm({ name, email, subject, message }) {
@@ -27,9 +24,20 @@ export class ContactUsPage {
     this.form().find('[type="submit"]').click();
   }
 
-  assertSuccess() {
-    cy.contains(
+  // NEW: helper to fill + submit with env/default values
+  fillAndSubmitWithDefaults() {
+    const name = Cypress.env("USER_NAME") || "QA User";
+    const email = Cypress.env("USER_EMAIL") || "qa@example.com";
+    const subject = "Automation Exercise - Contact";
+    const message = "Test message sent by Cypress.";
+
+    this.fillForm({ name, email, subject, message });
+    this.submit();
+  }
+
+  getSuccessMessage() {
+    return cy.contains(
       /success! your details have been submitted successfully/i
-    ).should("be.visible");
+    );
   }
 }

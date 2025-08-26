@@ -1,37 +1,48 @@
-import { HomePage } from "../../pages/homePage";
-import { LoginPage } from "../../pages/loginPage";
+// cypress/e2e/specs/personalTests/signup-login.spec.cy.js
+// @ts-check
+/// <reference types="cypress" />
+
+import { HomePage } from "../../../support/pages/homePage";
+import { LoginPage } from "../../../support/pages/loginPage";
 
 const home = new HomePage();
 const login = new LoginPage();
 
 describe("Signup / Login flow (POM)", () => {
-  afterEach(() => {
-    // Only try to log out if the link exists on the page
-    cy.get("body").then(($body) => {
-      const hasLogout = $body.find('a[href="/logout"]').length > 0;
-      if (hasLogout) {
-        cy.get('a[href="/logout"]').click({ force: true });
-      }
-    });
+  beforeEach(() => {
+    cy.clearCookies();
+    cy.clearLocalStorage();
   });
 
   it("navigates to the login page via navbar", () => {
     home.visit();
     home.getNavMenuItem("Signup / Login").click();
-    login.assertOnLoginPage();
+
+    cy.url().should("include", "/login");
+    login.getLoginPageHeader().should("be.visible");
   });
 
-  it("displays error when trying to log in with invalid credentials", () => {
+  it("shows error with invalid credentials", () => {
     home.visit();
     home.getNavMenuItem("Signup / Login").click();
+
     login.loginWith("fake@example.com", "wrong-pass");
-    login.assertLoginError();
+
+    login.getLoginErrorMessage().should("be.visible");
   });
 
-  it("successfully logs in (credentials via cypress.env.json)", () => {
+  it("logs in successfully with env credentials and logs out", () => {
     home.visit();
     home.getNavMenuItem("Signup / Login").click();
+
     login.loginWithValid();
-    login.assertLoginSuccess();
+
+    login.getLoggedInLabel().should("be.visible");
+
+    // logout (no conditions)
+    login.logout();
+
+    cy.url().should("include", "/login");
+    login.getLoginPageHeader().should("be.visible");
   });
 });

@@ -1,16 +1,19 @@
-import { ProductsPage } from "../../pages/productsPage";
-import { CartPage } from "../../pages/cartPage";
+// cypress/e2e/specs/personalTests/cart-add-product.spec.cy.js
+import { ProductsPage } from "../../../support/pages/productsPage";
+import { CartPage } from "../../../support/pages/cartPage";
 
 const products = new ProductsPage();
 const cart = new CartPage();
 
 describe("Cart - Add product", () => {
   it("adds the first product and validates it in the cart", () => {
-    products.visit(); // open /products
-    products.addFirstItemToCart(); // click Add to cart on the 1st card
-    products.openCartFromModal(); // click "View Cart" in the modal
+    products.visit(); // action
+    products.addFirstItemToCart(); // action
+    products.getAddedModal().should("be.visible"); // assertion in spec
+    products.openCartFromModal(); // action
 
-    cart.assertLoaded(); // confirm that it is on /view_cart
-    cart.assertHasItems(1); // ensure there is at least 1 item listed
+    cy.url().should("include", "/view_cart"); // assertion in spec
+    cy.contains(/shopping cart/i).should("be.visible"); // assertion in spec
+    cart.getVisibleRows().its("length").should("be.gte", 1); // assertion in spec
   });
 });

@@ -1,37 +1,46 @@
+// cypress/support/pages/productDetailsPage.js
 // @ts-check
 /// <reference types="cypress" />
 
 export class ProductDetailsPage {
-  /**
-   * Validates the product details page.
-   * If "nameFragment" is provided, checks that the product name appears in the block.
-   */
-  assertDetails(nameFragment) {
-    cy.get(".product-information").should("be.visible");
+  getDetailsContainer() {
+    return cy.get(".product-information");
+  }
 
-    if (nameFragment) {
-      cy.contains(".product-information", new RegExp(nameFragment, "i")).should(
-        "be.visible"
-      );
-    }
+  getNameFragment(nameFragment) {
+    return cy.contains(".product-information", new RegExp(nameFragment, "i"));
+  }
 
-    cy.get(".product-information").within(() => {
-      cy.contains(/category/i).should("be.visible");
-      cy.contains(/Rs\.\s*\d/).should("be.visible"); // price format "Rs. 1000"
-      cy.contains(/availability/i).should("be.visible");
-      cy.contains(/condition/i).should("be.visible");
-      cy.contains(/brand/i).should("be.visible");
-    });
+  getCategory() {
+    return cy.contains(".product-information", /category/i);
+  }
+
+  getPrice() {
+    return cy.contains(".product-information", /Rs\.\s*\d/);
+  }
+
+  getAvailability() {
+    return cy.contains(".product-information", /availability/i);
+  }
+
+  getCondition() {
+    return cy.contains(".product-information", /condition/i);
+  }
+
+  getBrand() {
+    return cy.contains(".product-information", /brand/i);
   }
 
   setQuantity(qty) {
-    // quantity input field on product details
     cy.get("#quantity").clear().type(String(qty));
   }
 
   addToCartFromDetails() {
     cy.contains("Add to cart").click({ force: true });
-    cy.contains("Added!").should("be.visible");
+  }
+
+  getAddedModal() {
+    return cy.contains("Added!");
   }
 
   openCartFromModal() {

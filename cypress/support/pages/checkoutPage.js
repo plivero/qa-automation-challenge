@@ -1,11 +1,10 @@
+// cypress/support/pages/checkoutPage.js
 // @ts-check
 /// <reference types="cypress" />
 
 export class CheckoutPage {
-  assertOnCheckout() {
-    cy.contains(/address details|review your order|checkout/i).should(
-      "be.visible"
-    );
+  getCheckoutContainer() {
+    return cy.contains(/address details|review your order|checkout/i);
   }
 
   addOrderComment(text) {
@@ -16,9 +15,9 @@ export class CheckoutPage {
     cy.contains(/place order/i).click({ force: true });
   }
 
-  assertOrderSuccess() {
-    cy.contains(
+  getOrderSuccessMessage() {
+    return cy.contains(
       /your order has been placed successfully|order placed|congratulations/i
-    ).should("be.visible");
+    );
   }
 }

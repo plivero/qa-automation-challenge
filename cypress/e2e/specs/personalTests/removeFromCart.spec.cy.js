@@ -1,22 +1,32 @@
-import { ProductsPage } from "../../pages/productsPage";
-import { CartPage } from "../../pages/cartPage";
+// cypress/e2e/specs/personalTests/cart-remove-item.spec.cy.js
+// @ts-check
+/// <reference types="cypress" />
+
+import { ProductsPage } from "../../../support/pages/productsPage";
+import { CartPage } from "../../../support/pages/cartPage";
 
 const products = new ProductsPage();
 const cart = new CartPage();
 
 describe("Cart - Remove item", () => {
   it("adds an item and then removes it from the cart", () => {
-    // 1) add any item from the products list
+    // add an item
     products.visit();
     products.addFirstItemToCart();
+    products.getAddedModal().should("be.visible");
     products.openCartFromModal();
 
-    // 2) now in the cart; remove the first item
-    cart.assertLoaded();
-    cart.assertHasItems(1);
+    // cart page visible
+    cy.url().should("include", "/view_cart");
+    cart.getHeader().should("be.visible");
+
+    // has at least 1 row
+    cart.getVisibleRows().its("length").should("be.gte", 1);
+
+    // remove first item
     cart.removeFirstItem();
 
-    // 3) validate that it is empty (or no visible rows)
-    cart.assertEmpty();
+    // empty: zero visible rows
+    cart.getVisibleRows().should("have.length", 0);
   });
 });
