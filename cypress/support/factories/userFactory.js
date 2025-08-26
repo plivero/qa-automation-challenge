@@ -1,28 +1,33 @@
-// Centralized payload builder for account creation
+import { faker } from "@faker-js/faker";
+
 export function buildAccountPayload(overrides = {}) {
   return {
-    name: "QA AutoTestPedro",
-    email: Cypress.env("USER_EMAIL"),
-    password: Cypress.env("USER_PASSWORD"),
+    name: faker.person.fullName(),
+    email: faker.internet.email(), // garante email único
+    password: faker.internet.password(),
     title: "Mr",
-    birth_date: "10",
-    birth_month: "12",
-    birth_year: "1990",
-    firstname: "QA",
-    lastname: "Fixed",
-    company: "Test Co",
-    address1: "Street 1",
-    address2: "Suite 1",
-    country: "Canada",
-    zipcode: "A1B2C3",
-    state: "State",
-    city: "City",
-    mobile_number: "+1234567890",
-    ...overrides, // allow per-test tweaks (e.g., unique email)
+    birth_date: faker.number.int({ min: 1, max: 28 }).toString(),
+    birth_month: faker.number.int({ min: 1, max: 12 }).toString(),
+    birth_year: faker.date.past({ years: 30 }).getFullYear().toString(),
+    firstname: faker.person.firstName(),
+    lastname: faker.person.lastName(),
+    company: faker.company.name(),
+    address1: faker.location.streetAddress(),
+    address2: faker.location.secondaryAddress(),
+    country: faker.location.country(),
+    zipcode: faker.location.zipCode(),
+    state: faker.location.state(),
+    city: faker.location.city(),
+    mobile_number: faker.phone.number(),
+    ...overrides,
   };
 }
 
-//helper to generate a unique email when you need to force "created" scenario
-export function uniqueEmail(prefix = "test") {
-  return `${prefix}_${Date.now()}@mail.com`;
+// Helper: generate a fresh payload but keep the original email/password
+export function buildUpdatedPayload(original) {
+  return {
+    ...buildAccountPayload(),
+    email: original.email, // keep same email
+    password: original.password, // keep same password
+  };
 }

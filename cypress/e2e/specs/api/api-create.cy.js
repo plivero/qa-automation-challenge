@@ -1,40 +1,43 @@
-import {
-  buildAccountPayload /*, uniqueEmail */,
-} from "../../../support/factories/userFactory";
+// cypress/e2e/specs/api/api-create.cy.js
+import { buildAccountPayload } from "../../../support/factories/userFactory";
+const payload = buildAccountPayload(); // factory should generate a unique email
 
-describe("API create - Create Account with data from .env", () => {
-  it("creates account idempotently (create or acknowledge existing)", () => {
-    // If you ever want to force a fresh creation, use:
-    // const payload = buildAccountPayload({ email: uniqueEmail() });
+describe("API create - Create Account", () => {
+  it("creates a new account", () => {
+    cy.request({
+      method: "POST",
+      url: "/api/createAccount",
+      form: true,
+      failOnStatusCode: false,
+      body: payload,
+    }).then(({ status, body }) => {
+      // Defensive parse: API may return JSON as a string
 
-    const payload = buildAccountPayload();
+      const data = JSON.parse(body);
+      cy.log("API Response: " + JSON.stringify(data));
 
-    return cy
-      .request({
-        log: false,
-        method: "POST",
-        url: "/api/createAccount",
-        form: true,
-        failOnStatusCode: false, // we'll assert manually
-        body: payload,
-      })
-      .then(({ status, body }) => {
-        // Defensive parse: API may return JSON as a string
-        const data = typeof body === "string" ? JSON.parse(body) : body || {};
-        const message = String(data.message || "");
+      // Expect a successful creation (API may return 200)
+      expect([201, 200]).to.include(status);
+      expect(data.message).to.eq("User created!");
+    });
+  });
 
-        // Accepted outcomes (idempotent contract)
-        const ACCEPTED_STATUS = [201, 200, 409];
-        const ACCEPTED_MESSAGE =
-          /(user created!?|(?:user|email)(?: already)? (?:created|exist)s?!?)/i;
+  it("creates a new account(existing)", () => {
+    cy.request({
+      method: "POST",
+      url: "/api/createAccount",
+      form: true,
+      failOnStatusCode: false,
+      body: payload,
+    }).then(({ body }) => {
+      // Defensive parse: API may return JSON as a string
 
-        // Assertions (no branching needed)
-        expect(ACCEPTED_STATUS, `unexpected status: ${status}`).to.include(
-          status
-        );
-        expect(message, `unexpected message: "${message}"`).to.match(
-          ACCEPTED_MESSAGE
-        );
-      });
+      const data = JSON.parse(body);
+      cy.log("API Response: " + JSON.stringify(data));
+
+      // Expect a successful creation (API may return 200)
+      expect(data.responseCode).to.eq(400);
+      expect(data.message).to.eq("Email already exists!");
+    });
   });
 });

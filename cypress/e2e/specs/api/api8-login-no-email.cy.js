@@ -1,31 +1,24 @@
-describe("API 8 - Verify Login without email", () => {
-  it("should return an error due to missing email parameter", () => {
+describe("API 8 - POST To Verify Login without email parameter", () => {
+  it("should return responseCode 400 with proper error message", () => {
     cy.request({
       method: "POST",
       url: "/api/verifyLogin",
       form: true,
+      failOnStatusCode: false, // allow 200 with error in body
       body: {
-        // email intentionally omitted
-        password: Cypress.env("USER_PASSWORD"),
+        password: "valid_password", // missing email
       },
-      failOnStatusCode: false, // do not fail automatically
     }).then(({ status, body }) => {
-      const data = typeof body === "string" ? JSON.parse(body) : body;
+      const data = JSON.parse(body);
 
-      if (status === 400) {
-        // documented behavior
-        expect(data).to.have.property(
-          "message",
-          "Bad request, email or password parameter is missing in POST request."
-        );
-      } else if (status === 200) {
-        // known bug: 200 but body indicates error
-        expect(data).to.have.property("responseCode", 400);
-        expect(data.message).to.match(/missing in POST request/i);
-      } else {
-        // any other unexpected status
-        throw new Error(`Unexpected status: ${status}`);
-      }
+      // HTTP status is always 200
+      expect(status).to.eq(200);
+
+      // Error code and message inside body
+      expect(data.responseCode).to.eq(400);
+      expect(data.message).to.eq(
+        "Bad request, email or password parameter is missing in POST request."
+      );
     });
   });
 });

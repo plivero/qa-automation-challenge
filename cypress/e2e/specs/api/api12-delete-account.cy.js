@@ -1,31 +1,36 @@
-describe("API 12 - DELETE /deleteAccount", () => {
-  it("should delete the account (200)", () => {
-    const email = Cypress.env("USER_EMAIL");
-    const password = Cypress.env("USER_PASSWORD");
+import { buildAccountPayload } from "../../../support/factories/userFactory";
 
-    if (!email || !password) {
-      throw new Error("USER_EMAIL or USER_PASSWORD missing in .env");
-    }
+describe("API 12 - DELETE METHOD To Delete User Account", () => {
+  it("should create and then delete the user account", () => {
+    const payload = buildAccountPayload();
 
+    // Step 1: create user
     cy.request({
-      log: false, // hide request from log
-      method: "DELETE",
-      url: "/api/deleteAccount",
+      method: "POST",
+      url: "/api/createAccount",
       form: true,
+      body: payload,
       failOnStatusCode: false,
-      body: { email, password },
     }).then(({ status, body }) => {
-      expect(status).to.eq(200);
+      const data = JSON.parse(body);
+      expect([200, 201]).to.include(status);
+      expect(data.message).to.eq("User created!");
 
-      if (typeof body === "string") {
-        expect(body).to.match(/account deleted/i);
-      } else if (body?.message) {
-        expect(body.message).to.match(/account deleted/i);
-      } else if (typeof body?.responseCode === "number") {
-        expect(body.responseCode).to.eq(200);
-      } else {
-        throw new Error("Unexpected response format.");
-      }
+      // Step 2: delete same user
+      cy.request({
+        method: "DELETE",
+        url: "/api/deleteAccount",
+        form: true,
+        body: {
+          email: payload.email,
+          password: payload.password,
+        },
+        failOnStatusCode: false,
+      }).then(({ status, body }) => {
+        const deleteData = JSON.parse(body);
+        expect(status).to.eq(200);
+        expect(deleteData.message).to.eq("Account deleted!");
+      });
     });
   });
 });

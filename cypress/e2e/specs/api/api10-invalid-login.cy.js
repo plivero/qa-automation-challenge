@@ -1,32 +1,20 @@
-describe("API 10 - Verify Login with invalid credentials", () => {
-  it("should return 404 'User not found!'", () => {
-    const invalidEmail = `qa_${Date.now()}@example.com`;
-
+describe("API 10 - POST To Verify Login with invalid details", () => {
+  it("should return responseCode 404 and message 'User not found!'", () => {
     cy.request({
       method: "POST",
       url: "/api/verifyLogin",
       form: true,
-      failOnStatusCode: false, // accept 4xx without breaking
+      failOnStatusCode: false, // site returns HTTP 200 with error in body
       body: {
-        email: invalidEmail,
-        password: "wrong-pass",
+        email: "invalid_email@example.com",
+        password: "wrong_password",
       },
     }).then(({ status, body }) => {
-      const data = typeof body === "string" ? JSON.parse(body) : body;
+      const data = JSON.parse(body); // parse raw JSON string
 
-      if (status === 404) {
-        // documented behavior
-        expect(data).to.have.property("message", "User not found!");
-        return;
-      }
-      if (status === 200) {
-        // flakiness: 200 with error in body
-        expect(data).to.have.property("responseCode", 404);
-        expect(data.message).to.match(/user not found/i);
-        return;
-      }
-
-      throw new Error(`Unexpected status: ${status}`);
+      expect(status).to.eq(200); // this site usually returns 200
+      expect(data.responseCode).to.eq(404);
+      expect(data.message).to.eq("User not found!");
     });
   });
 });
