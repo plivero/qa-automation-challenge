@@ -1,21 +1,33 @@
-describe("API 14 - GET user account detail by email", () => {
-  it("returns the details of the user from .env", () => {
-    const email = Cypress.env("USER_EMAIL");
-    if (!email) throw new Error("USER_EMAIL not defined in .env");
+import { buildAccountPayload } from "../../../support/factories/userFactory";
 
+describe("API 14 - GET user account detail by email", () => {
+  it("should create and then fetch user detail by email", () => {
+    const payload = buildAccountPayload();
+
+    // Step 1: create user
     cy.request({
-      method: "GET",
-      url: "/api/getUserDetailByEmail",
-      qs: { email }, // query string
+      method: "POST",
+      url: "/api/createAccount",
+      form: true,
+      body: payload,
       failOnStatusCode: false,
     }).then(({ status, body }) => {
-      cy.log("RESPONSE:", JSON.stringify(body, null, 2));
-
+      const data = JSON.parse(body);
       expect(status).to.eq(200);
+      expect(data.message).to.eq("User created!");
 
-      const data = typeof body === "string" ? JSON.parse(body) : body;
-      expect(data).to.have.property("user");
-      expect(data.user).to.have.property("email", email);
+      // Step 2: get user details by email
+      cy.request({
+        method: "GET",
+        url: `/api/getUserDetailByEmail?email=${payload.email}`,
+        failOnStatusCode: false,
+      }).then(({ status, body }) => {
+        const detail = JSON.parse(body);
+
+        expect(status).to.eq(200);
+        expect(detail).to.have.property("user");
+        expect(detail.user).to.have.property("email", payload.email);
+      });
     });
   });
 });

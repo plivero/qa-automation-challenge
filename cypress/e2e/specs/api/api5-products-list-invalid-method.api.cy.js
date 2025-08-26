@@ -1,32 +1,16 @@
-describe("API 2 - POST to All Products List (real behavior)", () => {
-  it("responds 405 (in status OR in body) OR returns products", () => {
+describe("API 5 - POST To Search Product", () => {
+  it("should return 200 and a list of searched products", () => {
     cy.request({
       method: "POST",
-      url: "/api/productsList",
-      failOnStatusCode: false, // lets us inspect 4xx
-    }).then((res) => {
-      // if body comes as string, try to parse it
-      let data = res.body;
-      if (typeof data === "string") {
-        try {
-          data = JSON.parse(data);
-        } catch {}
-      }
+      url: "/api/searchProduct",
+      form: true, // send as application/x-www-form-urlencoded
+      body: { search_product: "top" }, // example search term
+    }).then(({ status, body }) => {
+      const data = typeof body === "string" ? JSON.parse(body) : body || {};
 
-      const methodNotAllowed =
-        res.status === 405 ||
-        (data && typeof data === "object" && data.responseCode === 405);
-
-      if (methodNotAllowed) {
-        // Path A: rejected POST
-        expect(data).to.have.property("responseCode", 405);
-        expect(String(data.message || "")).to.have.length.greaterThan(0);
-      } else {
-        // Path B: accepted and returned list
-        expect(res.status).to.eq(200);
-        expect(data).to.have.property("products");
-        expect(Array.isArray(data.products)).to.be.true;
-      }
+      expect(status).to.eq(200);
+      expect(data).to.have.property("products").that.is.an("array").and.not
+        .empty;
     });
   });
 });

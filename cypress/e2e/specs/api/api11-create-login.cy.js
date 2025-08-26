@@ -1,57 +1,20 @@
-describe("API 11 - Create/Register User Account", () => {
-  it("should create a new account and display all data in the log", () => {
-    const uniqueEmail = `test_${Date.now()}@example.com`;
-    const password = "123456";
+import { buildAccountPayload } from "../../../support/factories/userFactory";
 
-    const bodyReq = {
-      name: "QA Test XYZ",
-      email: uniqueEmail,
-      password,
-      title: "Mr",
-      birth_date: "10",
-      birth_month: "12",
-      birth_year: "1990",
-      firstname: "QA",
-      lastname: "Tester",
-      company: "Test Company",
-      address1: "123 Test Street",
-      address2: "321 Street Test",
-      country: "TestCountry",
-      zipcode: "A1B2C3",
-      state: "Test State",
-      city: "Test City",
-      mobile_number: "+1234567890",
-    };
-
-    // log the full request
-    cy.log("===== REQUEST BODY =====");
-    Object.entries(bodyReq).forEach(([k, v]) => cy.log(`${k}: ${v}`));
+describe("API 11 - POST To Create/Register User Account", () => {
+  it("should return 201 and message 'User created!'", () => {
+    const payload = buildAccountPayload();
 
     cy.request({
       method: "POST",
       url: "/api/createAccount",
       form: true,
-      failOnStatusCode: false,
-      body: bodyReq,
-    }).then(({ status, body, headers }) => {
-      cy.log("===== RESPONSE STATUS =====");
-      cy.log(`status: ${status}`);
+      body: payload,
+      failOnStatusCode: false, // handle different status if API returns 200
+    }).then(({ status, body }) => {
+      const data = JSON.parse(body);
 
-      cy.log("===== RESPONSE HEADERS =====");
-      Object.entries(headers).forEach(([k, v]) => cy.log(`${k}: ${v}`));
-
-      cy.log("===== RESPONSE BODY =====");
-      cy.log(JSON.stringify(body, null, 2));
-
-      const data = typeof body === "string" ? JSON.parse(body) : body;
-
-      if (status === 201) {
-        expect(data).to.have.property("message", "User created!");
-      } else if (status === 200) {
-        expect(data.message).to.match(/user created/i);
-      } else {
-        throw new Error(`Unexpected status: ${status}`);
-      }
+      expect([200, 201]).to.include(status); // site sometimes returns 200
+      expect(data.message).to.eq("User created!");
     });
   });
 });
