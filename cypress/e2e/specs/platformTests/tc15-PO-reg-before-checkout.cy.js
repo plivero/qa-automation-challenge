@@ -1,96 +1,80 @@
-// Test Case 15: Place Order — Register before Checkout
+// cypress/e2e/specs/personalTests/tc15-place-order-register-before-checkout.spec.cy.js
+// @ts-check
+/// <reference types="cypress" />
+
+import { HomePage } from "../../../support/pages/homePage";
+import { SignupPage } from "../../../support/pages/signupPage";
+import { AccountInfoPage } from "../../../support/pages/accountInfoPage";
+import { AccountStatusPage } from "../../../support/pages/accountStatusPage";
+import { ProductsPage } from "../../../support/pages/productsPage";
+import { CartPage } from "../../../support/pages/cartPage";
+import { CheckoutPage } from "../../../support/pages/checkoutPage";
+import { PaymentPage } from "../../../support/pages/paymentPage";
+
+const home = new HomePage();
+const signup = new SignupPage();
+const account = new AccountInfoPage();
+const status = new AccountStatusPage();
+const products = new ProductsPage();
+const cart = new CartPage();
+const checkout = new CheckoutPage();
+const payment = new PaymentPage();
 
 describe("UI Platform - TC15: Place Order (register before checkout)", () => {
   it("registers first, then places an order", () => {
-    const name = "BeforeCheckout User";
-    const email = `tc15_${Date.now()}@example.com`;
+    // Step 1: open home
+    home.visit();
 
-    // 1–3) Launch & verify home
-    cy.visit("/");
-    cy.get('img[src="/static/images/home/logo.png"]').should("be.visible");
+    // Step 2: go to Signup / Login
+    home.getNavMenuItem("Signup / Login").click();
 
-    // 4) Click 'Signup / Login'
-    cy.get('a[href="/login"]').first().click({ force: true });
+    // Step 3: 'New User Signup!' visible and start signup (faker inside PO)
+    signup.getNewUserHeader().should("be.visible");
+    const { name } = signup.startNewSignup(); // returns { name, email }
 
-    // 5) Fill all details in Signup and create account
-    cy.location("pathname").should("include", "/login");
-    cy.contains("New User Signup!").should("be.visible");
-    cy.get('[data-qa="signup-name"]').type(name);
-    cy.get('[data-qa="signup-email"]').type(email);
-    cy.get('[data-qa="signup-button"]').click();
+    // Step 4: fill account info (faker) and create account
+    account.getEnterAccountInfoHeader().should("be.visible");
+    account.fillAllFields();
+    account.clickCreateAccount();
 
-    cy.contains(/ENTER ACCOUNT INFORMATION/i, { timeout: 10000 }).should(
-      "be.visible"
-    );
-    cy.get("#id_gender1").check({ force: true });
-    cy.get('[data-qa="password"]').type("123456");
-    cy.get('[data-qa="days"]').select("10");
-    cy.get('[data-qa="months"]').select("December");
-    cy.get('[data-qa="years"]').select("1990");
-    cy.get('[data-qa="first_name"]').type("BeforeCheckout");
-    cy.get('[data-qa="last_name"]').type("User");
-    cy.get('[data-qa="address"]').type("Street 123");
-    cy.get('[data-qa="country"]').select("Canada");
-    cy.get('[data-qa="state"]').type("ON");
-    cy.get('[data-qa="city"]').type("Toronto");
-    cy.get('[data-qa="zipcode"]').type("A1B2C3");
-    cy.get('[data-qa="mobile_number"]').type("+1234567890");
-    cy.get('[data-qa="create-account"]').click();
+    // Step 5: 'ACCOUNT CREATED!' -> Continue
+    status.getAccountCreatedMessage().should("be.visible");
+    status.clickContinue();
 
-    // 6) Verify 'ACCOUNT CREATED!' and click 'Continue'
-    cy.contains(/ACCOUNT CREATED!/i, { timeout: 10000 }).should("be.visible");
-    cy.get('[data-qa="continue-button"]').click({ force: true });
+    // Step 6: 'Logged in as <name>'
+    status.getLoggedInLabel().should("contain.text", name);
 
-    // 7) Verify 'Logged in as username'
-    cy.contains("Logged in as").should("contain.text", "BeforeCheckout User");
+    // Step 7: open All Products and add first product
+    products.visit();
+    products.getTitle().should("be.visible");
+    products.getGrid().should("exist");
+    products.addFirstItemToCart();
+    products.getAddedModal().should("be.visible");
 
-    // 8) Add products to cart (add first product from Products page)
-    cy.get('a[href="/products"]').first().click({ force: true });
-    cy.location("pathname").should("eq", "/products");
-    cy.get(".features_items .product-image-wrapper")
-      .first()
-      .within(() => {
-        cy.contains(/Add to cart/i).click({ force: true });
-      });
+    // Step 8: open cart from modal
+    products.openCartFromModal();
+    cy.url().should("include", "/view_cart");
 
-    // 9) Click 'Cart' button (use navbar)
-    cy.contains(/Continue Shopping/i).click();
-    cy.get('a[href="/view_cart"]').first().click({ force: true });
+    // Step 9: proceed to checkout
+    cart.proceedToCheckout();
 
-    // 10) Verify cart page is displayed
-    cy.location("pathname").should("eq", "/view_cart");
+    // Step 10: checkout headers
+    checkout.getAddressDetailsHeader().should("be.visible");
+    checkout.getReviewYourOrderHeader().should("be.visible");
 
-    // 11) Click 'Proceed To Checkout'
-    cy.contains(/Proceed To Checkout/i).click();
+    // Step 11: add comment and place order
+    checkout.addOrderComment("Please deliver ASAP.");
+    checkout.clickPlaceOrder();
 
-    // 12) Verify Address Details and Review Your Order
-    cy.contains(/Address Details/i).should("be.visible");
-    cy.contains(/Review Your Order/i).should("be.visible");
+    // Step 12: payment with test card (keeps spec clean)
+    payment.payWithTestCard();
 
-    // 13) Enter description and click 'Place Order'
-    cy.get('textarea[name="message"]').type("Please deliver ASAP.");
-    cy.contains(/Place Order/i).click();
+    // Step 13: success message
+    payment.getOrderPlacedMessage().should("be.visible");
 
-    // 14) Enter payment details
-    cy.get('[data-qa="name-on-card"]').type(name);
-    cy.get('[data-qa="card-number"]').type("4111111111111111");
-    cy.get('[data-qa="cvc"]').type("123");
-    cy.get('[data-qa="expiry-month"]').type("12");
-    cy.get('[data-qa="expiry-year"]').type("2026");
-
-    // 15) Click 'Pay and Confirm Order'
-    cy.get('[data-qa="pay-button"]').click();
-
-    // 16) Verify success message
-    cy.contains(/(ORDER PLACED!|Your order has been placed successfully!)/i, {
-      timeout: 15000,
-    }).should("be.visible");
-
-    // 17) Click 'Delete Account'
-    cy.contains("Delete Account").click();
-
-    // 18) Verify 'ACCOUNT DELETED!' and click 'Continue'
-    cy.contains(/ACCOUNT DELETED!/i, { timeout: 10000 }).should("be.visible");
-    cy.get('[data-qa="continue-button"]').click({ force: true });
+    // Step 14: delete account and confirm
+    status.clickDeleteAccount();
+    status.getAccountDeletedMessage().should("be.visible");
+    status.clickContinue();
   });
 });

@@ -29,6 +29,13 @@ export class LoginPage {
     this.loginWith(Cypress.env("USER_EMAIL"), Cypress.env("USER_PASSWORD"));
   }
 
+  // Generate wrong credentials internally (no inputs in spec)
+  loginWithInvalidDefaults() {
+    const email = `wrong_${Date.now()}@example.com`;
+    const password = "wrong-pass";
+    this.loginWith(email, password);
+  }
+
   getLoginPageHeader() {
     return cy.contains("Login to your account");
   }

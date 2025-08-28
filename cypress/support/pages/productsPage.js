@@ -3,27 +3,28 @@
 /// <reference types="cypress" />
 
 export class ProductsPage {
+  // Action: open All Products
   visit() {
     cy.visit("/products");
   }
 
-  // action
+  // Action: search term and submit
   search(term) {
     cy.get("#search_product").clear().type(term);
     cy.get("#submit_search").click();
   }
 
-  // getter (use in spec to assert)
+  // Getter: page heading
   getTitle() {
     return cy.contains(/All Products|Products/i);
   }
 
-  // getter (use in spec to assert)
+  // Getter: products grid wrapper
   getGrid() {
     return cy.get(".features_items, .product-image-wrapper, .single-products");
   }
 
-  // action
+  // Action: open product details by name fragment
   openDetailsByName(name) {
     cy.contains(".productinfo", new RegExp(name, "i"))
       .parents(".product-image-wrapper")
@@ -31,7 +32,7 @@ export class ProductsPage {
       .click();
   }
 
-  // action
+  // Action: add first visible item to cart
   addFirstItemToCart() {
     cy.get(".product-image-wrapper")
       .first()
@@ -40,13 +41,37 @@ export class ProductsPage {
       });
   }
 
-  // getter (modal after add)
+  // Getter: list of product cards (0-based indexing)
+  getCards() {
+    return cy.get(".features_items .product-image-wrapper");
+  }
+
+  // Action: add item by index (0-based)
+  addItemByIndex(index) {
+    this.getCards()
+      .eq(index)
+      .within(() => {
+        cy.contains(/Add to cart/i).click({ force: true });
+      });
+  }
+
+  // Getter: "Added!" modal after adding to cart
   getAddedModal() {
     return cy.contains("Added!");
   }
 
-  // action
+  // Action: click "View Cart" in modal
   openCartFromModal() {
     cy.contains("View Cart").click();
+  }
+
+  // Action: click "Continue Shopping" in modal
+  clickContinueShoppingInModal() {
+    cy.contains(/Continue Shopping/i, { timeout: 10000 }).click();
+  }
+
+  // Open first product quickly
+  openFirstProduct() {
+    this.getCards().first().contains("View Product").click({ force: true });
   }
 }

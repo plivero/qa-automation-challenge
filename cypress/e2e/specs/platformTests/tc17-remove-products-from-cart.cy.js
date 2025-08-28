@@ -1,41 +1,33 @@
-// Test Case 17: Remove Products From Cart
+// cypress/e2e/specs/personalTests/tc17-remove-product-from-cart.spec.cy.js
+// @ts-check
+/// <reference types="cypress" />
+
+import { ProductsPage } from "../../../support/pages/productsPage";
+import { CartPage } from "../../../support/pages/cartPage";
+
+const products = new ProductsPage();
+const cart = new CartPage();
 
 describe("UI Platform - TC17: Remove product from cart", () => {
   it("adds a product, opens cart, removes it and verifies it's gone", () => {
-    // 1–2) Launch & navigate
-    cy.visit("/");
+    // Step 1: open All Products
+    products.visit();
 
-    // 3) Home visible
-    cy.get('img[src="/static/images/home/logo.png"]').should("be.visible");
+    // Step 2: add first product
+    products.addFirstItemToCart();
+    products.getAddedModal().should("be.visible");
 
-    // 4) Add products to cart (add first product)
-    cy.get('a[href="/products"]').first().click({ force: true });
-    cy.location("pathname").should("eq", "/products");
-    cy.get(".features_items .product-image-wrapper")
-      .first()
-      .within(() => {
-        cy.contains(/Add to cart/i).click({ force: true });
-      });
+    // Step 3: go to cart
+    products.openCartFromModal();
+    cy.url().should("include", "/view_cart");
 
-    // 5) Click 'Cart' button
-    cy.contains(/View Cart/i, { timeout: 10000 }).click();
+    // Step 4: ensure we have at least 1 row
+    cart.getVisibleRows().should("have.length.greaterThan", 0);
 
-    // 6) Verify cart page is displayed
-    cy.location("pathname").should("eq", "/view_cart");
+    // Step 5: remove first item
+    cart.removeFirstItem();
 
-    // 7) Click 'X' button corresponding to the product
-    cy.get("#cart_info_table tbody tr").should("have.length.greaterThan", 0);
-    cy.get("#cart_info_table tbody tr")
-      .first()
-      .within(() => {
-        cy.get(".cart_quantity_delete").click({ force: true });
-      });
-
-    // 8) Verify the product is removed from the cart
-    cy.get("#cart_info_table tbody tr", { timeout: 10000 }).should(
-      "have.length",
-      0
-    );
-    cy.contains(/Cart is empty/i).should("be.visible");
+    // Step 6: verify cart is empty (no visible rows)
+    cart.getVisibleRows().should("have.length", 0);
   });
 });

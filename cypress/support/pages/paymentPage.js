@@ -47,4 +47,32 @@ export class PaymentPage {
 
     this.fillAndPay({ name, number: card, cvc, month, year });
   }
+
+  // Convenience: standard test card (keeps specs ultra-simple)
+  payWithTestCard() {
+    this.fillAndPay({
+      name: "QA Test",
+      number: "4111111111111111",
+      cvc: "123",
+      month: "12",
+      year: "2026",
+    });
+  }
+
+  // Success message after payment (varies by site copy)
+  getOrderPlacedMessage() {
+    return cy.contains(
+      /(ORDER PLACED!|Your order has been placed successfully!)/i,
+      { timeout: 15000 }
+    );
+  }
+  // Download button
+  getDownloadInvoiceButton() {
+    return cy.contains(/Download Invoice/i);
+  }
+
+  // Click download button
+  clickDownloadInvoiceButton() {
+    this.getDownloadInvoiceButton().click();
+  }
 }

@@ -1,31 +1,23 @@
-// Test Case 10: Verify Subscription in home page
+// cypress/e2e/specs/personalTests/tc10-subscription-home.spec.cy.js
+// @ts-check
+/// <reference types="cypress" />
+
+import { HomePage } from "../../../support/pages/homePage";
+
+const home = new HomePage();
 
 describe("UI Platform - TC10: Subscription (home footer)", () => {
   it("subscribes from the home page footer", () => {
-    const email = `sub_${Date.now()}@example.com`;
+    // Step 1–2: open site
+    home.visit();
 
-    // 1–2) Launch & navigate
-    cy.visit("/");
+    // Step 3: home page visible
+    home.getLogo().should("be.visible");
 
-    // 3) Verify that home page is visible successfully
-    cy.get('img[src="/static/images/home/logo.png"]', {
-      timeout: 10000,
-    }).should("be.visible");
+    // Step 4–6 (USER_EMAIL from env)
+    home.subscribeFooterWithDefaults();
 
-    // 4) Scroll down to footer
-    cy.scrollTo("bottom");
-    // or: cy.get("footer").scrollIntoView();
-
-    // 5) Verify text 'SUBSCRIPTION'
-    cy.contains(/SUBSCRIPTION/i, { timeout: 10000 }).should("be.visible");
-
-    // 6) Enter email address in input and click arrow button
-    cy.get("#susbscribe_email").clear().type(email); // note: site uses 'susbscribe' (typo) id
-    cy.get("#subscribe").click({ force: true });
-
-    // 7) Verify success message
-    cy.contains("You have been successfully subscribed!", {
-      timeout: 10000,
-    }).should("be.visible");
+    // Step 7: success message visible
+    home.getSubscriptionSuccessMessage().should("be.visible");
   });
 });

@@ -1,33 +1,35 @@
-// Test Case 5: Register User with existing email
+// cypress/e2e/specs/personalTests/tc5-register-existing-email.spec.cy.js
+// @ts-check
+/// <reference types="cypress" />
+
+import { HomePage } from "../../../support/pages/homePage";
+import { SignupPage } from "../../../support/pages/signupPage";
+
+const home = new HomePage();
+const signup = new SignupPage();
 
 describe("UI Platform - TC5: Register with existing email", () => {
   it("shows 'Email Address already exist!' error", () => {
-    const email = Cypress.env("USER_EMAIL");
-    if (!email) throw new Error("USER_EMAIL not set in cypress.env.json");
+    // Step 1: Launch browser (handled by Cypress)
 
-    // 1–2) Open site (home)
-    cy.visit("/");
+    // Step 2: Open site (home)
+    home.visit();
 
-    // 3) Home visible (logo)
-    cy.get('img[src="/static/images/home/logo.png"]', {
-      timeout: 10000,
-    }).should("be.visible");
+    // Step 3: Home visible (logo)
+    home.getLogo().should("be.visible");
 
-    // 4) Click 'Signup / Login'
-    cy.get('a[href="/login"]').first().click({ force: true });
+    // Step 4: Click 'Signup / Login'
+    home.getNavMenuItem("Signup / Login").click();
 
-    // 5) 'New User Signup!' visible
-    cy.location("pathname", { timeout: 10000 }).should("include", "/login");
-    cy.contains("New User Signup!").should("be.visible");
+    // Step 5: 'New User Signup!' visible
+    cy.url().should("include", "/login");
+    signup.getNewUserHeader().should("be.visible");
 
-    // 6) Enter name + existing email
-    cy.get('[data-qa="signup-name"]').type("Already User");
-    cy.get('[data-qa="signup-email"]').type(email);
+    // Step 6 + 7: Enter name + existing email and click 'Signup'
+    // (PO reads USER_EMAIL from env; spec não digita nada)
+    signup.startSignupWithExistingFromEnv();
 
-    // 7) Click 'Signup'
-    cy.get('[data-qa="signup-button"]').click();
-
-    // 8) Error visible
-    cy.contains(/Email Address already exist!?/i).should("be.visible");
+    // Step 8: Error visible
+    signup.getExistingEmailError().should("be.visible");
   });
 });

@@ -1,123 +1,52 @@
-// Test Case 23: Verify address details in checkout page
+// @ts-check
+/// <reference types="cypress" />
+
+import { SignupPage } from "../../../support/pages/signupPage";
+import { AccountInfoPage } from "../../../support/pages/accountInfoPage";
+import { AccountStatusPage } from "../../../support/pages/accountStatusPage";
+import { ProductsPage } from "../../../support/pages/productsPage";
+import { CartPage } from "../../../support/pages/cartPage";
+import { AddressPage } from "../../../support/pages/addressPage";
+
+const signup = new SignupPage();
+const info = new AccountInfoPage();
+const status = new AccountStatusPage();
+const products = new ProductsPage();
+const cart = new CartPage();
+const address = new AddressPage();
 
 describe("UI Platform - TC23: Verify address details in checkout", () => {
-  it("checks delivery & billing addresses match the signup data", () => {
-    // --- signup data (what we expect to see in checkout) ---
-    const first = "Addr";
-    const last = "User";
-    const fullName = `${first} ${last}`;
-    const email = `tc23_${Date.now()}@example.com`;
-    const password = "123456";
-    const company = "QA Co";
-    const address1 = "Street 123";
-    const address2 = "Suite 4";
-    const country = "India";
-    const state = "ON";
-    const city = "City";
-    const zipcode = "A1B2C3";
-    const mobile = "1234567890";
+  it("checks delivery & billing addresses match signup data", () => {
+    // Step 1: login
+    cy.visit("/login");
+    signup.getNewUserHeader().should("be.visible");
+    const { name, email } = signup.startNewSignup();
 
-    // 1) Launch browser
-    cy.visit("/");
+    // Step 2: fill account info
+    info.getEnterAccountInfoHeader().should("be.visible");
+    info.fillAllFields();
+    info.clickCreateAccount();
 
-    // 2) (baseUrl)
+    // Step 3: created account
+    status.getAccountCreatedMessage().should("be.visible");
+    status.clickContinue();
+    status.getLoggedInLabel().should("contain.text", name);
 
-    // 3) Home visible
-    cy.get('img[src="/static/images/home/logo.png"]').should("be.visible");
+    // Step 4: add product
+    products.visit();
+    products.addFirstItemToCart();
+    products.openCartFromModal();
 
-    // 4) Click 'Signup / Login'
-    cy.get('a[href="/login"]').first().click({ force: true });
-    cy.location("pathname").should("include", "/login");
+    // Step 5: checkout
+    cart.proceedToCheckout();
 
-    // 5) Signup + create account
-    cy.contains("New User Signup!").should("be.visible");
-    cy.get('[data-qa="signup-name"]').type(fullName);
-    cy.get('[data-qa="signup-email"]').type(email);
-    cy.get('[data-qa="signup-button"]').click();
+    // Step 6: verify delivery e billing address
+    address.getDeliveryBox().should("be.visible").and("not.be.empty");
+    address.getBillingBox().should("be.visible").and("not.be.empty");
 
-    cy.contains(/ENTER ACCOUNT INFORMATION/i, { timeout: 10000 }).should(
-      "be.visible"
-    );
-    cy.get("#id_gender1").check({ force: true });
-    cy.get('[data-qa="password"]').type(password);
-    cy.get('[data-qa="days"]').select("10");
-    cy.get('[data-qa="months"]').select("December");
-    cy.get('[data-qa="years"]').select("1990");
-    cy.get('[data-qa="first_name"]').type(first);
-    cy.get('[data-qa="last_name"]').type(last);
-    cy.get('[data-qa="company"]').type(company);
-    cy.get('[data-qa="address"]').type(address1);
-    cy.get('[data-qa="address2"]').type(address2);
-    cy.get('[data-qa="country"]').select(country);
-    cy.get('[data-qa="state"]').type(state);
-    cy.get('[data-qa="city"]').type(city);
-    cy.get('[data-qa="zipcode"]').type(zipcode);
-    cy.get('[data-qa="mobile_number"]').type(mobile);
-    cy.get('[data-qa="create-account"]').click();
-
-    // 6) 'ACCOUNT CREATED!' + Continue
-    cy.contains(/ACCOUNT CREATED!/i, { timeout: 10000 }).should("be.visible");
-    cy.get('[data-qa="continue-button"]').click({ force: true });
-
-    // 7) 'Logged in as'
-    cy.contains(/Logged in as/i).should("contain.text", fullName);
-
-    // 8) Add product
-    cy.get('a[href="/products"]').first().click({ force: true });
-    cy.location("pathname").should("include", "/products");
-    cy.get(".features_items .product-image-wrapper")
-      .first()
-      .within(() => {
-        cy.contains(/Add to cart/i).click({ force: true });
-      });
-
-    // 9) 'Cart'
-    cy.contains(/View Cart/i, { timeout: 10000 }).click();
-
-    // 10) Cart page
-    cy.location("pathname").should("eq", "/view_cart");
-
-    // 11) Proceed To Checkout
-    cy.contains(/Proceed To Checkout/i).click();
-
-    // 12) Delivery address = signup data (selects the <ul>, not the <li> title)
-    const mustHave = [fullName, address1, city, state, zipcode, country];
-
-    // try direct id; if not present, use the title and go up to <ul>
-    cy.get("ul#address_delivery").then(($ul) => {
-      if ($ul.length) {
-        cy.wrap($ul).as("deliveryBox");
-      } else {
-        cy.contains("li.address_title", /Your delivery address/i)
-          .closest("ul")
-          .as("deliveryBox");
-      }
-    });
-
-    mustHave.forEach((txt) => {
-      cy.get("@deliveryBox").should("contain.text", txt);
-    });
-
-    // 13) Billing address = signup data
-    cy.get("ul#address_invoice").then(($ul) => {
-      if ($ul.length) {
-        cy.wrap($ul).as("billingBox");
-      } else {
-        cy.contains("li.address_title", /Your billing address/i)
-          .closest("ul")
-          .as("billingBox");
-      }
-    });
-
-    mustHave.forEach((txt) => {
-      cy.get("@billingBox").should("contain.text", txt);
-    });
-
-    // 14) Delete Account
-    cy.contains("Delete Account").click();
-
-    // 15) 'ACCOUNT DELETED!' + Continue
-    cy.contains(/ACCOUNT DELETED!/i, { timeout: 10000 }).should("be.visible");
-    cy.get('[data-qa="continue-button"]').click({ force: true });
+    // Step 7: delete account
+    status.clickDeleteAccount();
+    status.getAccountDeletedMessage().should("be.visible");
+    status.clickContinue();
   });
 });

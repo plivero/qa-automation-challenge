@@ -3,34 +3,59 @@
 /// <reference types="cypress" />
 
 export class CartPage {
+  // Action: open cart page
   visit() {
     cy.visit("/view_cart");
   }
 
-  // getter: visible rows in cart table
+  // Getter: visible rows in cart table
   getVisibleRows() {
     return cy.get(".cart_info tbody tr:visible");
   }
 
-  // action: remove first item
+  // Getter: all rows (not filtered by :visible)
+  getRows() {
+    return cy.get("#cart_info_table tbody tr");
+  }
+
+  // Getter: one row by index (0-based)
+  getRow(index) {
+    return this.getRows().eq(index);
+  }
+
+  // Action: remove first item
   removeFirstItem() {
     cy.get('.cart_quantity_delete, a[title="Delete"]')
       .first()
       .click({ force: true });
   }
 
-  // getter: first item quantity cell
+  // Getter: first item quantity cell
   getFirstItemQuantityCell() {
     return cy.get(".cart_info tbody tr").first().find(".cart_quantity");
   }
 
-  // action: proceed to checkout
+  // Action: proceed to checkout
   proceedToCheckout() {
     cy.contains(/Proceed To Checkout/i).click({ force: true });
   }
 
-  // optional helper getters if you want to assert in spec
+  // Click "Register / Login" inside the checkout modal
+  clickRegisterFromCheckoutModal() {
+    cy.get(".modal-content", { timeout: 10000 })
+      .should("be.visible")
+      .within(() => {
+        cy.get('a[href="/login"]').click({ force: true });
+      });
+  }
+
+  // Helper getters if you want to assert in spec
   getHeader() {
     return cy.contains(/shopping cart/i);
+  }
+  // Click "Register / Login" in the modal and go to /login
+  clickRegisterLoginOnModal() {
+    cy.contains("Register / Login").click();
+    cy.visit("/login");
   }
 }

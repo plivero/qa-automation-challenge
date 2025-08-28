@@ -1,73 +1,68 @@
-// Test Case 2: Login User with correct email and password
+// @ts-check
+/// <reference types="cypress" />
 
-describe("UI Platform - TC2 Login (wrong credentials)", () => {
-  const user = {
-    name: "Test Pvsl",
-    email: `ui_tc2_${Date.now()}@example.com`,
-    password: "123456",
+import { HomePage } from "../../../support/pages/homePage";
+import { LoginPage } from "../../../support/pages/loginPage";
+import { AccountStatusPage } from "../../../support/pages/accountStatusPage";
+import { buildAccountPayload } from "../../../support/factories/userFactory";
+
+const home = new HomePage();
+const login = new LoginPage();
+const status = new AccountStatusPage();
+
+/** @type {{ name: string; email: string; password: string }} */
+let user;
+
+// Pre-condition (setup): create a user via API using the factory (simple and short)
+before(() => {
+  const payload = buildAccountPayload();
+  user = {
+    name: payload.name,
+    email: payload.email,
+    password: payload.password,
   };
 
-  // Pre-condition: ensure user exists (via API 11)
-  before(() => {
-    cy.request({
-      method: "POST",
-      url: "/api/createAccount",
-      form: true,
-      failOnStatusCode: false,
-      body: {
-        name: user.name,
-        email: user.email,
-        password: user.password,
-        title: "Mr",
-        birth_date: "10",
-        birth_month: "12",
-        birth_year: "1990",
-        firstname: "UI",
-        lastname: "Test",
-        company: "UI Co",
-        address1: "Street 1",
-        address2: "Suite 2",
-        country: "Country",
-        zipcode: "A1B2C3",
-        state: "CO",
-        city: "City",
-        mobile_number: "1234567890",
-      },
-    });
+  cy.request({
+    method: "POST",
+    url: "/api/createAccount",
+    form: true,
+    failOnStatusCode: false,
+    body: payload,
+  }).then(({ status, body }) => {
+    const data = JSON.parse(body);
+    expect(status).to.eq(200);
+    expect(data.message).to.eq("User created!");
   });
+});
 
-  it("Login and delete account", () => {
-    // 1-2) Launch + Navigate
-    cy.visit("/");
+describe("UI Platform - TC2: Login User with correct email and password", () => {
+  it("logs in and deletes the account", () => {
+    // Step 1: Launch browser (Cypress handles the browser automatically)
 
-    // 3) Verify home page visible
-    cy.get('img[src="/static/images/home/logo.png"]', {
-      timeout: 10000,
-    }).should("be.visible");
+    // Step 2: Navigate to url 'http://automationexercise.com'
+    home.visit();
 
-    // 4) Click 'Signup / Login'
-    cy.contains("Signup / Login").click();
+    // Step 3: Verify that home page is visible successfully
+    home.getLogo().should("be.visible");
 
-    // 5) Verify 'Login to your account' visible
-    cy.contains("Login to your account").should("be.visible");
+    // Step 4: Click on 'Signup / Login' button
+    home.getNavMenuItem("Signup / Login").click();
 
-    // 6) Enter correct email and password
-    cy.get('[data-qa="login-email"]').clear().type(user.email);
-    cy.get('[data-qa="login-password"]')
-      .clear()
-      .type(user.password, { log: false });
+    // Step 5: Verify 'Login to your account' is visible
+    login.getLoginPageHeader().should("be.visible");
 
-    // 7) Click 'login' button
-    cy.get('[data-qa="login-button"]').click();
+    // Step 6: Enter correct email address and password
+    // Step 7: Click 'login' button (the click happens inside loginWith)
+    login.loginWith(user.email, user.password);
 
-    // 8) Verify 'Logged in as username'
-    cy.contains("Logged in as").should("contain.text", user.name);
+    // Step 8: Verify that 'Logged in as username' is visible
+    status.getLoggedInLabel().should("contain.text", user.name);
 
-    // 9) Click 'Delete Account'
-    cy.contains("Delete Account").click();
+    // Step 9: Click 'Delete Account' button
+    status.clickDeleteAccount();
 
-    // 10) Verify 'ACCOUNT DELETED!'
-    cy.contains(/Account Deleted!/i, { timeout: 10000 }).should("be.visible");
-    cy.get('[data-qa="continue-button"]').click({ force: true });
+    // Step 10: Verify that 'ACCOUNT DELETED!' is visible
+    status.getAccountDeletedMessage().should("be.visible");
+    status.clickContinue();
   });
 });

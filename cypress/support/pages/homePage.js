@@ -32,4 +32,15 @@ export class HomePage {
     const email = Cypress.env("USER_EMAIL");
     this.subscribeFooter(email);
   }
+  // Button scroll up
+  getScrollUpArrow() {
+    return cy.get("#scrollUp");
+  }
+
+  // Textfrom top of the home
+  getHeroText() {
+    return cy.contains(
+      /Full-Fledged practice website for Automation Engineers/i
+    );
+  }
 }

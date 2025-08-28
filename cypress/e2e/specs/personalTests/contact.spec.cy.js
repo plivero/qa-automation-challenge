@@ -16,7 +16,7 @@ describe("Contact Us - Form submission", () => {
     cy.url().should("include", "/contact_us");
 
     // only high-level action
-    contact.fillAndSubmitWithDefaults();
+    contact.fillAttachAndSubmitWithDefaults();
 
     // assertion
     contact.getSuccessMessage().should("be.visible");

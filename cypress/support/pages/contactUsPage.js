@@ -11,6 +11,10 @@ export class ContactUsPage {
     return cy.get('form[action="/contact_us"]').first();
   }
 
+  getGetInTouchHeader() {
+    return cy.contains(/GET IN TOUCH/i, { timeout: 10000 });
+  }
+
   fillForm({ name, email, subject, message }) {
     this.form().within(() => {
       cy.get('[data-qa="name"]').clear().type(name);
@@ -20,24 +24,50 @@ export class ContactUsPage {
     });
   }
 
-  submit() {
-    this.form().find('[type="submit"]').click();
+  attachTextFile({ contents, fileName }) {
+    this.form()
+      .find('input[type="file"]')
+      .selectFile({
+        contents: new Blob([contents], { type: "text/plain" }),
+        fileName,
+        lastModified: Date.now(),
+      });
   }
 
-  // NEW: helper to fill + submit with env/default values
-  fillAndSubmitWithDefaults() {
-    const name = Cypress.env("USER_NAME") || "QA User";
-    const email = Cypress.env("USER_EMAIL") || "qa@example.com";
-    const subject = "Automation Exercise - Contact";
-    const message = "Test message sent by Cypress.";
-
-    this.fillForm({ name, email, subject, message });
-    this.submit();
+  submit() {
+    this.form().find('[data-qa="submit-button"]').click();
   }
 
   getSuccessMessage() {
     return cy.contains(
-      /success! your details have been submitted successfully/i
+      /Success! Your details have been submitted successfully\./i
     );
+  }
+
+  fillWithDefaults() {
+    const name = Cypress.env("USER_NAME");
+    const email = Cypress.env("USER_EMAIL");
+
+    this.fillForm({
+      name,
+      email,
+      subject: "QA UI - Contact",
+      message: "Message sent by Cypress (UI).",
+    });
+  }
+
+  fillAttachAndSubmitWithDefaults() {
+    this.fillWithDefaults();
+    this.attachTextFile({
+      contents: "Hello from Cypress!",
+      fileName: "contact-note.txt",
+    });
+    this.submit();
+  }
+
+  // helper encapsulating step 11
+  goBackHomeAndVerify() {
+    cy.contains("Home").click();
+    cy.title().should("eq", "Automation Exercise");
   }
 }

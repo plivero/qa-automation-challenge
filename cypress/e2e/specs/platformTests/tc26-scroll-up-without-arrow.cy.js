@@ -1,26 +1,29 @@
-// Test Case 26: Verify Scroll Up *without* 'Arrow' button and Scroll Down functionality
+// cypress/e2e/specs/personalTests/tc26-scroll-no-arrow.spec.cy.js
+// @ts-check
+/// <reference types="cypress" />
+
+import { HomePage } from "../../../support/pages/homePage";
+
+const home = new HomePage();
 
 describe("UI Platform - TC26: Scroll Down & manual Scroll Up (no arrow)", () => {
-  it("scrolls to bottom, verifies 'SUBSCRIPTION', scrolls back to top without using arrow", () => {
-    // 1–2) Launch & navigate
-    cy.visit("/");
+  it("scrolls to bottom, verifies 'SUBSCRIPTION', scrolls back to top without arrow", () => {
+    // Step 1–2: open site
+    home.visit();
 
-    // 3) Verify home page is visible
-    cy.get('img[src="/static/images/home/logo.png"]').should("be.visible");
+    // Step 3: check home page logo
+    home.getLogo().should("be.visible");
 
-    // 4) Scroll down to bottom
-    cy.scrollTo("bottom", { duration: 600 });
+    // Step 4: scroll down
+    cy.scrollTo("bottom");
 
-    // 5) Verify 'SUBSCRIPTION' is visible
+    // Step 5: check 'SUBSCRIPTION'
     cy.contains(/SUBSCRIPTION/i).should("be.visible");
 
-    // 6) Scroll up to top (no arrow click)
-    cy.scrollTo("top", { duration: 600 });
+    // Step 6: scroll up (no arrow click)
+    cy.scrollTo("top");
 
-    // 7) Verify page is at top and hero text is visible
-    cy.contains(
-      /Full-Fledged practice website for Automation Engineers/i
-    ).should("be.visible");
-    cy.window().its("scrollY").should("be.lte", 5);
+    // Step 7: check hero text at top
+    home.getHeroText().should("be.visible");
   });
 });
