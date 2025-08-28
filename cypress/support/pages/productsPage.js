@@ -1,61 +1,77 @@
+// cypress/support/pages/productsPage.js
 // @ts-check
 /// <reference types="cypress" />
 
 export class ProductsPage {
+  // Action: open All Products
   visit() {
-    cy.visit("/products"); // uses baseUrl
+    cy.visit("/products");
   }
 
-  assertLoaded() {
-    // page title/heading for products
-    cy.contains(/All Products|Products/i).should("be.visible");
-    // product grid/list visible
-    cy.get(".features_items, .product-image-wrapper, .single-products").should(
-      "exist"
-    );
-  }
-
+  // Action: search term and submit
   search(term) {
-    cy.get("#search_product").clear().type(term); // type in the search field
-    cy.get("#submit_search").click(); // click the Search button
+    cy.get("#search_product").clear().type(term);
+    cy.get("#submit_search").click();
   }
 
-  assertSearchResults() {
-    cy.contains("Searched Products").should("be.visible"); // results section title
-    // ensure at least 1 visible card is returned
-    cy.get(".features_items .col-sm-4:visible")
-      .its("length")
-      .should("be.gt", 0);
+  // Getter: page heading
+  getTitle() {
+    return cy.contains(/All Products|Products/i);
   }
 
-  assertNoSearchResults() {
-    cy.contains("Searched Products").should("be.visible"); // section is displayed
-    cy.get(".features_items .col-sm-4:visible") // search result cards
-      .should("have.length", 0); // zero results
+  // Getter: products grid wrapper
+  getGrid() {
+    return cy.get(".features_items, .product-image-wrapper, .single-products");
   }
 
+  // Action: open product details by name fragment
   openDetailsByName(name) {
-    // find the card by name and click "View Product"
     cy.contains(".productinfo", new RegExp(name, "i"))
       .parents(".product-image-wrapper")
       .contains("View Product")
       .click();
   }
 
-  // Adds the FIRST visible item from the list to the cart
+  // Action: add first visible item to cart
   addFirstItemToCart() {
-    cy.get(".product-image-wrapper") // get product cards
-      .first() // first card
+    cy.get(".product-image-wrapper")
+      .first()
       .within(() => {
         cy.contains("Add to cart").click({ force: true });
       });
-
-    // confirm the “Added!” modal
-    cy.contains("Added!").should("be.visible");
   }
 
-  // From the modal that appears after Add to cart, open the cart
+  // Getter: list of product cards (0-based indexing)
+  getCards() {
+    return cy.get(".features_items .product-image-wrapper");
+  }
+
+  // Action: add item by index (0-based)
+  addItemByIndex(index) {
+    this.getCards()
+      .eq(index)
+      .within(() => {
+        cy.contains(/Add to cart/i).click({ force: true });
+      });
+  }
+
+  // Getter: "Added!" modal after adding to cart
+  getAddedModal() {
+    return cy.contains("Added!");
+  }
+
+  // Action: click "View Cart" in modal
   openCartFromModal() {
     cy.contains("View Cart").click();
+  }
+
+  // Action: click "Continue Shopping" in modal
+  clickContinueShoppingInModal() {
+    cy.contains(/Continue Shopping/i, { timeout: 10000 }).click();
+  }
+
+  // Open first product quickly
+  openFirstProduct() {
+    this.getCards().first().contains("View Product").click({ force: true });
   }
 }

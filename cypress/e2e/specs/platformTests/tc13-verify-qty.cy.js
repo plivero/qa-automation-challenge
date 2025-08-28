@@ -1,36 +1,36 @@
-// Test Case 13: Verify Product quantity in Cart
+// cypress/e2e/specs/personalTests/tc13-verify-quantity-cart.spec.cy.js
+// @ts-check
+/// <reference types="cypress" />
+
+import { ProductDetailsPage } from "../../../support/pages/productDetailsPage";
+import { CartPage } from "../../../support/pages/cartPage";
+
+const details = new ProductDetailsPage();
+const cart = new CartPage();
 
 describe("UI Platform - TC13: Verify Product quantity in Cart", () => {
   it("adds a product with quantity 4 and verifies it in cart", () => {
-    // 1–2) Launch & navigate
-    cy.visit("/");
+    // Step 1: open All Products page
+    cy.visit("/products");
 
-    // 3) Home page visible
-    cy.get('img[src="/static/images/home/logo.png"]').should("be.visible");
+    // Step 2: open the first product details
+    cy.get(".product-image-wrapper").first().contains("View Product").click();
 
-    // 4) Click 'View Product' for any product on home page
-    cy.get('a[href*="/product_details/"]').first().click({ force: true });
-
-    // 5) Product detail opened
-    cy.location("pathname").should("match", /\/product_details\/\d+/);
+    // Step 3: ensure details block is visible
     cy.get(".product-information").should("be.visible");
 
-    // 6) Increase quantity to 4
-    cy.get("#quantity").clear().type("4");
+    // Step 4: set quantity = 4
+    details.setQuantity(4);
 
-    // 7) Click 'Add to cart'
-    cy.contains("button", /Add to cart/i).click({ force: true });
+    // Step 5: add to cart from details
+    details.addToCartFromDetails();
 
-    // 8) Click 'View Cart'
-    cy.contains(/View Cart/i, { timeout: 10000 }).click();
+    // Step 6: confirm 'Added!' modal and go to cart
+    details.getAddedModal().should("be.visible");
+    details.openCartFromModal();
 
-    // 9) Verify product is in cart with exact quantity
-    cy.location("pathname").should("eq", "/view_cart");
-    cy.get(".cart_quantity")
-      .first()
-      .should(($q) => {
-        const qty = $q.text().replace(/\D/g, "");
-        expect(qty).to.eq("4");
-      });
+    // Step 7: verify we are on cart page and quantity is 4
+    cy.url().should("include", "/view_cart");
+    cart.getFirstItemQuantityCell().should("contain.text", "4");
   });
 });

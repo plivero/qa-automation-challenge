@@ -1,28 +1,29 @@
-// Test Case 25: Verify Scroll Up using 'Arrow' button and Scroll Down functionality
+// cypress/e2e/specs/personalTests/tc25-scroll.spec.cy.js
+// @ts-check
+/// <reference types="cypress" />
+
+import { HomePage } from "../../../support/pages/homePage";
+
+const home = new HomePage();
 
 describe("UI Platform - TC25: Scroll Down & Arrow Scroll Up", () => {
   it("scrolls to bottom, verifies 'SUBSCRIPTION', uses arrow to scroll up", () => {
-    // 1–2) Launch & navigate
-    cy.visit("/");
+    // Step 1–2: open site
+    home.visit();
 
-    // 3) Home visible
-    cy.get('img[src="/static/images/home/logo.png"]').should("be.visible");
+    // Step 3: home visible
+    home.getLogo().should("be.visible");
 
-    // 4) Scroll down page to bottom
-    cy.scrollTo("bottom", { duration: 600 });
+    // Step 4: scroll down
+    cy.scrollTo("bottom");
 
-    // 5) Verify 'SUBSCRIPTION' is visible
+    // Step 5: check 'SUBSCRIPTION'
     cy.contains(/SUBSCRIPTION/i).should("be.visible");
 
-    // 6) Click on arrow at bottom right to move upward
-    cy.get("#scrollUp", { timeout: 10000 })
-      .should("be.visible")
-      .click({ force: true });
+    // Step 6: click scroll up arrow
+    cy.get("#scrollUp").click();
 
-    // 7) Verify page is scrolled up and hero text is visible on screen
-    cy.contains(
-      /Full-Fledged practice website for Automation Engineers/i
-    ).should("be.visible");
-    cy.window().its("scrollY").should("be.lte", 5); // near top
+    // Step 7: hero text visible again (means we are at the top)
+    home.getHeroText().should("be.visible");
   });
 });

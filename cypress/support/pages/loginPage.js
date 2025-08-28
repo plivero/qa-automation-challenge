@@ -1,9 +1,10 @@
+// cypress/support/pages/loginPage.js
 // @ts-check
 /// <reference types="cypress" />
 
 export class LoginPage {
   visit() {
-    cy.visit("/login"); // baseUrl from cypress.config.js
+    cy.visit("/login");
   }
 
   get emailInput() {
@@ -28,17 +29,23 @@ export class LoginPage {
     this.loginWith(Cypress.env("USER_EMAIL"), Cypress.env("USER_PASSWORD"));
   }
 
-  assertOnLoginPage() {
-    cy.url().should("include", "/login");
-    cy.contains("Login to your account").should("be.visible");
+  // Generate wrong credentials internally (no inputs in spec)
+  loginWithInvalidDefaults() {
+    const email = `wrong_${Date.now()}@example.com`;
+    const password = "wrong-pass";
+    this.loginWith(email, password);
   }
 
-  assertLoginSuccess() {
-    cy.contains("Logged in as").should("be.visible");
+  getLoginPageHeader() {
+    return cy.contains("Login to your account");
   }
 
-  assertLoginError() {
-    cy.contains("Your email or password is incorrect!").should("be.visible");
+  getLoggedInLabel() {
+    return cy.contains("Logged in as");
+  }
+
+  getLoginErrorMessage() {
+    return cy.contains("Your email or password is incorrect!");
   }
 
   logout() {

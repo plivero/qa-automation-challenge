@@ -1,38 +1,61 @@
-import { ProductsPage } from "../../pages/productsPage";
+// cypress/e2e/specs/personalTests/products-search.spec.cy.js
+// @ts-check
+/// <reference types="cypress" />
+
+import { ProductsPage } from "../../../support/pages/productsPage";
 
 const products = new ProductsPage();
 
 describe("Products - Product search", () => {
   beforeEach(() => {
-    products.visit(); // open Products page directly
-    products.assertLoaded(); // ensure it loaded
+    products.visit(); // open Products page
+    products.getTitle().should("be.visible"); // heading visible
+    products.getGrid().should("exist"); // grid exists
   });
 
-  it("should find products when searching for 'dress'", () => {
+  it("finds products when searching for 'dress'", () => {
     products.search("dress");
-    products.assertSearchResults();
+    cy.contains("Searched Products").should("be.visible");
+    cy.get(".features_items .col-sm-4:visible")
+      .its("length")
+      .should("be.gt", 0);
   });
-  it("should find products when searching for 'tops'", () => {
+
+  it("finds products when searching for 'tops'", () => {
     products.search("tops");
-    products.assertSearchResults();
+    cy.contains("Searched Products").should("be.visible");
+    cy.get(".features_items .col-sm-4:visible")
+      .its("length")
+      .should("be.gt", 0);
   });
-  it("should find products when searching for 'saree'", () => {
+
+  it("finds products when searching for 'saree'", () => {
     products.search("saree");
-    products.assertSearchResults();
+    cy.contains("Searched Products").should("be.visible");
+    cy.get(".features_items .col-sm-4:visible")
+      .its("length")
+      .should("be.gt", 0);
   });
 
-  it("should find products when searching for 'jeans'", () => {
+  it("finds products when searching for 'jeans'", () => {
     products.search("jeans");
-    products.assertSearchResults();
+    cy.contains("Searched Products").should("be.visible");
+    cy.get(".features_items .col-sm-4:visible")
+      .its("length")
+      .should("be.gt", 0);
   });
 
-  it("should find products when searching for 't-shirt'", () => {
+  it("finds products when searching for 't-shirt'", () => {
     products.search("t-shirt");
-    products.assertSearchResults();
+    cy.contains("Searched Products").should("be.visible");
+    cy.get(".features_items .col-sm-4:visible")
+      .its("length")
+      .should("be.gt", 0);
   });
 
-  it.only("should show zero results when searching for a non-existing product", () => {
-    products.search("xxxxx"); // term that does not exist
-    products.assertNoSearchResults(); // robust validation (not relying on message)
+  it("shows zero results for a non-existing product", () => {
+    products.search("xxxxx");
+    cy.contains("Searched Products").should("be.visible");
+    cy.get(".features_items .col-sm-4:visible").should("have.length", 0);
   });
 });

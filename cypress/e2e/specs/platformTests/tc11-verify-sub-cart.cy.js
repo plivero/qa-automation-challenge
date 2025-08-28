@@ -1,32 +1,27 @@
-// Test Case 11: Verify Subscription in Cart page
+// cypress/e2e/specs/personalTests/tc11-subscription-cart.spec.cy.js
+// @ts-check
+/// <reference types="cypress" />
+
+import { HomePage } from "../../../support/pages/homePage";
+import { CartPage } from "../../../support/pages/cartPage";
+
+const home = new HomePage();
+const cart = new CartPage();
 
 describe("UI Platform - TC11: Subscription (cart footer)", () => {
   it("subscribes from the Cart page footer", () => {
-    const email = `sub_cart_${Date.now()}@example.com`;
+    // Step 1–3: open home and verify logo
+    home.visit();
+    home.getLogo().should("be.visible");
 
-    // 1–3) Launch & verify home
-    cy.visit("/");
-    cy.get('img[src="/static/images/home/logo.png"]', {
-      timeout: 10000,
-    }).should("be.visible");
+    // Step 4–5: go to Cart page
+    cart.visit();
+    cy.url().should("include", "/view_cart");
 
-    // 4) Click 'Cart' button
-    cy.get('a[href="/view_cart"]').first().click({ force: true });
+    // Step 6–7: subscribe via footer (USER_EMAIL from env)
+    home.subscribeFooterWithDefaults();
 
-    // 5) Scroll down to footer
-    cy.location("pathname", { timeout: 10000 }).should("eq", "/view_cart");
-    cy.scrollTo("bottom");
-
-    // 6) Verify text 'SUBSCRIPTION'
-    cy.contains(/SUBSCRIPTION/i, { timeout: 10000 }).should("be.visible");
-
-    // 7) Enter email and click arrow button
-    cy.get("#susbscribe_email").clear().type(email); // site id typo: 'susbscribe'
-    cy.get("#subscribe").click({ force: true });
-
-    // 8) Verify success message
-    cy.contains("You have been successfully subscribed!", {
-      timeout: 10000,
-    }).should("be.visible");
+    // Step 8: success message visible
+    home.getSubscriptionSuccessMessage().should("be.visible");
   });
 });

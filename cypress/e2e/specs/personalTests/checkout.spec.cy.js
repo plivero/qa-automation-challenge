@@ -1,13 +1,19 @@
+// cypress/e2e/specs/personalTests/checkout-flow.spec.cy.js
 // @ts-check
 /// <reference types="cypress" />
 
-import { ProductsPage } from "../../pages/productsPage";
-import { CartPage } from "../../pages/cartPage";
-import { LoginPage } from "../../pages/loginPage";
+import { ProductsPage } from "../../../support/pages/productsPage";
+import { CartPage } from "../../../support/pages/cartPage";
+import { LoginPage } from "../../../support/pages/loginPage";
+import { CheckoutPage } from "../../../support/pages/checkoutPage";
+import { PaymentPage } from "../../../support/pages/paymentPage";
+import { buildAccountPayload } from "../../../support/factories/userFactory";
 
 const products = new ProductsPage();
 const cart = new CartPage();
 const login = new LoginPage();
+const checkout = new CheckoutPage();
+const payment = new PaymentPage();
 
 describe("Checkout Flow", () => {
   describe("Guest Checkout", () => {
@@ -17,23 +23,22 @@ describe("Checkout Flow", () => {
     });
 
     it("redirects guest to Login when proceeding to checkout", () => {
-      // add item
       products.visit();
       products.addFirstItemToCart();
+      products.getAddedModal().should("be.visible");
       products.openCartFromModal();
 
-      // checkout
-      cart.assertLoaded();
-      cart.assertHasItems(1);
-      cart.proceedToCheckout(); // click with {force: true} in POM
+      cy.url().should("include", "/view_cart");
+      cart.getHeader().should("be.visible");
+      cart.getVisibleRows().its("length").should("be.gte", 1);
 
-      // the page shows a LINK "Register / Login" -> click it
+      cart.proceedToCheckout();
+
       cy.contains("a", /Register \/ Login/i)
         .should("be.visible")
         .click();
-
-      // now we are on the login page
-      login.assertOnLoginPage();
+      cy.url().should("include", "/login");
+      login.getLoginPageHeader().should("be.visible");
     });
   });
 
@@ -42,45 +47,67 @@ describe("Checkout Flow", () => {
       cy.clearCookies();
       cy.clearLocalStorage();
 
-      // login using credentials from cypress.env.json
+      // --- Ensure user exists (tiny precondition) ---
+      const email = Cypress.env("USER_EMAIL");
+      const password = Cypress.env("USER_PASSWORD");
+
+      // 1) try verifyLogin
+      cy.request({
+        method: "POST",
+        url: "/api/verifyLogin",
+        form: true,
+        body: { email, password },
+        failOnStatusCode: false,
+      }).then(({ status, body }) => {
+        const data = JSON.parse(body);
+        const ok = status === 200 && data.message === "User exists!";
+
+        if (!ok) {
+          // 2) create account with the same email/password from env
+          const payload = buildAccountPayload({ email, password });
+          cy.request({
+            method: "POST",
+            url: "/api/createAccount",
+            form: true,
+            body: payload,
+            failOnStatusCode: false,
+          });
+        }
+      });
+
+      // 3) go to login page and log in
       login.visit();
-      login.assertOnLoginPage();
-      // use existing method (there is no fillLogin)
-      login.loginWith(Cypress.env("USER_EMAIL"), Cypress.env("USER_PASSWORD"));
-      login.assertLoginSuccess();
+      cy.url().should("include", "/login");
+      login.getLoginPageHeader().should("be.visible");
+      login.loginWith(email, password);
+      // "Logged in as" checado na navbar
+      cy.contains(/Logged in as/i).should("be.visible");
     });
 
     it("completes checkout and shows success message", () => {
-      // add item
+      // actions
       products.visit();
       products.addFirstItemToCart();
+      products.getAddedModal().should("be.visible");
       products.openCartFromModal();
 
+      // asserts cart
+      cy.url().should("include", "/view_cart");
+      cart.getHeader().should("be.visible");
+      cart.getVisibleRows().its("length").should("be.gte", 1);
+
       // checkout
-      cart.assertLoaded();
-      cart.assertHasItems(1);
       cart.proceedToCheckout();
+      checkout.addOrderComment("Automated test order.");
+      checkout.getCheckoutContainer().should("be.visible");
+      checkout.clickPlaceOrder();
 
-      // optional: comment
-      cy.get('textarea[name="message"]').type("Automated test order.");
-
-      // place order
-      cy.contains(/place order/i).click();
-
-      // payment (fields on payment page)
-      cy.get('[data-qa="name-on-card"]').type(
-        Cypress.env("USER_NAME") || "QA User"
-      );
-      cy.get('[data-qa="card-number"]').type("4111111111111111");
-      cy.get('[data-qa="cvc"]').type("123");
-      cy.get('[data-qa="expiry-month"]').type("12");
-      cy.get('[data-qa="expiry-year"]').type("2030");
-      cy.contains(/pay and confirm order/i).click();
+      // pay
+      payment.getPaymentContainer().should("be.visible");
+      payment.payWithDefaults();
 
       // success
-      cy.contains(/order has been confirmed/i, { timeout: 10000 }).should(
-        "be.visible"
-      );
+      checkout.getOrderSuccessMessage().should("be.visible");
     });
   });
 });

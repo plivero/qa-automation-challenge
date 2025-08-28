@@ -1,38 +1,39 @@
-// Test Case 3: Login User with incorrect email and password
+// cypress/e2e/specs/personalTests/tc3-login-invalid.spec.cy.js
+// @ts-check
+/// <reference types="cypress" />
 
-describe("UI Platform - TC3: Login with incorrect credentials", () => {
+import { HomePage } from "../../../support/pages/homePage";
+import { LoginPage } from "../../../support/pages/loginPage";
+
+const home = new HomePage();
+const login = new LoginPage();
+
+describe("UI Platform - TC3: Login with incorrect email and password", () => {
   beforeEach(() => {
     cy.clearCookies();
     cy.clearLocalStorage();
   });
 
   it("shows an error when email and password are incorrect", () => {
-    // 1–2) Launch & navigate
-    cy.visit("/");
+    // Step 1: Launch browser (Cypress already handles)
 
-    // 3) Verify that home page is visible successfully
-    cy.get('img[src="/static/images/home/logo.png"]', {
-      timeout: 10000,
-    }).should("be.visible");
+    // Step 2: Navigate to url 'http://automationexercise.com'
+    home.visit();
 
-    // 4) Click on 'Signup / Login' button
-    cy.contains("Signup / Login").click();
+    // Step 3: Verify that home page is visible successfully
+    home.getLogo().should("be.visible");
 
-    // 5) Verify 'Login to your account' is visible
-    cy.contains("Login to your account").should("be.visible");
+    // Step 4: Click on 'Signup / Login' button
+    home.getNavMenuItem("Signup / Login").click();
 
-    // 6) Enter incorrect email address and password
-    cy.get('[data-qa="login-email"]')
-      .clear()
-      .type(`wrong_${Date.now()}@example.com`);
-    cy.get('[data-qa="login-password"]')
-      .clear()
-      .type("wrong-pass", { log: false });
+    // Step 5: Verify 'Login to your account' is visible
+    login.getLoginPageHeader().should("be.visible");
 
-    // 7) Click 'login' button
-    cy.get('[data-qa="login-button"]').click();
+    // Step 6 + 7: Enter incorrect email/password and click 'login'
+    // (PO generates wrong creds and clicks the button)
+    login.loginWithInvalidDefaults();
 
-    // 8) Verify error 'Your email or password is incorrect!' is visible
-    cy.contains("Your email or password is incorrect!").should("be.visible");
+    // Step 8: Verify error 'Your email or password is incorrect!' is visible
+    login.getLoginErrorMessage().should("be.visible");
   });
 });
