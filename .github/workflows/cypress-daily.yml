@@ -1,13 +1,18 @@
-name: AutoTests (daily scheduled)
+name: AutoTests (daily cross-browsers)
 
 on:
   schedule:
-    # Run every day at 12:00 UTC
-    - cron: "0 12 * * *"
+    - cron: "0 12 * * *" # 12:00 UTC
 
 jobs:
-  run-cypress:
+  cypress-run:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chrome, edge, firefox]
+
+    container: cypress/browsers:node-22.0.0-chrome-131.0.0-edge-131.0.0-firefox-133.0.0
 
     env:
       CYPRESS_USER_EMAIL: ${{ secrets.CYPRESS_USER_EMAIL }}
@@ -15,19 +20,16 @@ jobs:
       CYPRESS_USER_NAME: ${{ secrets.CYPRESS_USER_NAME }}
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-
-      - name: Install dependencies
+      - name: Install deps
         run: npm ci
 
-      - name: Run Cypress (Chrome)
+      - name: Run Cypress (${{ matrix.browser }})
         run: |
-          echo "Running scheduled daily tests on Chrome"
-          npx cypress run --browser chrome --headless --spec "cypress/e2e/**/*.cy.js"
+          echo "Running daily tests on ${{ matrix.browser }}"
+          npx cypress run \
+            --browser ${{ matrix.browser }} \
+            --headless \
+            --spec "cypress/e2e/**/*.cy.js"
