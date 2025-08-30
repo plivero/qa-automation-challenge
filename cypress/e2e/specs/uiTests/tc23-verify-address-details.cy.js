@@ -1,11 +1,11 @@
 /// <reference types="cypress" />
 
-import { SignupPage } from "../../../../support/pages/signupPage";
-import { AccountInfoPage } from "../../../../support/pages/accountInfoPage";
-import { AccountStatusPage } from "../../../../support/pages/accountStatusPage";
-import { ProductsPage } from "../../../../support/pages/productsPage";
-import { CartPage } from "../../../../support/pages/cartPage";
-import { AddressPage } from "../../../../support/pages/addressPage";
+import { SignupPage } from "../../../support/pages/signupPage";
+import { AccountInfoPage } from "../../../support/pages/accountInfoPage";
+import { AccountStatusPage } from "../../../support/pages/accountStatusPage";
+import { ProductsPage } from "../../../support/pages/productsPage";
+import { CartPage } from "../../../support/pages/cartPage";
+import { AddressPage } from "../../../support/pages/addressPage";
 
 const signup = new SignupPage();
 const info = new AccountInfoPage();

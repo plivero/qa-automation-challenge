@@ -1,8 +1,8 @@
 /// <reference types="cypress" />
 
-import { HomePage } from "../../../../support/pages/homePage";
-import { LoginPage } from "../../../../support/pages/loginPage";
-import { UserApiPage } from "../../../../support/pages/userApiPage";
+import { HomePage } from "../../../support/pages/homePage";
+import { LoginPage } from "../../../support/pages/loginPage";
+import { UserApiPage } from "../../../support/pages/userApiPage";
 
 const home = new HomePage();
 const login = new LoginPage();

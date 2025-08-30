@@ -1,12 +1,12 @@
 /// <reference types="cypress" />
 
-import { ProductsPage } from "../../../../support/pages/productsPage";
-import { CartPage } from "../../../../support/pages/cartPage";
-import { SignupPage } from "../../../../support/pages/signupPage";
-import { AccountInfoPage } from "../../../../support/pages/accountInfoPage";
-import { AccountStatusPage } from "../../../../support/pages/accountStatusPage";
-import { CheckoutPage } from "../../../../support/pages/checkoutPage";
-import { PaymentPage } from "../../../../support/pages/paymentPage";
+import { ProductsPage } from "../../../support/pages/productsPage";
+import { CartPage } from "../../../support/pages/cartPage";
+import { SignupPage } from "../../../support/pages/signupPage";
+import { AccountInfoPage } from "../../../support/pages/accountInfoPage";
+import { AccountStatusPage } from "../../../support/pages/accountStatusPage";
+import { CheckoutPage } from "../../../support/pages/checkoutPage";
+import { PaymentPage } from "../../../support/pages/paymentPage";
 
 const products = new ProductsPage();
 const cart = new CartPage();
@@ -30,6 +30,7 @@ describe("UI Platform - TC14: Place Order (register during checkout)", () => {
     // Step 3: go to cart
     products.openCartFromModal();
     cy.url().should("include", "/view_cart");
+    cart.getVisibleRows().its("length").should("be.gte", 1);
 
     // Step 4: proceed to checkout (this opens the modal)
     cart.proceedToCheckout();

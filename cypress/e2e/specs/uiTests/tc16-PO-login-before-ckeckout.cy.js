@@ -1,12 +1,12 @@
 /// <reference types="cypress" />
 
-import { HomePage } from "../../../../support/pages/homePage";
-import { LoginPage } from "../../../../support/pages/loginPage";
-import { ProductsPage } from "../../../../support/pages/productsPage";
-import { CartPage } from "../../../../support/pages/cartPage";
-import { CheckoutPage } from "../../../../support/pages/checkoutPage";
-import { PaymentPage } from "../../../../support/pages/paymentPage";
-import { AccountStatusPage } from "../../../../support/pages/accountStatusPage";
+import { HomePage } from "../../../support/pages/homePage";
+import { LoginPage } from "../../../support/pages/loginPage";
+import { ProductsPage } from "../../../support/pages/productsPage";
+import { CartPage } from "../../../support/pages/cartPage";
+import { CheckoutPage } from "../../../support/pages/checkoutPage";
+import { PaymentPage } from "../../../support/pages/paymentPage";
+import { AccountStatusPage } from "../../../support/pages/accountStatusPage";
 
 const home = new HomePage();
 const login = new LoginPage();

@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
-import { RecommendedPage } from "../../../../support/pages/recommendedPage";
-import { CartPage } from "../../../../support/pages/cartPage";
+import { RecommendedPage } from "../../../support/pages/recommendedPage";
+import { CartPage } from "../../../support/pages/cartPage";
 
 const recommended = new RecommendedPage();
 const cart = new CartPage();

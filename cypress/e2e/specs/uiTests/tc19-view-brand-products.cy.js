@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
-import { ProductsPage } from "../../../../support/pages/productsPage";
-import { BrandsSidebar } from "../../../../support/pages/brandsPage";
+import { ProductsPage } from "../../../support/pages/productsPage";
+import { BrandsSidebar } from "../../../support/pages/brandsPage";
 
 const products = new ProductsPage();
 const brands = new BrandsSidebar();
