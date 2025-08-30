@@ -65,7 +65,7 @@ export class ContactUsPage {
     this.submit();
   }
 
-  // helper encapsulating step 11
+  // Helper encapsulating step 11
   goBackHomeAndVerify() {
     cy.contains("Home").click();
     cy.title().should("eq", "Automation Exercise");

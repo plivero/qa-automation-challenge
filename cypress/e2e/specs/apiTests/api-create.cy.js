@@ -2,7 +2,7 @@
 import { buildAccountPayload } from "../../../support/factories/userFactory";
 
 describe("API create - Create Account", () => {
-  it("cria uma nova conta", () => {
+  it("Create new account", () => {
     const payload = buildAccountPayload();
 
     cy.request({
@@ -18,10 +18,9 @@ describe("API create - Create Account", () => {
     });
   });
 
-  it("não permite criar conta com e-mail já existente", () => {
+  it("do not allow to create with an existing email", () => {
     const payload = buildAccountPayload();
 
-    // Setup: cria a conta uma vez
     cy.request({
       method: "POST",
       url: "/api/createAccount",

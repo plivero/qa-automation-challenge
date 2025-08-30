@@ -2,6 +2,8 @@
 // @ts-check
 /// <reference types="cypress" />
 
+import { faker } from "@faker-js/faker";
+
 export class LoginPage {
   visit() {
     cy.visit("/login");
@@ -29,10 +31,10 @@ export class LoginPage {
     this.loginWith(Cypress.env("USER_EMAIL"), Cypress.env("USER_PASSWORD"));
   }
 
-  // Generate wrong credentials internally (no inputs in spec)
+  // Generate wrong credentials internally using faker
   loginWithInvalidDefaults() {
-    const email = `wrong_${Date.now()}@example.com`;
-    const password = "wrong-pass";
+    const email = faker.internet.email();
+    const password = faker.internet.password();
     this.loginWith(email, password);
   }
 
