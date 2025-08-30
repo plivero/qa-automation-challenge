@@ -5,7 +5,7 @@ describe("API - Product List", () => {
       expect(status).to.eq(200);
 
       // Normalize body: API sometimes returns JSON as a string
-      const data = typeof body === "string" ? JSON.parse(body) : body || {};
+      const data = JSON.parse(body);
 
       // Assert products array exists and has at least one item
       expect(data)
