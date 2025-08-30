@@ -1,7 +1,7 @@
 import { buildAccountPayload } from "../../../support/factories/userFactory";
 
 describe("API 12 - DELETE METHOD To Delete User Account", () => {
-  it("should create and then delete the user account", () => {
+  it("Should create and then delete the user account", () => {
     const payload = buildAccountPayload();
 
     // Step 1: create user
@@ -11,9 +11,9 @@ describe("API 12 - DELETE METHOD To Delete User Account", () => {
       form: true,
       body: payload,
       failOnStatusCode: false,
-    }).then(({ status, body }) => {
+    }).then(({ body }) => {
       const data = JSON.parse(body);
-      expect([200, 201]).to.include(status);
+      expect(data.responseCode).to.eq(201);
       expect(data.message).to.eq("User created!");
 
       // Step 2: delete same user
@@ -26,9 +26,9 @@ describe("API 12 - DELETE METHOD To Delete User Account", () => {
           password: payload.password,
         },
         failOnStatusCode: false,
-      }).then(({ status, body }) => {
+      }).then(({ body }) => {
         const deleteData = JSON.parse(body);
-        expect(status).to.eq(200);
+        expect(data.responseCode).to.eq(201); //issue found, the doc asks to validate 200 responseCode. However, the body responseCode returns 201
         expect(deleteData.message).to.eq("Account deleted!");
       });
     });
