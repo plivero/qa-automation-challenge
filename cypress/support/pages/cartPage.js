@@ -3,7 +3,6 @@
 /// <reference types="cypress" />
 
 export class CartPage {
-  // Action: open cart page
   visit() {
     cy.visit("/view_cart");
   }

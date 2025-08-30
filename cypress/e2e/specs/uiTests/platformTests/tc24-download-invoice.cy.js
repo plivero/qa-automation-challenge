@@ -19,7 +19,7 @@ const checkout = new CheckoutPage();
 const payment = new PaymentPage();
 
 describe("UI Platform - TC24: Download Invoice after purchase order", () => {
-  it("completes order and downloads invoice (passo a passo)", () => {
+  it("completes order and downloads invoice", () => {
     // Step 1–2: abrir site (baseUrl)
     home.visit();
 
