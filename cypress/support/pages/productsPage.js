@@ -74,4 +74,31 @@ export class ProductsPage {
   openFirstProduct() {
     this.getCards().first().contains("View Product").click({ force: true });
   }
+
+  // ------------------------------
+  // Predefined searches (added)
+  // ------------------------------
+  searchDress() {
+    this.search("dress");
+  }
+
+  searchTops() {
+    this.search("tops");
+  }
+
+  searchSaree() {
+    this.search("saree");
+  }
+
+  searchJeans() {
+    this.search("jeans");
+  }
+
+  searchTshirt() {
+    this.search("t-shirt");
+  }
+
+  searchInvalid() {
+    this.search("xxxxx");
+  }
 }

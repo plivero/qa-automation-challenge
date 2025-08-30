@@ -1,9 +1,9 @@
 /// <reference types="cypress" />
 
-import { HomePage } from "../../../../support/pages/homePage";
-import { LoginPage } from "../../../../support/pages/loginPage";
-import { AccountStatusPage } from "../../../../support/pages/accountStatusPage";
-import { buildAccountPayload } from "../../../../support/factories/userFactory";
+import { HomePage } from "../../../support/pages/homePage";
+import { LoginPage } from "../../../support/pages/loginPage";
+import { AccountStatusPage } from "../../../support/pages/accountStatusPage";
+import { buildAccountPayload } from "../../../support/factories/userFactory";
 
 const home = new HomePage();
 const login = new LoginPage();

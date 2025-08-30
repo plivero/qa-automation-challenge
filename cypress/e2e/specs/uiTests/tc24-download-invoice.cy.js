@@ -1,13 +1,13 @@
 /// <reference types="cypress" />
 
-import { HomePage } from "../../../../support/pages/homePage";
-import { ProductsPage } from "../../../../support/pages/productsPage";
-import { CartPage } from "../../../../support/pages/cartPage";
-import { SignupPage } from "../../../../support/pages/signupPage";
-import { AccountInfoPage } from "../../../../support/pages/accountInfoPage";
-import { AccountStatusPage } from "../../../../support/pages/accountStatusPage";
-import { CheckoutPage } from "../../../../support/pages/checkoutPage";
-import { PaymentPage } from "../../../../support/pages/paymentPage";
+import { HomePage } from "../../../support/pages/homePage";
+import { ProductsPage } from "../../../support/pages/productsPage";
+import { CartPage } from "../../../support/pages/cartPage";
+import { SignupPage } from "../../../support/pages/signupPage";
+import { AccountInfoPage } from "../../../support/pages/accountInfoPage";
+import { AccountStatusPage } from "../../../support/pages/accountStatusPage";
+import { CheckoutPage } from "../../../support/pages/checkoutPage";
+import { PaymentPage } from "../../../support/pages/paymentPage";
 
 const home = new HomePage();
 const products = new ProductsPage();

@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-import { CategoriesSidebar } from "../../../../support/pages/categoriesPage";
+import { CategoriesSidebar } from "../../../support/pages/categoriesPage";
 
 const cats = new CategoriesSidebar();
 

@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
-import { HomePage } from "../../../../support/pages/homePage";
-import { ContactUsPage } from "../../../../support/pages/contactUsPage";
+import { HomePage } from "../../../support/pages/homePage";
+import { ContactUsPage } from "../../../support/pages/contactUsPage";
 
 const home = new HomePage();
 const contact = new ContactUsPage();

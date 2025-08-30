@@ -1,9 +1,9 @@
 /// <reference types="cypress" />
 
-import { ProductsPage } from "../../../../support/pages/productsPage";
-import { CartPage } from "../../../../support/pages/cartPage";
-import { LoginPage } from "../../../../support/pages/loginPage";
-import { HomePage } from "../../../../support/pages/homePage";
+import { ProductsPage } from "../../../support/pages/productsPage";
+import { CartPage } from "../../../support/pages/cartPage";
+import { LoginPage } from "../../../support/pages/loginPage";
+import { HomePage } from "../../../support/pages/homePage";
 
 const products = new ProductsPage();
 const cart = new CartPage();
