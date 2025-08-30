@@ -4,7 +4,7 @@ import {
 } from "../../../support/factories/userFactory";
 
 describe("API 13 - PUT METHOD To Update User Account", () => {
-  it("should create and then update the user account (fresh faker values)", () => {
+  it("Should create and then update the user account (fresh faker values)", () => {
     const payload = buildAccountPayload();
 
     // Step 1: create user
@@ -13,10 +13,10 @@ describe("API 13 - PUT METHOD To Update User Account", () => {
       url: "/api/createAccount",
       form: true,
       body: payload,
-      failOnStatusCode: false, // site may return 200 or 201
-    }).then(({ status, body }) => {
+      failOnStatusCode: false,
+    }).then(({ body }) => {
       const data = JSON.parse(body);
-      expect([200, 201]).to.include(status);
+      expect(data.responseCode).to.eq(201);
       expect(data.message).to.eq("User created!");
 
       // Step 2: update user with new faker data (same email/password)
@@ -28,9 +28,9 @@ describe("API 13 - PUT METHOD To Update User Account", () => {
         form: true,
         body: updatedPayload,
         failOnStatusCode: false,
-      }).then(({ status, body }) => {
+      }).then(({ body }) => {
         const upd = JSON.parse(body);
-        expect(status).to.eq(200);
+        expect(upd.responseCode).to.eq(200); // responseCode from body returns 200
         expect(upd.message).to.eq("User updated!");
       });
     });

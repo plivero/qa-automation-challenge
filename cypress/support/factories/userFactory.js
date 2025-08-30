@@ -3,7 +3,7 @@ import { faker } from "@faker-js/faker";
 export function buildAccountPayload(overrides = {}) {
   return {
     name: faker.person.fullName(),
-    email: faker.internet.email(), // garante email único
+    email: faker.internet.email(),
     password: faker.internet.password(),
     title: "Mr",
     birth_date: faker.number.int({ min: 1, max: 28 }).toString(),
@@ -31,3 +31,14 @@ export function buildUpdatedPayload(original) {
     password: original.password, // keep same password
   };
 }
+export const searchTerms = {
+  valid: "top",
+  anotherValid: "dress",
+  invalid: "xxxxx",
+};
+
+// Invalid credentials (for negative login scenarios)
+export const invalidCredentials = {
+  email: faker.internet.email(),
+  password: faker.internet.password(),
+};

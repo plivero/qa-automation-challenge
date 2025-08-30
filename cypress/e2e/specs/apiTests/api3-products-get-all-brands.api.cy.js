@@ -1,9 +1,9 @@
 describe("API 3 - GET All Brands List", () => {
-  it("should return 200 and a list of brands", () => {
-    cy.request("GET", "/api/brandsList").then(({ status, body }) => {
-      const data = typeof body === "string" ? JSON.parse(body) : body || {};
+  it("Should return 200 and a list of brands", () => {
+    cy.request("GET", "/api/brandsList").then(({ body }) => {
+      const data = JSON.parse(body);
 
-      expect(status).to.eq(200);
+      expect(data.responseCode).to.eq(200);
       expect(data).to.have.property("brands").that.is.an("array").and.not.empty;
     });
   });
