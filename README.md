@@ -11,9 +11,11 @@ This repository contains an automated test suite designed for both **UI** and **
 The main goals of this project are:
 
 - Provide a **realistic QA automation setup** using Cypress with a **Page Object Model (POM)** approach.
+- Ensure **test data variability** with **faker-js** to generate dynamic users and inputs.
+- Keep tests **clean and maintainable** by refactoring duplicates into consolidated scenarios.
 - Ensure **code quality and consistency** through ESLint and semantic commits.
 - Demonstrate **continuous integration** with GitHub Actions workflows (manual, scheduled, and cross-browser).
-- Keep the structure **scalable and maintainable**, separating API tests, platform tests, and personal practice scenarios.
+- Keep the structure **scalable**, separating API tests, UI platform tests, and exploratory edge cases.
 
 ---
 
@@ -22,28 +24,27 @@ The main goals of this project are:
 ```
 qa-automation-challenge/
 ├─ .github/
-│  └─ workflows/ # GitHub Actions workflows
-│     ├─ cypress-browsers.yml
-│     ├─ cypress-daily.yml
-│     └─ cypress-manual.yml
+│ └─ workflows/ # GitHub Actions workflows
+│ ├─ cypress-browsers.yml # Cross-browser matrix (Chrome, Edge, Firefox)
+│ ├─ cypress-daily.yml # Scheduled daily run
+│ └─ cypress-manual.yml # Manual trigger (Chrome)
 ├─ cypress/
-│  ├─ e2e/
-│  │  ├─ pages/               # Page Objects for UI tests
-│  │  └─ specs/
-│  │     ├─ api/              # API test specs
-│  │     ├─ personalTests/    # Personal and practice scenarios
-│  │     └─ platformTests/    # Official tests based on site exercises
-│  ├─ fixtures/
-│  │  └─ example.json         # Sample fixture data
-│  ├─ support/
-│  │  ├─ commands.js          # Custom Cypress commands
-│  │  └─ e2e.js               # Global test configuration
-│  └─ screenshots/            # Local artifacts (ignored in git)
-├─ node_modules/
+│ ├─ downloads/ # Downloaded files (ignored in git)
+│ ├─ e2e/
+│ │ ├─ specs/
+│ │ │ ├─ apiTests/ # API test specs
+│ │ │ └─ uiTests/ # UI test specs (platform-based TCs)
+│ │ └─ fixtures/ # Fixture data
+│ ├─ screenshots/ # Local artifacts (ignored in git)
+│ ├─ support/
+│ │ ├─ factories/ # Factories for test data (faker-js)
+│ │ ├─ pages/ # Page Objects
+│ │ ├─ commands.js # Custom Cypress commands
+│ │ └─ e2e.js # Global configuration
 ├─ .gitattributes
 ├─ .gitignore
 ├─ cypress.config.js
-├─ cypress.env.json           # Local environment variables (gitignored)
+├─ cypress.env.json # Local environment variables (gitignored)
 ├─ eslint.config.mjs
 ├─ package.json
 ├─ package-lock.json
@@ -56,29 +57,38 @@ Note: This structure reflects the current state of the repository. Some folders 
 
 ## Best Practices
 
-- **Page Object Model (POM)**: all UI interactions are encapsulated in `cypress/e2e/pages/`, improving test readability and maintainability.
-- **ESLint enforced**: code style is validated via `eslint.config.mjs`, with LF line endings enforced by `.gitattributes` to ensure cross-platform consistency.
-- **Semantic commits**: follow [Conventional Commits](https://www.conventionalcommits.org/).
-- **Branch strategy**: one branch per activity/feature (e.g., `feat/ui-tests`, `feat/api-tests`, `docs/readme`).
-- **Pull Requests required**: all changes are merged into `main` through PRs, ensuring review and clean history.
+- **Page Object Model (POM):** all UI interactions encapsulated under `cypress/support/pages/`.
+- **faker-js:** dynamic and unique data generation for account creation, logins, and other flows.
+- **Semantic commits:** follow [Conventional Commits](https://www.conventionalcommits.org/).
+- **Code style enforced with ESLint:** consistent rules defined in `eslint.config.mjs`.
+- **Refactor-first approach:** redundant personal specs consolidated into platform tests (e.g., add-to-cart, login/logout, product search).
+- **CI-ready:** tests are stable for headless and cross-browser runs.
 
 ---
 
 ## Completed Activities
 
-| Step | Description                                                              | Branch               |
-| ---- | ------------------------------------------------------------------------ | -------------------- |
-| 1    | Project initialized with npm                                             | `feat/init-project`  |
-| 2    | ESLint configured                                                        | `feat/eslint`        |
-| 3    | Cypress installed and initialized                                        | `feat/ui-tests`      |
-| 4    | UI tests added (basic and session flows)                                 | `feat/ui-tests`      |
-| 5    | Platform tests added (TC1–TC26: register/login, products, cart, orders…) | `feat/ui-plat-tests` |
-| 6    | API tests added (APIs 1–14: products, brands, search, user account)      | `feat/api-tests`     |
-| 7    | Manual GitHub Actions workflow for Cypress                               | `feat/pipeline`      |
-| 8    | Test case fixes and adjustments                                          | `feat/tcFixes`       |
-| 9    | Documentation and text fixes                                             | `feat/textFixes`     |
-| 10   | General fixes and improvements                                           | `feat/fixes`         |
-| 11   | README documentation                                                     | `docs/readme`        |
+| Step | Description                                                              | Branch                 |
+| ---- | ------------------------------------------------------------------------ | ---------------------- |
+| 1    | Project initialized with npm                                             | `feat/init-project`    |
+| 2    | ESLint configured                                                        | `feat/eslint`          |
+| 3    | Cypress installed and initialized                                        | `feat/ui-tests`        |
+| 4    | UI tests added (basic and session flows)                                 | `feat/ui-tests`        |
+| 5    | Platform tests added (TC1–TC26: register/login, products, cart, orders…) | `feat/ui-plat-tests`   |
+| 6    | API tests added (APIs 1–14: products, brands, search, user account)      | `feat/api-tests`       |
+| 7    | Manual GitHub Actions workflow for Cypress                               | `feat/pipeline`        |
+| 8    | Test case fixes and adjustments                                          | `feat/tcFixes`         |
+| 9    | Documentation and text fixes                                             | `feat/textFixes`       |
+| 10   | General fixes and improvements                                           | `feat/fixes`           |
+| 11   | README documentation                                                     | `docs/readme`          |
+| 12   | Faker added for dynamic test data                                        | `feat/faker`           |
+| 13   | Refactor (API): simplify API specs, enforce strict status checks         | `refactor/api`         |
+| 14   | UI test improvements                                                     | `feat/ui-tests-improv` |
+| 15   | Refactor (Tests): created `uiTests` folder and renamed old `api` folder  | `chore/tests`          |
+| 16   | Refactor (Pipeline): unify workflows with matrix and Docker container    | `refactor/pipeline`    |
+| 17   | Refactor (API): remove acceptance of 201 response code in first API test | `refactor/api`         |
+| 18   | Refactor (PageObject): remove conditions and syntax pollution            | `refactor/pageObject`  |
+| 19   | Refactor (uiTests): remove duplicated personal specs into platform tests | `refactor/uiTests`     |
 
 ---
 
@@ -127,20 +137,28 @@ Cypress uses environment variables to keep sensitive data (such as login credent
 
 ### Rationale & Principles
 
-The suite was designed using **Risk-Based Testing** and aligned with the **Testing Pyramid**.  
-Priority was given to flows and endpoints with higher impact and known instability (e.g., user account creation/login and API endpoints with inconsistent status/format). Whenever feasible, validations were implemented at the **API level** for faster and more stable feedback, while **UI E2E** covers end-to-end user value.
+The suite was designed using Risk-Based Testing and aligned with the Testing Pyramid.
+Priority was given to flows and endpoints with higher impact and known instability (e.g., user account creation/login and API endpoints with inconsistent status/format). Whenever feasible, validations were implemented at the API level for faster and more stable feedback, while UI E2E covers end-to-end user value.
 
-**Why these tests**
+### Why these tests
 
-- Cover **business-critical** paths first (account lifecycle: ensure user → login) and **high-usage** flows (product listing/details/search, cart, checkout-like behaviors present in the platform cases).
-- Address **known risks**: API flakiness (status codes 200 vs 4xx/405), body returned as **string** instead of JSON, and intermittent UI behavior.
-- Provide **idempotent** executions: tests create a user **only if not existing** and proceed otherwise, enabling safe reruns in CI without brittle cleanup.
+- Cover **business-critical paths first** (account lifecycle: signup → login/logout) and **high-usage flows** (product listing/details/search, cart operations, checkout-like flows defined in the platform test cases).
+- Address **known risks**: API flakiness (always returning status 200 instead of 4xx/405), body returned as **string** instead of JSON, and intermittent UI behaviors.
+- Provide **idempotent executions**: tests create a user **only if not existing** and proceed otherwise, enabling safe reruns in CI without brittle cleanup.
+- Ensure **cross-browser reliability**, running the suite in **Chrome, Firefox, and Edge**, including Dockerized containers in GitHub Actions to validate consistency in multiple environments.
 
-**Test design concepts used**
+### Test design concepts used
 
-- **Positive/Negative/Edge cases** for both UI and API (e.g., valid/invalid search terms, missing parameters, boundary values like empty vs. long inputs).
-- **Equivalence Partitioning & Boundary Value Analysis** to keep the set lean while probing meaningful input classes and limits.
-- **Stability techniques** to reduce flakiness: assertion-driven waits, resilient selectors, tolerant assertions for documented API inconsistencies, and defensive body parsing.
+- Positive/Negative/Edge cases for both UI and API (valid vs. invalid search terms, existing vs. non-existing users, cart with items vs. empty cart).
+- Equivalence Partitioning & Boundary Value Analysis to reduce duplication while probing relevant input classes and edge conditions (e.g., missing mandatory fields, maximum field length).
+- Dynamic test data with faker-js: all user inputs (names, emails, passwords, addresses, phone numbers) are generated dynamically. This ensures uniqueness per execution and avoids brittle tests blocked by reused data.
+- Reusability & Maintainability: test interactions centralized in **Page Objects** (`ProductsPage`, `CartPage`, `LoginPage`, `AccountInfoPage`, etc.), reducing duplication and making flows consistent across specs.
+- Stability techniques: assertion-driven waits, resilient selectors, defensive parsing for API responses, and tolerant assertions where the application exhibits known inconsistencies.
+- Edge cases (progressively expanding):
+  - Non-existent products in search
+  - Invalid login attempts
+  - Maximum allowed characters in form fields
+  - Submitting required forms with missing inputs
 
 ---
 
@@ -164,7 +182,7 @@ Priority was given to flows and endpoints with higher impact and known instabili
 - `failOnStatusCode: false` to capture **inconsistent status codes** and assert on either HTTP status **or** payload fields when the server returns `200` with `{ responseCode: 4xx/405 }`.
 - Conditional parsing when `res.body` comes as **string**:
   ```js
-  const data = typeof res.body === "string" ? JSON.parse(res.body) : res.body;
+  const data = JSON.parse(body);
   ```
 - Idempotent user workflow: **create if missing**, **confirm if existing**, then proceed to update/verify; allows **safe reruns** without manual reset.
 
@@ -212,22 +230,20 @@ Priority was given to flows and endpoints with higher impact and known instabili
 
 ## CI Pipelines (GitHub Actions)
 
-This project provides three GitHub Actions workflows under `.github/workflows/`:
+This project provides two GitHub Actions workflows under `.github/workflows/`:
 
-- `cypress-manual.yml` — **Manual run** of the full suite in **Chrome** (headless).
-- `cypress-daily.yml` — **Scheduled daily run** in **Chrome** at **12:00 UTC** (also runnable manually).
-- `cypress-browsers.yml` — **Cross-browser** run (Chrome, Edge, Firefox), headless.
+- `cypress-manual.yml` — **Manual run** of the full suite in **Chrome, Edge, Firefox** (headless, with matrix and Docker container).
+- `cypress-automatic.yml` — **Automatic scheduled run** of the full suite in **Chrome, Edge, Firefox** (headless, with matrix and Docker container).
 
 ### How to trigger
 
-1. Go to **Actions** tab in GitHub.
+1. Go to the **Actions** tab in GitHub.
 2. Select the desired workflow:
-   - **AutoTests (manual)** → runs the entire suite in Chrome.
-   - **Cypress Daily** → scheduled at 12:00 UTC, can also be run manually.
-   - **Cypress Browsers** → runs on a browser matrix (Chrome, Edge, Firefox).
+   - **Cypress Manual** → runs the entire suite manually in **Chrome, Edge, Firefox** (headless, using matrix + Docker container).
+   - **Cypress Automatic** → scheduled run of the entire suite in **Chrome, Edge, Firefox** (headless, using matrix + Docker container).
 3. Click **“Run workflow”** (no inputs are required).
 
-> **Note:** The manual workflow was simplified — workflow inputs were removed and it defaults to running the full test suite in Chrome (headless).
+> **Note:** The manual workflow was simplified — workflow inputs were removed and it defaults to running the full test suite across all three browsers (headless).
 
 Make sure the required secrets are configured (see **Environment Variables** section).
 
@@ -290,7 +306,8 @@ Multiple fast login attempts can trigger anti-abuse responses.
 - [x] Completed Activities (history of branches and tasks)
 - [x] How to Run (local setup and execution)
 - [x] Environment Variables (local and CI configuration)
-- [x] Test Strategy (API, platform, personal tests)
+- [x] Test Strategy (API, platform)
 - [x] CI Pipelines (manual, daily, cross-browser workflows)
 - [x] Troubleshooting (common issues and fixes)
 - [x] Enhanced Documentation (README polishing and final structure)
+- [ ] Coverage expansion (add more edge cases & negative scenarios)
