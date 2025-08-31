@@ -5,14 +5,9 @@
 import { buildAccountPayload } from "../../../support/factories/userFactory";
 
 describe("API 7 - Verify Login with valid data", () => {
-  /** @type {{ email: string; password: string }} */
-  let user;
+  const payload = buildAccountPayload();
 
   before(() => {
-    // Arrange: create a fresh user via factory (no hardcoded inputs)
-    const payload = buildAccountPayload();
-    user = { email: payload.email, password: payload.password };
-
     // Create account
     cy.request({
       method: "POST",
@@ -30,8 +25,8 @@ describe("API 7 - Verify Login with valid data", () => {
       url: "/api/verifyLogin",
       form: true,
       body: {
-        email: user.email,
-        password: user.password,
+        email: payload.email,
+        password: payload.password,
       },
     }).then(({ body }) => {
       const data = JSON.parse(body);

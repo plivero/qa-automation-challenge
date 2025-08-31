@@ -42,3 +42,14 @@ export const invalidCredentials = {
   email: faker.internet.email(),
   password: faker.internet.password(),
 };
+
+// Edge cases for account creation
+export const accountEdgeCases = {
+  emptyFields: {
+    email: "",
+    password: "",
+  },
+  invalidEmailFormat: {
+    email: "invalid-email-format",
+  },
+};

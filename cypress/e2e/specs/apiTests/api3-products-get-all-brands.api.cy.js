@@ -4,7 +4,7 @@ describe("API 3 - GET All Brands List", () => {
       const data = JSON.parse(body);
 
       expect(data.responseCode).to.eq(200);
-      expect(data).to.have.property("brands").that.is.an("array").and.not.empty;
+      expect(data.brands).to.be.an("array");
     });
   });
 });

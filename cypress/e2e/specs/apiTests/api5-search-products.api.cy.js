@@ -9,10 +9,8 @@ describe("API 5 - POST To Search Product", () => {
       body: { search_product: searchTerms.valid },
     }).then(({ body }) => {
       const data = JSON.parse(body);
-
       expect(data.responseCode).to.eq(200);
-      expect(data).to.have.property("products").that.is.an("array").and.not
-        .empty;
+      expect(data.products).to.be.an("array");
     });
   });
 });

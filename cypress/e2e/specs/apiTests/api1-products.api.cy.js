@@ -11,4 +11,24 @@ describe("API - Product List", () => {
       expect(first).to.include.all.keys("id", "name");
     });
   });
+
+  it("Should return 405 when using POST instead of GET", () => {
+    cy.request({
+      method: "POST",
+      url: "/api/productsList",
+      failOnStatusCode: false,
+    }).then(({ body }) => {
+      const data = JSON.parse(body);
+      expect(data.responseCode).to.eq(405);
+    });
+  });
+
+  it("Should return 404 when hitting an invalid endpoint", () => {
+    cy.request({
+      url: "/api/asdqweasd",
+      failOnStatusCode: false,
+    }).then(({ status }) => {
+      expect(status).to.eq(404);
+    });
+  });
 });
