@@ -1,6 +1,6 @@
 import { invalidCredentials } from "../../../support/factories/userFactory";
 
-describe("API 10 - POST To Verify Login with invalid details", () => {
+describe("API 10 - POST To Verify Login with invalid data", () => {
   it("Should return responseCode 404 and message 'User not found!'", () => {
     cy.request({
       method: "POST",

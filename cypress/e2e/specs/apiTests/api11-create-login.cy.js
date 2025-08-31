@@ -5,11 +5,8 @@ import {
 } from "../../../support/factories/userFactory";
 
 describe("API 11 - POST To Create/Register User Account", () => {
-  let payload;
-
-  before(() => {
-    payload = buildAccountPayload();
-  });
+  // Shared payload for "created" and "already exists"
+  const payload = buildAccountPayload();
 
   it("Should return 201 and message 'User created!'", () => {
     cy.request({
@@ -40,14 +37,14 @@ describe("API 11 - POST To Create/Register User Account", () => {
   });
 
   it("Should return 400 when email is missing", () => {
-    const payload = buildAccountPayload();
-    delete payload.email;
+    const invalid = buildAccountPayload();
+    delete invalid.email;
 
     cy.request({
       method: "POST",
       url: "/api/createAccount",
       form: true,
-      body: payload,
+      body: invalid,
       failOnStatusCode: false,
     }).then(({ body }) => {
       const data = JSON.parse(body);
@@ -56,14 +53,14 @@ describe("API 11 - POST To Create/Register User Account", () => {
   });
 
   it("Should return 400 when password is missing", () => {
-    const payload = buildAccountPayload();
-    delete payload.password;
+    const invalid = buildAccountPayload();
+    delete invalid.password;
 
     cy.request({
       method: "POST",
       url: "/api/createAccount",
       form: true,
-      body: payload,
+      body: invalid,
       failOnStatusCode: false,
     }).then(({ body }) => {
       const data = JSON.parse(body);
@@ -72,13 +69,13 @@ describe("API 11 - POST To Create/Register User Account", () => {
   });
 
   it("Should return 400 when required fields are empty strings", () => {
-    const payload = buildAccountPayload(accountEdgeCases.emptyFields);
+    const invalid = buildAccountPayload(accountEdgeCases.emptyFields);
 
     cy.request({
       method: "POST",
       url: "/api/createAccount",
       form: true,
-      body: payload,
+      body: invalid,
       failOnStatusCode: false,
     }).then(({ body }) => {
       const data = JSON.parse(body);
@@ -87,13 +84,13 @@ describe("API 11 - POST To Create/Register User Account", () => {
   });
 
   it("Should return 400 when email format is invalid", () => {
-    const payload = buildAccountPayload(accountEdgeCases.invalidEmailFormat);
+    const invalid = buildAccountPayload(accountEdgeCases.invalidEmailFormat);
 
     cy.request({
       method: "POST",
       url: "/api/createAccount",
       form: true,
-      body: payload,
+      body: invalid,
       failOnStatusCode: false,
     }).then(({ body }) => {
       const data = JSON.parse(body);

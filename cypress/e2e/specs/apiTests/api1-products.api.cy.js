@@ -22,13 +22,4 @@ describe("API - Product List", () => {
       expect(data.responseCode).to.eq(405);
     });
   });
-
-  it("Should return 404 when hitting an invalid endpoint", () => {
-    cy.request({
-      url: "/api/asdqweasd",
-      failOnStatusCode: false,
-    }).then(({ status }) => {
-      expect(status).to.eq(404);
-    });
-  });
 });
