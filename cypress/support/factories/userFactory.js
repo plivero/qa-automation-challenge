@@ -53,3 +53,36 @@ export const accountEdgeCases = {
     email: "invalid-email-format",
   },
 };
+
+export function buildBrandPayload() {
+  return {
+    id: faker.number.int({ min: 1, max: 999999 }).toString(),
+    brand: faker.word.sample(),
+  };
+}
+
+/* -------------------------------
+   Search product payload builders
+   Purpose: keep specs free of hardcoded inputs and centralize variants.
+   These functions do not duplicate anything existing in this file.
+-------------------------------- */
+
+// Happy path payload using the already-declared searchTerms.valid
+export function buildSearchPayloadValid() {
+  return { search_product: searchTerms.valid };
+}
+
+// Missing parameter entirely -> API should return 400
+export function buildSearchPayloadMissing() {
+  return {};
+}
+
+// Parameter present but empty string -> API treats as missing (400)
+export function buildSearchPayloadEmpty() {
+  return { search_product: "" };
+}
+
+// Wrong parameter name -> API treats as missing (400)
+export function buildSearchPayloadWrongName() {
+  return { wrong_field: faker.word.sample() };
+}

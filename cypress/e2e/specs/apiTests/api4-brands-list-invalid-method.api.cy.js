@@ -1,3 +1,5 @@
+import { buildBrandPayload } from "../../../support/factories/userFactory";
+
 describe("API 4 - PUT To All Brands List", () => {
   it("Should return responseCode 405 inside body with proper message", () => {
     cy.request({
@@ -7,6 +9,22 @@ describe("API 4 - PUT To All Brands List", () => {
     }).then(({ body }) => {
       const data = JSON.parse(body);
 
+      expect(data.responseCode).to.eq(405);
+      expect(data.message).to.eq("This request method is not supported.");
+    });
+  });
+
+  it("Should return responseCode 405 with proper message (using factory payload)", () => {
+    const payload = buildBrandPayload();
+
+    cy.request({
+      method: "PUT",
+      url: "/api/brandsList",
+      form: true,
+      failOnStatusCode: false,
+      body: payload,
+    }).then(({ body }) => {
+      const data = JSON.parse(body);
       expect(data.responseCode).to.eq(405);
       expect(data.message).to.eq("This request method is not supported.");
     });
