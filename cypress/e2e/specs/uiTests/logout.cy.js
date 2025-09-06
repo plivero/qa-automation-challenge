@@ -2,15 +2,14 @@
 
 import { HomePage } from "../../../support/pages/homePage";
 import { LoginPage } from "../../../support/pages/loginPage";
-import { ensureUserViaApi } from "../../../support/helpers/userApi";
+import { createUserAPI } from "../../../support/helpers/userApi";
 
 const homePage = new HomePage();
 const loginPage = new LoginPage();
 
 describe("UI Platform - TC4: Logout User", () => {
-  // ensure env user exists ONLY for this spec (no e2e.js changes)
   before(() => {
-    ensureUserViaApi();
+    createUserAPI();
   });
 
   it("logs in and logs out (steps 1–10)", () => {

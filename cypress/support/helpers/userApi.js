@@ -1,10 +1,9 @@
 // cypress/support/helpers/userApi.js
-// @ts-check
 /// <reference types="cypress" />
 
 import { faker } from "@faker-js/faker";
 
-export function ensureUserViaApi() {
+export function createUserAPI() {
   const email = Cypress.env("USER_EMAIL");
   const password = Cypress.env("USER_PASSWORD");
   const name = Cypress.env("USER_NAME");

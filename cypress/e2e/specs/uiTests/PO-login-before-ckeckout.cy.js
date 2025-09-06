@@ -7,7 +7,7 @@ import { CartPage } from "../../../support/pages/cartPage";
 import { CheckoutPage } from "../../../support/pages/checkoutPage";
 import { PaymentPage } from "../../../support/pages/paymentPage";
 import { AccountStatusPage } from "../../../support/pages/accountStatusPage";
-import { ensureUserViaApi } from "../../../support/helpers/userApi";
+import { createUserAPI } from "../../../support/helpers/userApi";
 
 const homePage = new HomePage();
 const loginPage = new LoginPage();
@@ -18,7 +18,7 @@ const paymentPage = new PaymentPage();
 const statusPage = new AccountStatusPage();
 
 before(() => {
-  ensureUserViaApi();
+  createUserAPI();
 });
 
 describe("UI Platform - TC16: Place Order (login before checkout)", () => {

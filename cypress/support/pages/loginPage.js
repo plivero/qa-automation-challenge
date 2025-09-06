@@ -1,5 +1,4 @@
 // cypress/support/pages/loginPage.js
-// @ts-check
 /// <reference types="cypress" />
 
 import { faker } from "@faker-js/faker";

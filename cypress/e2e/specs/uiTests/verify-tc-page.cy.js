@@ -1,23 +1,27 @@
+/// <reference types="cypress" />
+
+import { HomePage } from "../../../support/pages/homePage";
+import { TestCasesPage } from "../../../support/pages/testCasesPage";
+
+const homePage = new HomePage();
+const testCasesPage = new TestCasesPage();
+
 describe("UI Platform - TC7: Verify Test Cases page", () => {
   it("navigates to the Test Cases page successfully", () => {
-    // 1–2) Launch & navigate
-    cy.visit("/");
+    // Step 1–2: Launch & navigate
+    homePage.visit();
 
-    // 3) Home visible (stable checks, no navbar .active)
+    // Step 3: Home visible
     cy.location("pathname").should("eq", "/");
-    cy.get('img[src="/static/images/home/logo.png"]', {
-      timeout: 10000,
-    }).should("be.visible");
-    cy.contains(
-      /Full-Fledged practice website for Automation Engineers/i
-    ).should("be.visible");
+    homePage.getLogo().should("be.visible");
+    homePage.getHeroText().should("be.visible");
 
-    // 4) Click on 'Test Cases' button
-    cy.get('a[href="/test_cases"]').first().click({ force: true });
+    // Step 4: Click on 'Test Cases' button
+    homePage.getNavTestCases().click();
 
-    // 5) Verify user is on Test Cases page
-    cy.location("pathname", { timeout: 10000 }).should("eq", "/test_cases");
-    cy.contains(/Test Cases/i).should("be.visible");
-    cy.contains(/Test Case 1:\s*Register User/i).should("be.visible");
+    // Step 5: Verify user is on Test Cases page
+    cy.location("pathname").should("eq", "/test_cases");
+    testCasesPage.getTitle().should("be.visible");
+    testCasesPage.getFirstCaseItem().should("be.visible");
   });
 });

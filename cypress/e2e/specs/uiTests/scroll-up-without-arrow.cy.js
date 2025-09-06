@@ -13,13 +13,13 @@ describe("UI Platform - TC26: Scroll Down & manual Scroll Up (no arrow)", () => 
     homePage.getLogo().should("be.visible");
 
     // Step 4: scroll down
-    cy.scrollTo("bottom");
+    homePage.scrollToBottom();
 
     // Step 5: check 'SUBSCRIPTION'
-    cy.contains(/SUBSCRIPTION/i).should("be.visible");
+    homePage.getSubscriptionTitle().should("be.visible");
 
     // Step 6: scroll up (no arrow click)
-    cy.scrollTo("top");
+    homePage.scrollToTop();
 
     // Step 7: check hero text at top
     homePage.getHeroText().should("be.visible");

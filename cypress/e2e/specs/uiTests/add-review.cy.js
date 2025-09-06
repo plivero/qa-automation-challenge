@@ -18,7 +18,7 @@ describe("UI Platform - TC21: Add review on product", () => {
     productsPage.openFirstProduct();
 
     // Step 6–8: Write review (name, email, review) and submit
-    detailsPage.writeReviewWithDefaults();
+    detailsPage.writeReviewWithFaker();
 
     // Step 9: Verify success message
     detailsPage.getReviewSuccessMessage().should("be.visible");

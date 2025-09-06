@@ -1,21 +1,23 @@
 /// <reference types="cypress" />
 
+import { ProductsPage } from "../../../support/pages/productsPage";
 import { ProductDetailsPage } from "../../../support/pages/productDetailsPage";
 import { CartPage } from "../../../support/pages/cartPage";
 
+const productsPage = new ProductsPage();
 const detailsPage = new ProductDetailsPage();
 const cartPage = new CartPage();
 
 describe("UI Platform - TC13: Verify Product quantity in Cart", () => {
   it("adds a product with quantity 4 and verifies it in cart", () => {
     // Step 1: open All Products page
-    cy.visit("/products");
+    productsPage.visit();
 
     // Step 2: open the first product details
-    cy.get(".product-image-wrapper").first().contains("View Product").click();
+    productsPage.openFirstProduct();
 
     // Step 3: ensure details block is visible
-    cy.get(".product-information").should("be.visible");
+    detailsPage.getDetailsContainer().should("be.visible");
 
     // Step 4: set quantity = 4
     detailsPage.setQuantity(4);

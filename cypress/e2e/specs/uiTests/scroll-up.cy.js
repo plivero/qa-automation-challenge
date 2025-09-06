@@ -13,13 +13,13 @@ describe("UI Platform - TC25: Scroll Down & Arrow Scroll Up", () => {
     homePage.getLogo().should("be.visible");
 
     // Step 4: scroll down
-    cy.scrollTo("bottom");
+    homePage.scrollToBottom();
 
     // Step 5: check 'SUBSCRIPTION'
-    cy.contains(/SUBSCRIPTION/i).should("be.visible");
+    homePage.getSubscriptionTitle().should("be.visible");
 
     // Step 6: click scroll up arrow
-    cy.get("#scrollUp").click();
+    homePage.clickScrollUpArrow();
 
     // Step 7: hero text visible again (means we are at the top)
     homePage.getHeroText().should("be.visible");

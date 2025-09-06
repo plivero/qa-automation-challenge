@@ -1,5 +1,4 @@
 // cypress/support/pages/cartPage.js
-// @ts-check
 /// <reference types="cypress" />
 
 export class CartPage {

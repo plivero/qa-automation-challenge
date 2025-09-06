@@ -3,14 +3,14 @@
 import { HomePage } from "../../../support/pages/homePage";
 import { LoginPage } from "../../../support/pages/loginPage";
 import { AccountStatusPage } from "../../../support/pages/accountStatusPage";
-import { ensureUserViaApi } from "../../../support/helpers/userApi";
+import { createUserAPI } from "../../../support/helpers/userApi";
 
 const homePage = new HomePage();
 const loginPage = new LoginPage();
 const statusPage = new AccountStatusPage();
 
 before(() => {
-  ensureUserViaApi();
+  createUserAPI();
 });
 
 describe("UI Platform - TC2: Login User with correct email and password", () => {
