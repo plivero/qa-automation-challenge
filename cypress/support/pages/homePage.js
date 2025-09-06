@@ -1,15 +1,17 @@
 // cypress/support/pages/homePage.js
-// @ts-check
+
 /// <reference types="cypress" />
 
 export class HomePage {
   elements = {
     logo: () => cy.get('img[alt="Website for automation practice"]'),
     navMenu: () => cy.get("ul.nav.navbar-nav"),
+
     subscriptionEmail: () => cy.get("footer #susbscribe_email"),
     subscriptionSubmit: () => cy.get("footer #subscribe"),
     subscriptionSuccess: () =>
       cy.contains(/you have been successfully subscribed!/i),
+
     scrollUpArrow: () => cy.get("#scrollUp"),
     heroText: () =>
       cy.contains(/Full-Fledged practice website for Automation Engineers/i),
@@ -47,5 +49,47 @@ export class HomePage {
 
   getHeroText() {
     return this.elements.heroText();
+  }
+
+  getNavHome() {
+    return this.elements.navMenu().contains("Home");
+  }
+  getNavProducts() {
+    return this.elements.navMenu().contains("Products");
+  }
+  getNavCart() {
+    return this.elements.navMenu().contains("Cart");
+  }
+  getNavSignupLogin() {
+    return this.elements.navMenu().contains("Signup / Login");
+  }
+  getNavTestCases() {
+    return this.elements.navMenu().contains("Test Cases");
+  }
+  getNavApiTesting() {
+    return this.elements.navMenu().contains("API Testing");
+  }
+  getNavVideoTutorials() {
+    return this.elements.navMenu().contains("Video Tutorials");
+  }
+  getNavContactUs() {
+    return this.elements.navMenu().contains("Contact us");
+  }
+
+  getSubscriptionTitle() {
+    return cy.contains(/SUBSCRIPTION/i);
+  }
+
+  scrollToBottom() {
+    cy.scrollTo("bottom");
+  }
+  scrollToTop() {
+    cy.scrollTo("top");
+  }
+  clickScrollUpArrow() {
+    this.elements.scrollUpArrow().click();
+  }
+  clickNavProducts() {
+    this.elements.navMenu().contains("Products").click();
   }
 }

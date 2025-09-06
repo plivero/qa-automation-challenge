@@ -43,7 +43,7 @@ describe("UI Platform - TC24: Download Invoice after purchase order", () => {
     // Step 8: click 'Register/Login' and go to login
     cartPage.clickRegisterLoginOnModal();
 
-    // Step 9: fill register and create account (PO usa faker/env)
+    // Step 9: fill register and create account
     signupPage.getNewUserHeader().should("be.visible");
     const { name } = signupPage.startNewSignup();
     infoPage.getAccountInfoHeader().should("be.visible");
@@ -84,7 +84,8 @@ describe("UI Platform - TC24: Download Invoice after purchase order", () => {
     paymentPage.clickDownloadInvoiceButton();
 
     // Step 20: continue
-    cy.contains(/Continue/i).click();
+    paymentPage.getContinueBtn().should("be.visible");
+    paymentPage.pressContinueBtn();
 
     // Step 21: 'Delete Account'
     statusPage.clickDeleteAccount();

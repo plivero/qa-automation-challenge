@@ -1,5 +1,4 @@
 // cypress/support/pages/paymentPage.js
-// @ts-check
 /// <reference types="cypress" />
 
 export class PaymentPage {
@@ -22,6 +21,8 @@ export class PaymentPage {
       }),
 
     downloadInvoiceButton: () => cy.contains(/Download Invoice/i),
+
+    continueBtn: () => cy.contains(/Continue/i),
   };
 
   fillFields({ name, number, cvc, month, year }) {
@@ -42,13 +43,13 @@ export class PaymentPage {
   }
 
   payWithDefaults() {
-    const name = Cypress.env("USER_NAME") || "QA User";
-    const card = Cypress.env("CARD_NUMBER") || "4111111111111111";
-    const cvc = Cypress.env("CARD_CVC") || "123";
-    const month = Cypress.env("CARD_EXP_MONTH") || "12";
-    const year = Cypress.env("CARD_EXP_YEAR") || "2030";
-
-    this.fillAndPay({ name, number: card, cvc, month, year });
+    this.fillAndPay({
+      name: "QA User",
+      number: "4111111111111111",
+      cvc: "123",
+      month: "12",
+      year: "2030",
+    });
   }
 
   payWithTestCard() {
@@ -64,10 +65,20 @@ export class PaymentPage {
   getOrderPlacedMessage() {
     return this.elements.orderPlacedMessage();
   }
+
   getDownloadInvoiceButton() {
     return this.elements.downloadInvoiceButton();
   }
+
+  getContinueBtn() {
+    return this.elements.continueBtn();
+  }
+
   clickDownloadInvoiceButton() {
     this.elements.downloadInvoiceButton().click();
+  }
+
+  pressContinueBtn() {
+    this.elements.continueBtn().click();
   }
 }

@@ -20,7 +20,7 @@ describe("UI Platform - TC20: Search products and verify cart after login", () =
 
     // Step 2: search term
     productsPage.search(term);
-    cy.contains(/Searched Products/i).should("be.visible");
+    productsPage.getSearchedProductsTitle().should("be.visible");
 
     // Step 3: ensure results
     productsPage.getGrid().should("exist");
@@ -37,7 +37,7 @@ describe("UI Platform - TC20: Search products and verify cart after login", () =
     cartPage.getVisibleRows().should("have.length.greaterThan", 0);
 
     // Step 7: go to login
-    homePage.getNavMenuItem("Signup / Login").click();
+    homePage.getNavSignupLogin().click();
     loginPage.getLoginPageHeader().should("be.visible");
     loginPage.loginWithValid();
 

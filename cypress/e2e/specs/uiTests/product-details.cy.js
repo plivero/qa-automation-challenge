@@ -14,7 +14,7 @@ describe("Products - Product Details", () => {
     productsPage.getGrid().should("exist");
 
     // open first product
-    cy.get(".product-image-wrapper").first().contains("View Product").click();
+    productsPage.openFirstProduct();
 
     // asserts on details
     productDetailsPage.getDetailsContainer().should("be.visible");

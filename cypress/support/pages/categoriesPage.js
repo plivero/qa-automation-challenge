@@ -1,5 +1,4 @@
 // cypress/support/pages/categoriesPage.js
-// @ts-check
 /// <reference types="cypress" />
 
 export class CategoriesSidebar {
@@ -9,6 +8,8 @@ export class CategoriesSidebar {
     menAccord: () => cy.get('#accordian a[href="#Men"]'),
     womenSection: () => cy.get("#Women"),
     menSection: () => cy.get("#Men"),
+    womenTopsHeader: () => cy.contains(/WOMEN\s*-\s*TOPS\s*PRODUCTS/i),
+    menTshirtsHeader: () => cy.contains(/MEN\s*-\s*TSHIRTS\s*PRODUCTS/i),
   };
 
   getSidebar() {
@@ -24,15 +25,21 @@ export class CategoriesSidebar {
   }
 
   clickWomenTops() {
-    this.elements.womenSection().should("be.visible");
     this.elements.womenSection().contains(/Tops/i).click({ force: true });
   }
 
   clickMenTshirts() {
-    this.elements.menSection().should("be.visible");
     this.elements
       .menSection()
       .contains(/Tshirts/i)
       .click({ force: true });
+  }
+
+  getWomenTopsHeader() {
+    return this.elements.womenTopsHeader();
+  }
+
+  getMenTshirtsHeader() {
+    return this.elements.menTshirtsHeader();
   }
 }

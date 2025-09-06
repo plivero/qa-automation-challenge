@@ -15,11 +15,11 @@ describe("UI Platform - TC18: View Category Products", () => {
     // Step 4–6: Women → Tops
     catsPage.expandWomen();
     catsPage.clickWomenTops();
-    cy.contains(/WOMEN\s*-\s*TOPS\s*PRODUCTS/i).should("be.visible");
+    catsPage.getWomenTopsHeader().should("be.visible");
 
     // Step 7–8: Men → Tshirts
     catsPage.expandMen();
     catsPage.clickMenTshirts();
-    cy.contains(/MEN\s*-\s*TSHIRTS\s*PRODUCTS/i).should("be.visible");
+    catsPage.getMenTshirtsHeader().should("be.visible");
   });
 });

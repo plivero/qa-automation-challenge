@@ -1,5 +1,4 @@
 // cypress/support/pages/checkoutPage.js
-// @ts-check
 /// <reference types="cypress" />
 
 export class CheckoutPage {

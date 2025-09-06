@@ -5,7 +5,6 @@ import {
 } from "../../../support/factories/userFactory";
 
 describe("API 11 - POST To Create/Register User Account", () => {
-  // Shared payload for "created" and "already exists"
   const payload = buildAccountPayload();
 
   it("Should return 201 and message 'User created!'", () => {

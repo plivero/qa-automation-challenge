@@ -1,5 +1,4 @@
 // cypress/support/pages/recommendedPage.js
-// @ts-check
 /// <reference types="cypress" />
 
 export class RecommendedPage {

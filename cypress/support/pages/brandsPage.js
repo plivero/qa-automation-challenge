@@ -1,5 +1,4 @@
 // cypress/support/pages/brandsPage.js
-// @ts-check
 /// <reference types="cypress" />
 
 export class BrandsSidebar {

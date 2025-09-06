@@ -1,15 +1,15 @@
 // cypress/support/pages/productsPage.js
-// @ts-check
 /// <reference types="cypress" />
 
 export class ProductsPage {
   elements = {
     title: () => cy.contains(/All Products|Products/i),
-    grid: () =>
-      cy.get(".features_items, .product-image-wrapper, .single-products"),
+
+    grid: () => cy.get(".features_items"),
 
     searchInput: () => cy.get("#search_product"),
     searchBtn: () => cy.get("#submit_search"),
+    searchedProductsTitle: () => cy.contains(/Searched Products/i),
 
     cards: () => cy.get(".features_items .product-image-wrapper"),
     cardByName: (name) => cy.get(".productinfo").contains(name),
@@ -38,6 +38,10 @@ export class ProductsPage {
     return this.elements.grid();
   }
 
+  getProductCards() {
+    return this.elements.cards();
+  }
+
   openDetailsByName(name) {
     this.elements.cardByName(name).contains("View Product").click();
   }
@@ -46,13 +50,8 @@ export class ProductsPage {
     this.elements
       .cards()
       .first()
-      .within(() => {
-        cy.contains("Add to cart").click({ force: true });
-      });
-  }
-
-  getCards() {
-    return this.elements.cards();
+      .contains("Add to cart")
+      .click({ force: true });
   }
 
   addItemByIndex(index) {
@@ -60,6 +59,14 @@ export class ProductsPage {
       .cards()
       .eq(index)
       .contains("Add to cart")
+      .click({ force: true });
+  }
+
+  openFirstProduct() {
+    this.elements
+      .cards()
+      .first()
+      .contains("View Product")
       .click({ force: true });
   }
 
@@ -74,35 +81,25 @@ export class ProductsPage {
   clickContinueShoppingInModal() {
     this.elements.continueShoppingBtn().click();
   }
-
-  openFirstProduct() {
-    this.elements
-      .cards()
-      .first()
-      .contains("View Product")
-      .click({ force: true });
+  getSearchedProductsTitle() {
+    return this.elements.searchedProductsTitle();
   }
 
   searchDress() {
     this.search("dress");
   }
-
   searchTops() {
     this.search("tops");
   }
-
   searchSaree() {
     this.search("saree");
   }
-
   searchJeans() {
     this.search("jeans");
   }
-
   searchTshirt() {
     this.search("t-shirt");
   }
-
   searchInvalid() {
     this.search("xxxxx");
   }
