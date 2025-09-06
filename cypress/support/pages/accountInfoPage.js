@@ -1,47 +1,121 @@
-// cypress/support/pages/accountInfoPage.js
-// @ts-check
 /// <reference types="cypress" />
 
 import { faker } from "@faker-js/faker";
 
 export class AccountInfoPage {
-  // Header "ENTER ACCOUNT INFORMATION"
-  getEnterAccountInfoHeader() {
-    // Just wait longer and scope to <b> (common on this page)
-    return cy.contains("b", /ENTER ACCOUNT INFORMATION/i, { timeout: 15000 });
+  elements = {
+    accountInfoHeader: () => cy.get(".login-form > :nth-child(1)"),
+    titleMr: () => cy.get("#id_gender1"),
+    passwordInput: () => cy.get('[data-qa="password"]'),
+
+    daySelect: () => cy.get('[data-qa="days"]'),
+    monthSelect: () => cy.get('[data-qa="months"]'),
+    yearSelect: () => cy.get('[data-qa="years"]'),
+
+    newsletterCheckbox: () => cy.get("#newsletter"),
+    optinCheckbox: () => cy.get("#optin"),
+
+    firstNameInput: () => cy.get('[data-qa="first_name"]'),
+    lastNameInput: () => cy.get('[data-qa="last_name"]'),
+    companyInput: () => cy.get('[data-qa="company"]'),
+    address1Input: () => cy.get('[data-qa="address"]'),
+    address2Input: () => cy.get('[data-qa="address2"]'),
+    countrySelect: () => cy.get('[data-qa="country"]'),
+    stateInput: () => cy.get('[data-qa="state"]'),
+    cityInput: () => cy.get('[data-qa="city"]'),
+    zipcodeInput: () => cy.get('[data-qa="zipcode"]'),
+    mobileInput: () => cy.get('[data-qa="mobile_number"]'),
+
+    createAccountBtn: () => cy.get('[data-qa="create-account"]'),
+  };
+
+  getAccountInfoHeader() {
+    return this.elements.accountInfoHeader();
   }
 
-  // Fill all required fields in a fixed, simple way (no conditions, no overrides)
-  fillAllFields() {
-    const password = Cypress.env("USER_PASSWORD");
+  selectTitleMr() {
+    this.elements.titleMr().check({ force: true });
+  }
+  typePassword(value) {
+    this.elements.passwordInput().clear().type(value);
+  }
 
-    // Title / Password / DOB
-    cy.get("#id_gender1").check({ force: true });
-    cy.get('[data-qa="password"]').clear().type(password);
-    cy.get('[data-qa="days"]').select("10");
-    cy.get('[data-qa="months"]').select("December");
-    cy.get('[data-qa="years"]').select("1990");
+  selectDay(value) {
+    this.elements.daySelect().select(String(value));
+  }
+  selectMonth(value) {
+    this.elements.monthSelect().select(String(value));
+  }
+  selectYear(value) {
+    this.elements.yearSelect().select(String(value));
+  }
+  selectDOB(day, month, year) {
+    this.selectDay(day);
+    this.selectMonth(month);
+    this.selectYear(year);
+  }
 
-    // Checkboxes (always checked)
-    cy.get("#newsletter").check({ force: true });
-    cy.get("#optin").check({ force: true });
+  checkNewsletter() {
+    this.elements.newsletterCheckbox().check({ force: true });
+  }
+  checkOptin() {
+    this.elements.optinCheckbox().check({ force: true });
+  }
 
-    // Address (faker)
-    cy.get('[data-qa="first_name"]').clear().type(faker.person.firstName());
-    cy.get('[data-qa="last_name"]').clear().type(faker.person.lastName());
-    cy.get('[data-qa="company"]').clear().type(faker.company.name());
-    cy.get('[data-qa="address"]').clear().type(faker.location.streetAddress());
-    cy.get('[data-qa="address2"]')
-      .clear()
-      .type(faker.location.secondaryAddress());
-    cy.get('[data-qa="country"]').select("Canada");
-    cy.get('[data-qa="state"]').clear().type(faker.location.state());
-    cy.get('[data-qa="city"]').clear().type(faker.location.city());
-    cy.get('[data-qa="zipcode"]').clear().type(faker.location.zipCode());
-    cy.get('[data-qa="mobile_number"]').clear().type(faker.phone.number());
+  typeFirstName(value) {
+    this.elements.firstNameInput().clear().type(value);
+  }
+  typeLastName(value) {
+    this.elements.lastNameInput().clear().type(value);
+  }
+  typeCompany(value) {
+    this.elements.companyInput().clear().type(value);
+  }
+  typeAddress1(value) {
+    this.elements.address1Input().clear().type(value);
+  }
+  typeAddress2(value) {
+    this.elements.address2Input().clear().type(value);
+  }
+  selectCountry(value) {
+    this.elements.countrySelect().select(value);
+  }
+  typeState(value) {
+    this.elements.stateInput().clear().type(value);
+  }
+  typeCity(value) {
+    this.elements.cityInput().clear().type(value);
+  }
+  typeZipcode(value) {
+    this.elements.zipcodeInput().clear().type(value);
+  }
+  typeMobile(value) {
+    this.elements.mobileInput().clear().type(value);
   }
 
   clickCreateAccount() {
-    cy.get('[data-qa="create-account"]').click();
+    this.elements.createAccountBtn().click();
+  }
+
+  fillAllFields() {
+    const password = Cypress.env("USER_PASSWORD") ?? "123456";
+
+    this.selectTitleMr();
+    this.typePassword(password);
+    this.selectDOB(10, "December", "1990");
+
+    this.checkNewsletter();
+    this.checkOptin();
+
+    this.typeFirstName(faker.person.firstName());
+    this.typeLastName(faker.person.lastName());
+    this.typeCompany(faker.company.name());
+    this.typeAddress1(faker.location.streetAddress());
+    this.typeAddress2(faker.location.secondaryAddress());
+    this.selectCountry("Canada");
+    this.typeState(faker.location.state());
+    this.typeCity(faker.location.city());
+    this.typeZipcode(faker.location.zipCode());
+    this.typeMobile(faker.phone.number());
   }
 }

@@ -1,12 +1,17 @@
-// @ts-check
+// cypress/support/pages/addressPage.js
 /// <reference types="cypress" />
 
 export class AddressPage {
+  elements = {
+    deliveryBox: () => cy.get("ul#address_delivery"),
+    billingBox: () => cy.get("ul#address_invoice"),
+  };
+
   getDeliveryBox() {
-    return cy.get("ul#address_delivery");
+    return this.elements.deliveryBox();
   }
 
   getBillingBox() {
-    return cy.get("ul#address_invoice");
+    return this.elements.billingBox();
   }
 }

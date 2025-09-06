@@ -3,39 +3,45 @@
 /// <reference types="cypress" />
 
 export class CheckoutPage {
-  // Generic container (kept)
+  elements = {
+    checkoutContainer: () =>
+      cy.contains(/address details|review your order|checkout/i),
+    addressDetailsHeader: () => cy.contains(/Address Details/i),
+    reviewYourOrderHeader: () => cy.contains(/Review Your Order/i),
+    orderCommentTextarea: () => cy.get('textarea[name="message"]'),
+    placeOrderBtn: () => cy.contains(/place order/i),
+    orderSuccessMessage: () =>
+      cy.contains(
+        /your order has been placed successfully|order placed|congratulations/i
+      ),
+    downloadInvoiceBtn: () => cy.contains(/Download Invoice/i),
+  };
+
   getCheckoutContainer() {
-    return cy.contains(/address details|review your order|checkout/i);
+    return this.elements.checkoutContainer();
   }
 
-  // Dedicated headers (added for clarity in specs)
   getAddressDetailsHeader() {
-    return cy.contains(/Address Details/i);
+    return this.elements.addressDetailsHeader();
   }
 
   getReviewYourOrderHeader() {
-    return cy.contains(/Review Your Order/i);
+    return this.elements.reviewYourOrderHeader();
   }
 
-  // Actions
   addOrderComment(text) {
-    cy.get('textarea[name="message"]').clear().type(text);
+    this.elements.orderCommentTextarea().clear().type(text);
   }
 
   clickPlaceOrder() {
-    cy.contains(/place order/i).click({ force: true });
+    this.elements.placeOrderBtn().click({ force: true });
   }
 
-  // Legacy success getter (kept; some specs may use this)
   getOrderSuccessMessage() {
-    return cy.contains(
-      /your order has been placed successfully|order placed|congratulations/i
-    );
+    return this.elements.orderSuccessMessage();
   }
 
   clickDownloadInvoice() {
-    cy.contains(/Download Invoice/i)
-      .should("be.visible")
-      .click();
+    this.elements.downloadInvoiceBtn().should("be.visible").click();
   }
 }

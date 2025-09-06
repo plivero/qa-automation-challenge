@@ -7,45 +7,45 @@ import { ProductsPage } from "../../../support/pages/productsPage";
 import { CartPage } from "../../../support/pages/cartPage";
 import { AddressPage } from "../../../support/pages/addressPage";
 
-const signup = new SignupPage();
-const info = new AccountInfoPage();
-const status = new AccountStatusPage();
-const products = new ProductsPage();
-const cart = new CartPage();
-const address = new AddressPage();
+const signupPage = new SignupPage();
+const infoPage = new AccountInfoPage();
+const statusPage = new AccountStatusPage();
+const productsPage = new ProductsPage();
+const cartPage = new CartPage();
+const addressPage = new AddressPage();
 
 describe("UI Platform - TC23: Verify address details in checkout", () => {
   it("checks delivery & billing addresses match signup data", () => {
     // Step 1: login
     cy.visit("/login");
-    signup.getNewUserHeader().should("be.visible");
-    const { name, email } = signup.startNewSignup();
+    signupPage.getNewUserHeader().should("be.visible");
+    const { name } = signupPage.startNewSignup();
 
     // Step 2: fill account info
-    info.getEnterAccountInfoHeader().should("be.visible");
-    info.fillAllFields();
-    info.clickCreateAccount();
+    infoPage.getAccountInfoHeader().should("be.visible");
+    infoPage.fillAllFields();
+    infoPage.clickCreateAccount();
 
     // Step 3: created account
-    status.getAccountCreatedMessage().should("be.visible");
-    status.clickContinue();
-    status.getLoggedInLabel().should("contain.text", name);
+    statusPage.getAccountCreatedMessage().should("be.visible");
+    statusPage.clickContinue();
+    statusPage.getLoggedInLabel().should("contain.text", name);
 
     // Step 4: add product
-    products.visit();
-    products.addFirstItemToCart();
-    products.openCartFromModal();
+    productsPage.visit();
+    productsPage.addFirstItemToCart();
+    productsPage.openCartFromModal();
 
     // Step 5: checkout
-    cart.proceedToCheckout();
+    cartPage.proceedToCheckout();
 
     // Step 6: verify delivery e billing address
-    address.getDeliveryBox().should("be.visible").and("not.be.empty");
-    address.getBillingBox().should("be.visible").and("not.be.empty");
+    addressPage.getDeliveryBox().should("be.visible").and("not.be.empty");
+    addressPage.getBillingBox().should("be.visible").and("not.be.empty");
 
     // Step 7: delete account
-    status.clickDeleteAccount();
-    status.getAccountDeletedMessage().should("be.visible");
-    status.clickContinue();
+    statusPage.clickDeleteAccount();
+    statusPage.getAccountDeletedMessage().should("be.visible");
+    statusPage.clickContinue();
   });
 });

@@ -3,8 +3,8 @@
 import { HomePage } from "../../../support/pages/homePage";
 import { LoginPage } from "../../../support/pages/loginPage";
 
-const home = new HomePage();
-const login = new LoginPage();
+const homePage = new HomePage();
+const loginPage = new LoginPage();
 
 describe("UI Platform - TC3: Login with incorrect email and password", () => {
   beforeEach(() => {
@@ -16,22 +16,22 @@ describe("UI Platform - TC3: Login with incorrect email and password", () => {
     // Step 1: Launch browser (Cypress already handles)
 
     // Step 2: Navigate to url 'http://automationexercise.com'
-    home.visit();
+    homePage.visit();
 
     // Step 3: Verify that home page is visible successfully
-    home.getLogo().should("be.visible");
+    homePage.getLogo().should("be.visible");
 
     // Step 4: Click on 'Signup / Login' button
-    home.getNavMenuItem("Signup / Login").click();
+    homePage.getNavMenuItem("Signup / Login").click();
 
     // Step 5: Verify 'Login to your account' is visible
-    login.getLoginPageHeader().should("be.visible");
+    loginPage.getLoginPageHeader().should("be.visible");
 
     // Step 6 + 7: Enter incorrect email/password and click 'login'
     // (PO generates wrong creds and clicks the button)
-    login.loginWithInvalidDefaults();
+    loginPage.loginWithInvalidDefaults();
 
     // Step 8: Verify error 'Your email or password is incorrect!' is visible
-    login.getLoginErrorMessage().should("be.visible");
+    loginPage.getLoginErrorMessage().should("be.visible");
   });
 });
