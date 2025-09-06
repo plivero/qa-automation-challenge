@@ -310,4 +310,4 @@ Multiple fast login attempts can trigger anti-abuse responses.
 - [x] CI Pipelines (manual, daily, cross-browser workflows)
 - [x] Troubleshooting (common issues and fixes)
 - [x] Enhanced Documentation (README polishing and final structure)
-- [ ] Coverage expansion (add more edge cases & negative scenarios)
+- [x] Coverage expansion (add more edge cases & negative scenarios)

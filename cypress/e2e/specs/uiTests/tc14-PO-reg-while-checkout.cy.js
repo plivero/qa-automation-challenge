@@ -8,74 +8,74 @@ import { AccountStatusPage } from "../../../support/pages/accountStatusPage";
 import { CheckoutPage } from "../../../support/pages/checkoutPage";
 import { PaymentPage } from "../../../support/pages/paymentPage";
 
-const products = new ProductsPage();
-const cart = new CartPage();
-const signup = new SignupPage();
-const account = new AccountInfoPage();
-const status = new AccountStatusPage();
-const checkout = new CheckoutPage();
-const payment = new PaymentPage();
+const productsPage = new ProductsPage();
+const cartPage = new CartPage();
+const signupPage = new SignupPage();
+const infoPage = new AccountInfoPage();
+const statusPage = new AccountStatusPage();
+const checkoutPage = new CheckoutPage();
+const paymentPage = new PaymentPage();
 
 describe("UI Platform - TC14: Place Order (register during checkout)", () => {
   it("completes order after registering at checkout", () => {
     // Step 1: open All Products
-    products.visit();
-    products.getTitle().should("be.visible");
-    products.getGrid().should("exist");
+    productsPage.visit();
+    productsPage.getTitle().should("be.visible");
+    productsPage.getGrid().should("exist");
 
     // Step 2: add first product
-    products.addFirstItemToCart();
-    products.getAddedModal().should("be.visible");
+    productsPage.addFirstItemToCart();
+    productsPage.getAddedModal().should("be.visible");
 
     // Step 3: go to cart
-    products.openCartFromModal();
+    productsPage.openCartFromModal();
     cy.url().should("include", "/view_cart");
-    cart.getVisibleRows().its("length").should("be.gte", 1);
+    cartPage.getVisibleRows().its("length").should("be.gte", 1);
 
     // Step 4: proceed to checkout (this opens the modal)
-    cart.proceedToCheckout();
+    cartPage.proceedToCheckout();
 
     // Step 5: in modal, click "Register / Login"
-    cart.clickRegisterFromCheckoutModal();
+    cartPage.clickRegisterFromCheckoutModal();
 
     // Step 6: New User Signup header visible and start signup (faker inside PO)
-    signup.getNewUserHeader().should("be.visible");
-    const { name } = signup.startNewSignup(); // returns { name, email }
+    signupPage.getNewUserHeader().should("be.visible");
+    const { name } = signupPage.startNewSignup(); // returns { name, email }
 
     // Step 7: fill account info and create account
-    account.getEnterAccountInfoHeader().should("be.visible");
-    account.fillAllFields(); // faker for address etc.
-    account.clickCreateAccount();
+    infoPage.getAccountInfoHeader().should("be.visible");
+    infoPage.fillAllFields(); // faker for address etc.
+    infoPage.clickCreateAccount();
 
     // Step 8: 'ACCOUNT CREATED!' then Continue
-    status.getAccountCreatedMessage().should("be.visible");
-    status.clickContinue();
+    statusPage.getAccountCreatedMessage().should("be.visible");
+    statusPage.clickContinue();
 
     // Step 9: 'Logged in as <name>'
-    status.getLoggedInLabel().should("contain.text", name);
+    statusPage.getLoggedInLabel().should("contain.text", name);
 
     // Step 10: back to cart and proceed again
-    cart.visit();
+    cartPage.visit();
     cy.url().should("include", "/view_cart");
-    cart.proceedToCheckout();
+    cartPage.proceedToCheckout();
 
     // Step 11: checkout headers
-    checkout.getAddressDetailsHeader().should("be.visible");
-    checkout.getReviewYourOrderHeader().should("be.visible");
+    checkoutPage.getAddressDetailsHeader().should("be.visible");
+    checkoutPage.getReviewYourOrderHeader().should("be.visible");
 
     // Step 12: optional comment + place order
-    checkout.addOrderComment("Please deliver ASAP.");
-    checkout.clickPlaceOrder();
+    checkoutPage.addOrderComment("Please deliver ASAP.");
+    checkoutPage.clickPlaceOrder();
 
     // Step 13: payment (use test card inside PO)
-    payment.payWithTestCard();
+    paymentPage.payWithTestCard();
 
     // Step 14: success message
-    payment.getOrderPlacedMessage().should("be.visible");
+    paymentPage.getOrderPlacedMessage().should("be.visible");
 
     // Step 15: delete account
-    status.clickDeleteAccount();
-    status.getAccountDeletedMessage().should("be.visible");
-    status.clickContinue();
+    statusPage.clickDeleteAccount();
+    statusPage.getAccountDeletedMessage().should("be.visible");
+    statusPage.clickContinue();
   });
 });

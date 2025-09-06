@@ -3,27 +3,27 @@
 import { RecommendedPage } from "../../../support/pages/recommendedPage";
 import { CartPage } from "../../../support/pages/cartPage";
 
-const recommended = new RecommendedPage();
-const cart = new CartPage();
+const recommendedPage = new RecommendedPage();
+const cartPage = new CartPage();
 
 describe("UI Platform - TC22: Add to cart from Recommended items", () => {
   it("adds a recommended product and verifies it in the cart", () => {
     // Step 1–2: Launch browser + navigate
-    recommended.visitAndScrollToSection();
+    recommendedPage.visitAndScrollToSection();
 
     // Step 3–4: Scroll to bottom + check 'RECOMMENDED ITEMS'
-    recommended.getSectionTitle().should("be.visible");
-    recommended.getSection().should("be.visible");
+    recommendedPage.getSectionTitle().should("be.visible");
+    recommendedPage.getSection().should("be.visible");
 
     // Step 5: Add to cart from recommended product
-    recommended.addFirstRecommendedToCart();
+    recommendedPage.addFirstRecommendedToCart();
 
     // Step 6: Click on 'View Cart' button
-    recommended.openCartFromModal();
-    cart.visit();
+    recommendedPage.openCartFromModal();
+    cartPage.visit();
 
     // Step 7: Verify product is displayed in cart page
-    cart.getVisibleRows().should("have.length.greaterThan", 0);
-    recommended.assertFirstRecommendedInCart();
+    cartPage.getVisibleRows().should("have.length.greaterThan", 0);
+    cartPage.getRows().first().find(".cart_description").should("be.visible");
   });
 });

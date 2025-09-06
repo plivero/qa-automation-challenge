@@ -3,25 +3,25 @@
 import { ProductsPage } from "../../../support/pages/productsPage";
 import { ProductDetailsPage } from "../../../support/pages/productDetailsPage";
 
-const products = new ProductsPage();
-const productDetails = new ProductDetailsPage();
+const productsPage = new ProductsPage();
+const productDetailsPage = new ProductDetailsPage();
 
 describe("Products - Product Details", () => {
   it("opens product details and validates the information", () => {
     // visit products
-    products.visit();
-    products.getTitle().should("be.visible");
-    products.getGrid().should("exist");
+    productsPage.visit();
+    productsPage.getTitle().should("be.visible");
+    productsPage.getGrid().should("exist");
 
     // open first product
     cy.get(".product-image-wrapper").first().contains("View Product").click();
 
     // asserts on details
-    productDetails.getDetailsContainer().should("be.visible");
-    productDetails.getCategory().should("be.visible");
-    productDetails.getPrice().should("be.visible");
-    productDetails.getAvailability().should("be.visible");
-    productDetails.getCondition().should("be.visible");
-    productDetails.getBrand().should("be.visible");
+    productDetailsPage.getDetailsContainer().should("be.visible");
+    productDetailsPage.getCategory().should("be.visible");
+    productDetailsPage.getPrice().should("be.visible");
+    productDetailsPage.getAvailability().should("be.visible");
+    productDetailsPage.getCondition().should("be.visible");
+    productDetailsPage.getBrand().should("be.visible");
   });
 });

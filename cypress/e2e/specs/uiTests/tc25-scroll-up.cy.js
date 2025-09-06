@@ -2,15 +2,15 @@
 
 import { HomePage } from "../../../support/pages/homePage";
 
-const home = new HomePage();
+const homePage = new HomePage();
 
 describe("UI Platform - TC25: Scroll Down & Arrow Scroll Up", () => {
   it("scrolls to bottom, verifies 'SUBSCRIPTION', uses arrow to scroll up", () => {
     // Step 1–2: open site
-    home.visit();
+    homePage.visit();
 
     // Step 3: home visible
-    home.getLogo().should("be.visible");
+    homePage.getLogo().should("be.visible");
 
     // Step 4: scroll down
     cy.scrollTo("bottom");
@@ -22,6 +22,6 @@ describe("UI Platform - TC25: Scroll Down & Arrow Scroll Up", () => {
     cy.get("#scrollUp").click();
 
     // Step 7: hero text visible again (means we are at the top)
-    home.getHeroText().should("be.visible");
+    homePage.getHeroText().should("be.visible");
   });
 });

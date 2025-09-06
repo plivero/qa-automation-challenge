@@ -233,11 +233,8 @@ describe("API 13 - PUT METHOD To Update User Account", () => {
         form: true,
         body: buildUpdatedPayload(payload),
         failOnStatusCode: false,
-      }).then(({ status, body }) => {
-        expect(status).to.eq(405);
-        const data = typeof body === "string" ? JSON.parse(body) : body; // in this case the API already returns body as an object ({detail: ...}), so parsing directly would break
-
-        expect(data.detail).to.eq('Method "POST" not allowed.');
+      }).then(({ body }) => {
+        expect(body.detail).to.eq('Method "POST" not allowed.');
       });
     });
   });

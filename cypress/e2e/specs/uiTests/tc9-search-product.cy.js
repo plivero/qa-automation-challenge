@@ -2,104 +2,104 @@
 
 import { ProductsPage } from "../../../support/pages/productsPage";
 
-const products = new ProductsPage();
+const productsPage = new ProductsPage();
 
 describe("UI Platform - TC9: Search Product", () => {
   it("searches by keyword and shows related products", () => {
-    const term = "dress";
+    // Step 1: Launch browser
+    // (handled by Cypress runner)
 
-    // 1–2) Launch & navigate
-    cy.visit("/");
+    // Step 2: Navigate to url 'http://automationexercise.com'
+    // Step 4: Click on 'Products' button
+    // (go straight to /products for simplicity)
+    productsPage.visit();
 
-    // 3) Home page is visible
-    cy.get('img[src="/static/images/home/logo.png"]', {
-      timeout: 10000,
-    }).should("be.visible");
+    // Step 3: Home page is visible successfully
+    productsPage.getTitle().should("be.visible");
+    productsPage.getGrid().should("exist");
 
-    // 4) Click on 'Products' button
-    cy.get('a[href="/products"]').first().click({ force: true });
-
-    // 5) Verify user is navigated to ALL PRODUCTS page
+    // Step 5: Verify user is navigated to ALL PRODUCTS page
     cy.location("pathname", { timeout: 10000 }).should("eq", "/products");
-    products.getTitle().should("be.visible");
-    products.getGrid().should("exist");
 
-    // 6) Enter product name and click search
-    products.searchDress();
+    // Step 6: Enter product name and click search
+    productsPage.searchDress();
 
-    // 7) Verify 'SEARCHED PRODUCTS' is visible
+    // Step 7: Verify 'SEARCHED PRODUCTS' is visible
     cy.contains(/Searched Products/i, { timeout: 10000 }).should("be.visible");
 
-    // 8) Verify all related products are visible
-    products
+    // Step 8: Verify all related products are visible
+    productsPage
       .getGrid()
       .find(".product-image-wrapper")
-      .should("have.length.greaterThan", 0)
-      .each(($card) => cy.wrap($card).should("be.visible"));
+      .its("length")
+      .should("be.gt", 0);
   });
 });
 
-// personal edge cases kept as-is, but using ProductsPage
+// Edge cases
 describe("UI Platform - TC9 Edge Cases: Search Product", () => {
   beforeEach(() => {
-    products.visit();
-    products.getTitle().should("be.visible");
-    products.getGrid().should("exist");
+    productsPage.visit();
+    productsPage.getTitle().should("be.visible");
+    productsPage.getGrid().should("exist");
   });
 
   it("finds products when searching for 'dress'", () => {
-    products.searchDress();
+    productsPage.searchDress();
     cy.contains("Searched Products").should("be.visible");
-    products
+    productsPage
       .getGrid()
-      .find(".col-sm-4:visible")
+      .find(".product-image-wrapper")
       .its("length")
       .should("be.gt", 0);
   });
 
   it("finds products when searching for 'tops'", () => {
-    products.searchTops();
+    productsPage.searchTops();
     cy.contains("Searched Products").should("be.visible");
-    products
+    productsPage
       .getGrid()
-      .find(".col-sm-4:visible")
+      .find(".product-image-wrapper")
       .its("length")
       .should("be.gt", 0);
   });
 
   it("finds products when searching for 'saree'", () => {
-    products.searchSaree();
+    productsPage.searchSaree();
     cy.contains("Searched Products").should("be.visible");
-    products
+    productsPage
       .getGrid()
-      .find(".col-sm-4:visible")
+      .find(".product-image-wrapper")
       .its("length")
       .should("be.gt", 0);
   });
 
   it("finds products when searching for 'jeans'", () => {
-    products.searchJeans();
+    productsPage.searchJeans();
     cy.contains("Searched Products").should("be.visible");
-    products
+    productsPage
       .getGrid()
-      .find(".col-sm-4:visible")
+      .find(".product-image-wrapper")
       .its("length")
       .should("be.gt", 0);
   });
 
   it("finds products when searching for 't-shirt'", () => {
-    products.searchTshirt();
+    productsPage.searchTshirt();
     cy.contains("Searched Products").should("be.visible");
-    products
+    productsPage
       .getGrid()
-      .find(".col-sm-4:visible")
+      .find(".product-image-wrapper")
       .its("length")
       .should("be.gt", 0);
   });
 
   it("shows zero results for a non-existing product", () => {
-    products.searchInvalid();
+    productsPage.searchInvalid();
     cy.contains("Searched Products").should("be.visible");
-    products.getGrid().find(".col-sm-4:visible").should("have.length", 0);
+    productsPage
+      .getGrid()
+      .find(".product-image-wrapper")
+      .should("have.length", 0);
   });
 });

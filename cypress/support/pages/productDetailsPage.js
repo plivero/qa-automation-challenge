@@ -4,48 +4,71 @@
 import { faker } from "@faker-js/faker";
 
 export class ProductDetailsPage {
+  elements = {
+    detailsContainer: () => cy.get(".product-information"),
+    nameFragment: (fragment) =>
+      cy.contains(".product-information", new RegExp(fragment, "i")),
+    category: () => cy.contains(".product-information", /category/i),
+    price: () => cy.contains(".product-information", /Rs\.\s*\d/),
+    availability: () => cy.contains(".product-information", /availability/i),
+    condition: () => cy.contains(".product-information", /condition/i),
+    brand: () => cy.contains(".product-information", /brand/i),
+
+    quantityInput: () => cy.get("#quantity"),
+    addToCartBtn: () => cy.contains("Add to cart"),
+    addedModal: () => cy.contains("Added!"),
+    viewCartBtn: () => cy.contains("View Cart"),
+
+    reviewTitle: () => cy.contains(/Write Your Review/i),
+    reviewNameInput: () => cy.get("#name"),
+    reviewEmailInput: () => cy.get("#email"),
+    reviewTextInput: () => cy.get("#review"),
+    reviewSubmitBtn: () => cy.get("#button-review"),
+    reviewSuccess: () => cy.contains(/Thank you for your review/i),
+  };
+
   getDetailsContainer() {
-    return cy.get(".product-information");
+    return this.elements.detailsContainer();
   }
 
   getNameFragment(nameFragment) {
-    return cy.contains(".product-information", new RegExp(nameFragment, "i"));
+    return this.elements.nameFragment(nameFragment);
   }
 
   getCategory() {
-    return cy.contains(".product-information", /category/i);
+    return this.elements.category();
   }
 
   getPrice() {
-    return cy.contains(".product-information", /Rs\.\s*\d/);
+    return this.elements.price();
   }
 
   getAvailability() {
-    return cy.contains(".product-information", /availability/i);
+    return this.elements.availability();
   }
 
   getCondition() {
-    return cy.contains(".product-information", /condition/i);
+    return this.elements.condition();
   }
 
   getBrand() {
-    return cy.contains(".product-information", /brand/i);
+    return this.elements.brand();
   }
 
   setQuantity(qty) {
-    cy.get("#quantity").clear().type(String(qty));
+    this.elements.quantityInput().clear().type(String(qty));
   }
 
   addToCartFromDetails() {
-    cy.contains("Add to cart").click({ force: true });
+    this.elements.addToCartBtn().click({ force: true });
   }
 
   getAddedModal() {
-    return cy.contains("Added!");
+    return this.elements.addedModal();
   }
 
   openCartFromModal() {
-    cy.contains("View Cart").click();
+    this.elements.viewCartBtn().click();
   }
 
   writeReviewWithDefaults() {
@@ -53,14 +76,14 @@ export class ProductDetailsPage {
     const email = faker.internet.email();
     const text = faker.commerce.productDescription();
 
-    cy.contains(/Write Your Review/i).should("be.visible");
-    cy.get("#name").clear().type(name);
-    cy.get("#email").clear().type(email);
-    cy.get("#review").clear().type(text);
-    cy.get("#button-review").click({ force: true });
+    this.elements.reviewTitle().should("be.visible");
+    this.elements.reviewNameInput().clear().type(name);
+    this.elements.reviewEmailInput().clear().type(email);
+    this.elements.reviewTextInput().clear().type(text);
+    this.elements.reviewSubmitBtn().click({ force: true });
   }
 
   getReviewSuccessMessage() {
-    return cy.contains(/Thank you for your review/i);
+    return this.elements.reviewSuccess();
   }
 }

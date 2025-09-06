@@ -18,6 +18,6 @@ describe("UI Platform - TC7: Verify Test Cases page", () => {
     // 5) Verify user is on Test Cases page
     cy.location("pathname", { timeout: 10000 }).should("eq", "/test_cases");
     cy.contains(/Test Cases/i).should("be.visible");
-    cy.contains(/Test Case 1:\s*Register User/i).should("be.visible"); // sanity content check
+    cy.contains(/Test Case 1:\s*Register User/i).should("be.visible");
   });
 });

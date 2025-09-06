@@ -5,52 +5,59 @@
 import { faker } from "@faker-js/faker";
 
 export class LoginPage {
+  elements = {
+    emailInput: () => cy.get('[data-qa="login-email"]'),
+    passwordInput: () => cy.get('[data-qa="login-password"]'),
+    submitButton: () => cy.get('[data-qa="login-button"]'),
+    loginPageHeader: () => cy.contains("Login to your account"),
+    loggedInLabel: () => cy.contains("Logged in as"),
+    loginError: () => cy.contains("Your email or password is incorrect!"),
+    logoutButton: () => cy.contains("Logout"),
+  };
+
   visit() {
     cy.visit("/login");
   }
 
-  get emailInput() {
-    return cy.get('[data-qa="login-email"]');
+  typeEmail(email) {
+    this.elements.emailInput().clear().type(email);
   }
 
-  get passwordInput() {
-    return cy.get('[data-qa="login-password"]');
+  typePassword(password) {
+    this.elements.passwordInput().clear().type(password);
   }
 
-  get submitButton() {
-    return cy.get('[data-qa="login-button"]');
+  clickSubmit() {
+    this.elements.submitButton().click();
   }
 
   loginWith(email, password) {
-    this.emailInput.clear().type(email);
-    this.passwordInput.clear().type(password);
-    this.submitButton.click();
+    this.typeEmail(email);
+    this.typePassword(password);
+    this.clickSubmit();
   }
 
   loginWithValid() {
     this.loginWith(Cypress.env("USER_EMAIL"), Cypress.env("USER_PASSWORD"));
   }
 
-  // Generate wrong credentials internally using faker
   loginWithInvalidDefaults() {
-    const email = faker.internet.email();
-    const password = faker.internet.password();
-    this.loginWith(email, password);
+    this.loginWith(faker.internet.email(), faker.internet.password());
   }
 
   getLoginPageHeader() {
-    return cy.contains("Login to your account");
+    return this.elements.loginPageHeader();
   }
 
   getLoggedInLabel() {
-    return cy.contains("Logged in as");
+    return this.elements.loggedInLabel();
   }
 
   getLoginErrorMessage() {
-    return cy.contains("Your email or password is incorrect!");
+    return this.elements.loginError();
   }
 
   logout() {
-    cy.contains("Logout").click();
+    this.elements.logoutButton().click();
   }
 }

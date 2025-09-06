@@ -5,44 +5,44 @@ import { CartPage } from "../../../support/pages/cartPage";
 import { LoginPage } from "../../../support/pages/loginPage";
 import { HomePage } from "../../../support/pages/homePage";
 
-const products = new ProductsPage();
-const cart = new CartPage();
-const login = new LoginPage();
-const home = new HomePage();
+const productsPage = new ProductsPage();
+const cartPage = new CartPage();
+const loginPage = new LoginPage();
+const homePage = new HomePage();
 
 describe("UI Platform - TC20: Search products and verify cart after login", () => {
   it("keeps searched items in cart after logging in", () => {
     const term = Cypress.env("SEARCH_TERM") || "dress";
 
     // Step 1: open products
-    products.visit();
-    products.getTitle().should("be.visible");
+    productsPage.visit();
+    productsPage.getTitle().should("be.visible");
 
     // Step 2: search term
-    products.search(term);
+    productsPage.search(term);
     cy.contains(/Searched Products/i).should("be.visible");
 
     // Step 3: ensure results
-    products.getGrid().should("exist");
+    productsPage.getGrid().should("exist");
 
     // Step 4: add first item
-    products.addFirstItemToCart();
-    products.getAddedModal().should("be.visible");
+    productsPage.addFirstItemToCart();
+    productsPage.getAddedModal().should("be.visible");
 
     // Step 5: go to cart
-    products.openCartFromModal();
+    productsPage.openCartFromModal();
     cy.url().should("include", "/view_cart");
 
     // Step 6: assert item visible in cart
-    cart.getVisibleRows().should("have.length.greaterThan", 0);
+    cartPage.getVisibleRows().should("have.length.greaterThan", 0);
 
     // Step 7: go to login
-    home.getNavMenuItem("Signup / Login").click();
-    login.getLoginPageHeader().should("be.visible");
-    login.loginWithValid();
+    homePage.getNavMenuItem("Signup / Login").click();
+    loginPage.getLoginPageHeader().should("be.visible");
+    loginPage.loginWithValid();
 
     // Step 8: open cart again
-    cart.visit();
-    cart.getVisibleRows().should("have.length.greaterThan", 0);
+    cartPage.visit();
+    cartPage.getVisibleRows().should("have.length.greaterThan", 0);
   });
 });

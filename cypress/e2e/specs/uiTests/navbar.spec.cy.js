@@ -1,10 +1,10 @@
 import { HomePage } from "../../../support/pages/homePage";
 
-const home = new HomePage();
+const homePage = new HomePage();
 
 describe("UI Platform - Navbar sanity check", () => {
   it("should display all navbar links", () => {
-    home.visit();
+    homePage.visit();
     [
       "Home",
       "Products",
@@ -15,7 +15,7 @@ describe("UI Platform - Navbar sanity check", () => {
       "Video Tutorials",
       "Contact us",
     ].forEach((item) => {
-      home.getNavMenuItem(item).should("exist");
+      homePage.getNavMenuItem(item).should("exist");
     });
   });
 });

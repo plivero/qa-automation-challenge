@@ -2,43 +2,42 @@
 
 import { HomePage } from "../../../support/pages/homePage";
 import { LoginPage } from "../../../support/pages/loginPage";
-import { UserApiPage } from "../../../support/pages/userApiPage";
+import { ensureUserViaApi } from "../../../support/helpers/userApi";
 
-const home = new HomePage();
-const login = new LoginPage();
-const userApi = new UserApiPage();
+const homePage = new HomePage();
+const loginPage = new LoginPage();
 
 describe("UI Platform - TC4: Logout User", () => {
   // ensure env user exists ONLY for this spec (no e2e.js changes)
   before(() => {
-    userApi.ensureEnvUser();
+    ensureUserViaApi();
   });
 
   it("logs in and logs out (steps 1–10)", () => {
     // Step 1–2: open site
-    home.visit();
+    homePage.visit();
 
     // Step 3: home visible
-    home.getLogo().should("be.visible");
+    homePage.getLogo().should("be.visible");
 
     // Step 4: go to 'Signup / Login'
-    home.getNavMenuItem("Signup / Login").click();
+    homePage.getNavMenuItem("Signup / Login").click();
 
     // Step 5: 'Login to your account' visible
     cy.url().should("include", "/login");
-    login.getLoginPageHeader().should("be.visible");
+    loginPage.getLoginPageHeader().should("be.visible");
 
     // Step 6–7: login with env creds (PO does the typing/click)
-    login.loginWithValid();
+    loginPage.loginWithValid();
 
     // Step 8: 'Logged in as' visible
-    login.getLoggedInLabel().should("be.visible");
+    loginPage.getLoggedInLabel().should("be.visible");
 
     // Step 9: click 'Logout'
-    login.logout();
+    loginPage.logout();
 
     // Step 10: back on login page
     cy.url().should("include", "/login");
-    login.getLoginPageHeader().should("be.visible");
+    loginPage.getLoginPageHeader().should("be.visible");
   });
 });

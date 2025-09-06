@@ -7,7 +7,7 @@ import { AccountStatusPage } from "../../../support/pages/accountStatusPage";
 
 const home = new HomePage();
 const signup = new SignupPage();
-const account = new AccountInfoPage();
+const info = new AccountInfoPage();
 const status = new AccountStatusPage();
 
 describe("UI Platform - TC1: Register User", () => {
@@ -25,9 +25,9 @@ describe("UI Platform - TC1: Register User", () => {
     const { name, email } = signup.startNewSignup();
 
     // fill account info (faker inside PO) and create account
-    account.getEnterAccountInfoHeader().should("be.visible");
-    account.fillAllFields();
-    account.clickCreateAccount();
+    info.getAccountInfoHeader().should("be.visible");
+    info.fillAllFields();
+    info.clickCreateAccount();
 
     // created → continue
     status.getAccountCreatedMessage().should("be.visible");
