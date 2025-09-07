@@ -25,9 +25,6 @@ The main goals of this project are:
 qa-automation-challenge/
 ├─ .github/
 │ └─ workflows/ # GitHub Actions workflows
-│ ├─ cypress-browsers.yml # Cross-browser matrix (Chrome, Edge, Firefox)
-│ ├─ cypress-daily.yml # Scheduled daily run
-│ └─ cypress-manual.yml # Manual trigger (Chrome)
 ├─ cypress/
 │ ├─ downloads/ # Downloaded files (ignored in git)
 │ ├─ e2e/
@@ -39,12 +36,10 @@ qa-automation-challenge/
 │ ├─ support/
 │ │ ├─ factories/ # Factories for test data (faker-js)
 │ │ ├─ pages/ # Page Objects
-│ │ ├─ commands.js # Custom Cypress commands
-│ │ └─ e2e.js # Global configuration
 ├─ .gitattributes
 ├─ .gitignore
 ├─ cypress.config.js
-├─ cypress.env.json # Local environment variables (gitignored)
+├─ cypress.env.json # Local environment variables (added manually)
 ├─ eslint.config.mjs
 ├─ package.json
 ├─ package-lock.json
@@ -63,32 +58,6 @@ Note: This structure reflects the current state of the repository. Some folders 
 - **Code style enforced with ESLint:** consistent rules defined in `eslint.config.mjs`.
 - **Refactor-first approach:** redundant personal specs consolidated into platform tests (e.g., add-to-cart, login/logout, product search).
 - **CI-ready:** tests are stable for headless and cross-browser runs.
-
----
-
-## Completed Activities
-
-| Step | Description                                                              | Branch                 |
-| ---- | ------------------------------------------------------------------------ | ---------------------- |
-| 1    | Project initialized with npm                                             | `feat/init-project`    |
-| 2    | ESLint configured                                                        | `feat/eslint`          |
-| 3    | Cypress installed and initialized                                        | `feat/ui-tests`        |
-| 4    | UI tests added (basic and session flows)                                 | `feat/ui-tests`        |
-| 5    | Platform tests added (TC1–TC26: register/login, products, cart, orders…) | `feat/ui-plat-tests`   |
-| 6    | API tests added (APIs 1–14: products, brands, search, user account)      | `feat/api-tests`       |
-| 7    | Manual GitHub Actions workflow for Cypress                               | `feat/pipeline`        |
-| 8    | Test case fixes and adjustments                                          | `feat/tcFixes`         |
-| 9    | Documentation and text fixes                                             | `feat/textFixes`       |
-| 10   | General fixes and improvements                                           | `feat/fixes`           |
-| 11   | README documentation                                                     | `docs/readme`          |
-| 12   | Faker added for dynamic test data                                        | `feat/faker`           |
-| 13   | Refactor (API): simplify API specs, enforce strict status checks         | `refactor/api`         |
-| 14   | UI test improvements                                                     | `feat/ui-tests-improv` |
-| 15   | Refactor (Tests): created `uiTests` folder and renamed old `api` folder  | `chore/tests`          |
-| 16   | Refactor (Pipeline): unify workflows with matrix and Docker container    | `refactor/pipeline`    |
-| 17   | Refactor (API): remove acceptance of 201 response code in first API test | `refactor/api`         |
-| 18   | Refactor (PageObject): remove conditions and syntax pollution            | `refactor/pageObject`  |
-| 19   | Refactor (uiTests): remove duplicated personal specs into platform tests | `refactor/uiTests`     |
 
 ---
 
@@ -131,14 +100,101 @@ npx cypress run --browser chrome --headless --spec "cypress/e2e/specs/api/*.cy.j
 
 ## Environment Variables
 
-Cypress uses environment variables to keep sensitive data (such as login credentials) out of the test code.
+In order to keep the test suite secure, portable, and easy to maintain, this project makes extensive use of environment variables. Rather than hardcoding sensitive information directly into the test code (such as login credentials or credit card numbers), all sensitive or configurable data is isolated into local configuration files or injected through CI/CD secrets. This approach ensures that the same tests can run seamlessly across different environments without modifying the test logic.
+
+There are three key aspects to how environment variables are handled:
+-Separation of sensitive data
+-For local development, values are stored in cypress.env.json, which is ignored by Git. This prevents credentials from being committed to the repository.
+-In CI/CD pipelines, the same values are managed through GitHub Actions secrets, ensuring no sensitive data is ever exposed in the source code.
+
+Dynamic test data with Faker
+-Many flows (such as user registration or form submissions) require unique values for each execution.
+-The project uses @faker-js/faker
+to generate random names, emails, and descriptions.
+-Example: instead of reusing qa_user@example.com, the test might generate something like ui_16933567123_abcd@example.com, preventing conflicts with existing test records.
+
+Fallback and static defaults
+-When a variable is not defined in the environment, the code falls back to static defaults.
+-This is especially useful for deterministic test values, such as a test credit card number (4111111111111111) or the placeholder user name “QA User.”
+-With this setup, the suite is both flexible (when environment-specific data is provided) and practical (when running with defaults).
+-Overall, environment variables make the test suite portable, consistent, and safe. You can run the exact same tests locally, in staging, or in CI/CD pipelines without changing the test files.
+
+Example of a local cypress.env.json:
+{
+"USER_EMAIL": "qa_user@example.com",
+"USER_PASSWORD": "SuperSecret123",
+"USER_NAME": "QA User"
+
+}
+
+Usage inside specs:
+const email = Cypress.env("USER_EMAIL");
+const name = Cypress.env("USER_NAME");
 
 ## Test Strategy
 
-### Rationale & Principles
+### Guiding Principles
 
-The suite was designed using Risk-Based Testing and aligned with the Testing Pyramid.
-Priority was given to flows and endpoints with higher impact and known instability (e.g., user account creation/login and API endpoints with inconsistent status/format). Whenever feasible, validations were implemented at the API level for faster and more stable feedback, while UI E2E covers end-to-end user value.
+The design of this test suite follows a clear set of principles to ensure **reliability, maintainability, and meaningful coverage**. Rather than focusing on sheer quantity of tests, the emphasis is on testing what matters most: the flows and components that deliver the greatest value to users and the business.
+
+The strategy combines **Risk-Based Testing** with the **Testing Pyramid**:
+
+- At the foundation are **API tests**, which are fast, stable, and cover most of the functional logic without relying on the UI.
+- On top of that, **critical UI end-to-end flows** are tested, such as login, checkout, or project approval. These flows validate that the system works as expected from the user’s perspective.
+- Finally, **exploratory and edge scenarios** complement the suite, ensuring that unusual but important cases are not overlooked.
+
+This layered approach provides a balance between **speed** and **confidence**: we avoid overloading the suite with brittle UI tests, but we still validate the user experience where it truly matters.
+
+---
+
+### Risk-Based Prioritization
+
+Not every feature carries the same risk. Test coverage is prioritized using an **Impact × Likelihood** model:
+
+- **High-risk areas** include user account creation, login, checkout, and approval workflows. These are tested thoroughly because failures here would block critical business operations.
+- **Medium risk** areas, such as search functionality or cart persistence, are validated to ensure smooth user interactions.
+- **Lower risk** aspects, such as static labels or secondary navigation, receive lighter coverage, often through exploratory tests.
+
+---
+
+### Test Design Techniques
+
+To maximize efficiency and clarity, the following techniques are applied:
+
+- **Equivalence Partitioning**: testing representative valid and invalid inputs instead of every possible variation.
+- **Boundary Value Analysis**: focusing on values at the edges, where defects are most likely (e.g., quantity = 0, 1, max).
+- **Positive, Negative, and Edge Cases**: ensuring each scenario is explicitly validated with simple, deterministic assertions.
+
+---
+
+### Data Management
+
+Data consistency is critical in automation. This project uses a hybrid approach:
+
+- **Environment variables** manage sensitive data such as credentials.
+- **Faker-generated values** are used for free-text fields to guarantee uniqueness and independence between test runs.
+- **Static fallbacks** are applied for deterministic flows, so tests never fail just because environment variables are missing.
+
+---
+
+### Maintainability
+
+The suite is designed to be **easy to read, extend, and maintain**:
+
+- The **Page Object Model (POM)** is strictly enforced: Page Objects contain only locators and actions, while assertions live in the specs.
+- Specs are intentionally kept “clean and simple” — one assertion per line, no loops, no “clever” JavaScript tricks. This makes the tests easy to read and maintain even for junior QAs.
+- Defaults and helpers reduce boilerplate without hiding test intent.
+
+---
+
+### Non-Functional Practices
+
+Beyond functional coverage, the suite also considers **quality of execution** and **pipeline readiness**:
+
+- **Cross-browser validation**: tests run in Chrome, Edge, and Firefox via CI pipelines to ensure consistent user experience.
+- **Daily scheduled runs**: a full regression suite executes daily, catching regressions early even when no new code is pushed.
+- **Code quality enforcement**: ESLint and Prettier ensure consistent coding style and readability across all tests and Page Objects.
+- **Smart synchronization**: explicit waits are avoided whenever possible, replaced by Cypress’ built-in retry-ability (`.should("be.visible")`, `.should("exist")`). This ensures stability while keeping tests fast.
 
 ### Why these tests
 
@@ -157,14 +213,13 @@ Priority was given to flows and endpoints with higher impact and known instabili
 - Edge cases (progressively expanding):
   - Non-existent products in search
   - Invalid login attempts
-  - Maximum allowed characters in form fields
   - Submitting required forms with missing inputs
 
 ---
 
 ### API Tests
 
-**Location:** `cypress/e2e/specs/api/`
+**Location:** `cypress/e2e/specs/apiTests/`
 
 **Scope & Selection**
 
@@ -190,7 +245,7 @@ Priority was given to flows and endpoints with higher impact and known instabili
 
 ### Platform (UI) Tests
 
-**Location:** `cypress/e2e/specs/platformTests/` (mapped to **TC1–TC26**)
+**Location:** `cypress/e2e/specs/uiTests/`
 
 **Scope**
 
@@ -206,10 +261,6 @@ Priority was given to flows and endpoints with higher impact and known instabili
 - Validated in **headless Chrome** (manual workflow) and **browser matrix** (Chrome, Edge, Firefox). Differences are mitigated by resilient selectors and timing-robust assertions.
 
 ---
-
-### Personal Tests
-
-**Location:** `cypress/e2e/specs/personalTests/`
 
 **Purpose**
 
@@ -297,17 +348,3 @@ Multiple fast login attempts can trigger anti-abuse responses.
 **Fix:** reuse sessions when possible and space out login attempts in parallel runs.
 
 ---
-
-## To-Do List
-
-- [x] About section (project scope and goals)
-- [x] Project Structure (folder organization)
-- [x] Best Practices (coding and workflow standards)
-- [x] Completed Activities (history of branches and tasks)
-- [x] How to Run (local setup and execution)
-- [x] Environment Variables (local and CI configuration)
-- [x] Test Strategy (API, platform)
-- [x] CI Pipelines (manual, daily, cross-browser workflows)
-- [x] Troubleshooting (common issues and fixes)
-- [x] Enhanced Documentation (README polishing and final structure)
-- [x] Coverage expansion (add more edge cases & negative scenarios)
