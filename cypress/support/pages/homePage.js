@@ -1,46 +1,69 @@
 // cypress/support/pages/homePage.js
-// @ts-check
+
 /// <reference types="cypress" />
 
 export class HomePage {
+  elements = {
+    logo: () => cy.get('img[alt="Website for automation practice"]'),
+    navMenu: () => cy.get("ul.nav.navbar-nav"),
+    subscriptionEmail: () => cy.get("footer #susbscribe_email"),
+    subscriptionSubmit: () => cy.get("footer #subscribe"),
+    scrollUpArrow: () => cy.get("#scrollUp"),
+  };
   visit() {
     cy.visit("/");
   }
-
   getLogo() {
-    return cy.get('img[alt="Website for automation practice"]');
+    return this.elements.logo();
   }
-
   getNavMenuItem(text) {
-    return cy.get("ul.nav.navbar-nav").contains(text);
+    return this.elements.navMenu().contains(text);
   }
-
   subscribeFooter(email) {
-    cy.contains(/subscription/i)
-      .parent()
-      .parent()
-      .within(() => {
-        cy.get('input[type="email"]').clear().type(email);
-        cy.get('button[type="submit"], button').click();
-      });
-  }
-
-  getSubscriptionSuccessMessage() {
-    return cy.contains(/you have been successfully subscribed!/i);
+    this.elements.subscriptionEmail().clear().type(email);
+    this.elements.subscriptionSubmit().click();
   }
   subscribeFooterWithDefaults() {
     const email = Cypress.env("USER_EMAIL");
     this.subscribeFooter(email);
   }
-  // Button scroll up
   getScrollUpArrow() {
-    return cy.get("#scrollUp");
+    return this.elements.scrollUpArrow();
   }
-
-  // Textfrom top of the home
-  getHeroText() {
-    return cy.contains(
-      /Full-Fledged practice website for Automation Engineers/i
-    );
+  getNavHome() {
+    return this.elements.navMenu().contains("Home");
+  }
+  getNavProducts() {
+    return this.elements.navMenu().contains("Products");
+  }
+  getNavCart() {
+    return this.elements.navMenu().contains("Cart");
+  }
+  getNavSignupLogin() {
+    return this.elements.navMenu().contains("Signup / Login");
+  }
+  getNavTestCases() {
+    return this.elements.navMenu().contains("Test Cases");
+  }
+  getNavApiTesting() {
+    return this.elements.navMenu().contains("API Testing");
+  }
+  getNavVideoTutorials() {
+    return this.elements.navMenu().contains("Video Tutorials");
+  }
+  getNavContactUs() {
+    return this.elements.navMenu().contains("Contact us");
+  }
+  scrollToBottom() {
+    cy.scrollTo("bottom");
+  }
+  scrollToTop() {
+    cy.scrollTo("top");
+  }
+  clickScrollUpArrow() {
+    this.elements.scrollUpArrow().click();
+  }
+  clickNavProducts() {
+    this.elements.navMenu().contains("Products").click();
   }
 }

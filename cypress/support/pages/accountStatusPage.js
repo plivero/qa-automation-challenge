@@ -1,28 +1,31 @@
 // cypress/support/pages/accountStatusPage.js
-// @ts-check
 /// <reference types="cypress" />
 
 export class AccountStatusPage {
-  // "ACCOUNT CREATED!"
+  elements = {
+    accountCreatedMessage: () =>
+      cy.contains(/ACCOUNT CREATED!/i, { timeout: 10000 }),
+    accountDeletedMessage: () =>
+      cy.contains(/ACCOUNT DELETED!/i, { timeout: 10000 }),
+    loggedInLabel: () => cy.contains("Logged in as"),
+    continueBtn: () => cy.get('[data-qa="continue-button"]'),
+    deleteAccountLink: () => cy.contains("Delete Account"),
+  };
+
   getAccountCreatedMessage() {
-    return cy.contains(/ACCOUNT CREATED!/i, { timeout: 10000 });
+    return this.elements.accountCreatedMessage();
   }
-
-  // "ACCOUNT DELETED!"
   getAccountDeletedMessage() {
-    return cy.contains(/ACCOUNT DELETED!/i, { timeout: 10000 });
+    return this.elements.accountDeletedMessage();
   }
-
-  // "Logged in as <name>"
   getLoggedInLabel() {
-    return cy.contains("Logged in as");
+    return this.elements.loggedInLabel();
   }
 
   clickContinue() {
-    cy.get('[data-qa="continue-button"]').click({ force: true });
+    this.elements.continueBtn().click({ force: true });
   }
-
   clickDeleteAccount() {
-    cy.contains("Delete Account").click();
+    this.elements.deleteAccountLink().click();
   }
 }

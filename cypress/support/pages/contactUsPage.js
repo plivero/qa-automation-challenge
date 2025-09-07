@@ -1,73 +1,65 @@
 // cypress/support/pages/contactUsPage.js
-// @ts-check
 /// <reference types="cypress" />
 
+import { faker } from "@faker-js/faker";
+
 export class ContactUsPage {
+  elements = {
+    form: () => cy.get('form[action="/contact_us"]'),
+    header: () => cy.get("div.contact-form > .title"),
+    name: () => cy.get('[data-qa="name"]'),
+    email: () => cy.get('[data-qa="email"]'),
+    subject: () => cy.get('[data-qa="subject"]'),
+    message: () => cy.get('[data-qa="message"]'),
+    submit: () => cy.get('[data-qa="submit-button"]'),
+    success: () =>
+      cy.contains("Success! Your details have been submitted successfully."),
+    home: () => cy.contains("Home"),
+  };
+
   visit() {
     cy.visit("/contact_us");
   }
 
-  form() {
-    return cy.get('form[action="/contact_us"]').first();
-  }
-
-  getGetInTouchHeader() {
-    return cy.contains(/GET IN TOUCH/i, { timeout: 10000 });
+  getHeader() {
+    return this.elements.header();
   }
 
   fillForm({ name, email, subject, message }) {
-    this.form().within(() => {
-      cy.get('[data-qa="name"]').clear().type(name);
-      cy.get('[data-qa="email"]').clear().type(email);
-      cy.get('[data-qa="subject"]').clear().type(subject);
-      cy.get('[data-qa="message"]').clear().type(message);
-    });
-  }
-
-  attachTextFile({ contents, fileName }) {
-    this.form()
-      .find('input[type="file"]')
-      .selectFile({
-        contents: new Blob([contents], { type: "text/plain" }),
-        fileName,
-        lastModified: Date.now(),
-      });
+    this.elements.name().type(name);
+    this.elements.email().type(email);
+    this.elements.subject().type(subject);
+    this.elements.message().type(message);
   }
 
   submit() {
-    this.form().find('[data-qa="submit-button"]').click();
+    this.elements.submit().click();
   }
 
   getSuccessMessage() {
-    return cy.contains(
-      /Success! Your details have been submitted successfully\./i
-    );
+    return this.elements.success();
   }
 
-  fillWithDefaults() {
-    const name = Cypress.env("USER_NAME");
-    const email = Cypress.env("USER_EMAIL");
+  goHome() {
+    this.elements.home().click();
+  }
 
-    this.fillForm({
-      name,
-      email,
-      subject: "QA UI - Contact",
-      message: "Message sent by Cypress (UI).",
-    });
+  getGetInTouchHeader() {
+    return this.getHeader();
   }
 
   fillAttachAndSubmitWithDefaults() {
-    this.fillWithDefaults();
-    this.attachTextFile({
-      contents: "Hello from Cypress!",
-      fileName: "contact-note.txt",
+    this.fillForm({
+      name: faker.person.fullName(),
+      email: faker.internet.email(),
+      subject: faker.lorem.words(3),
+      message: faker.lorem.sentence(),
     });
     this.submit();
   }
 
-  // Helper encapsulating step 11
   goBackHomeAndVerify() {
-    cy.contains("Home").click();
+    this.goHome();
     cy.title().should("eq", "Automation Exercise");
   }
 }

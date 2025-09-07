@@ -1,104 +1,82 @@
 // cypress/support/pages/productsPage.js
-// @ts-check
 /// <reference types="cypress" />
 
 export class ProductsPage {
-  // Action: open All Products
+  elements = {
+    title: () => cy.contains(/All Products|Products/i),
+
+    grid: () => cy.get(".features_items"),
+
+    searchInput: () => cy.get("#search_product"),
+    searchBtn: () => cy.get("#submit_search"),
+    cards: () => cy.get(".features_items .product-image-wrapper"),
+    cardByName: (name) => cy.get(".productinfo").contains(name),
+
+    addToCartBtn: () => cy.contains("Add to cart"),
+    addedModal: () => cy.contains("Added!"),
+    viewCartBtn: () => cy.contains("View Cart"),
+    continueShoppingBtn: () =>
+      cy.contains(/Continue Shopping/i, { timeout: 10000 }),
+  };
+
   visit() {
     cy.visit("/products");
   }
 
-  // Action: search term and submit
   search(term) {
-    cy.get("#search_product").clear().type(term);
-    cy.get("#submit_search").click();
+    this.elements.searchInput().clear().type(term);
+    this.elements.searchBtn().click();
   }
 
-  // Getter: page heading
   getTitle() {
-    return cy.contains(/All Products|Products/i);
+    return this.elements.title();
   }
 
-  // Getter: products grid wrapper
   getGrid() {
-    return cy.get(".features_items, .product-image-wrapper, .single-products");
+    return this.elements.grid();
   }
 
-  // Action: open product details by name fragment
+  getProductCards() {
+    return this.elements.cards();
+  }
+
   openDetailsByName(name) {
-    cy.contains(".productinfo", new RegExp(name, "i"))
-      .parents(".product-image-wrapper")
-      .contains("View Product")
-      .click();
+    this.elements.cardByName(name).contains("View Product").click();
   }
 
-  // Action: add first visible item to cart
   addFirstItemToCart() {
-    cy.get(".product-image-wrapper")
+    this.elements
+      .cards()
       .first()
-      .within(() => {
-        cy.contains("Add to cart").click({ force: true });
-      });
+      .contains("Add to cart")
+      .click({ force: true });
   }
 
-  // Getter: list of product cards (0-based indexing)
-  getCards() {
-    return cy.get(".features_items .product-image-wrapper");
-  }
-
-  // Action: add item by index (0-based)
   addItemByIndex(index) {
-    this.getCards()
+    this.elements
+      .cards()
       .eq(index)
-      .within(() => {
-        cy.contains(/Add to cart/i).click({ force: true });
-      });
+      .contains("Add to cart")
+      .click({ force: true });
   }
 
-  // Getter: "Added!" modal after adding to cart
-  getAddedModal() {
-    return cy.contains("Added!");
-  }
-
-  // Action: click "View Cart" in modal
-  openCartFromModal() {
-    cy.contains("View Cart").click();
-  }
-
-  // Action: click "Continue Shopping" in modal
-  clickContinueShoppingInModal() {
-    cy.contains(/Continue Shopping/i, { timeout: 10000 }).click();
-  }
-
-  // Open first product quickly
   openFirstProduct() {
-    this.getCards().first().contains("View Product").click({ force: true });
+    this.elements
+      .cards()
+      .first()
+      .contains("View Product")
+      .click({ force: true });
   }
 
-  // ------------------------------
-  // Predefined searches (added)
-  // ------------------------------
-  searchDress() {
-    this.search("dress");
+  getAddedModal() {
+    return this.elements.addedModal();
   }
 
-  searchTops() {
-    this.search("tops");
+  openCartFromModal() {
+    this.elements.viewCartBtn().click();
   }
 
-  searchSaree() {
-    this.search("saree");
-  }
-
-  searchJeans() {
-    this.search("jeans");
-  }
-
-  searchTshirt() {
-    this.search("t-shirt");
-  }
-
-  searchInvalid() {
-    this.search("xxxxx");
+  clickContinueShoppingInModal() {
+    this.elements.continueShoppingBtn().click();
   }
 }

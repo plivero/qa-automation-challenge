@@ -1,60 +1,63 @@
 // cypress/support/pages/cartPage.js
-// @ts-check
 /// <reference types="cypress" />
 
 export class CartPage {
+  elements = {
+    visibleRows: () => cy.get(".cart_info tbody tr:visible"),
+    rows: () => cy.get("#cart_info_table tbody tr"),
+    deleteBtns: () => cy.get('.cart_quantity_delete, a[title="Delete"]'),
+    firstItemQuantityCell: () =>
+      cy.get(".cart_info tbody tr").first().find(".cart_quantity"),
+    checkoutBtn: () => cy.contains(/Proceed To Checkout/i),
+    checkoutModal: () => cy.get(".modal-content", { timeout: 10000 }),
+    registerLoginFromModal: () => cy.get('a[href="/login"]'),
+    registerLoginLink: () => cy.contains("Register / Login"),
+    header: () => cy.contains(/shopping cart/i),
+  };
+
   visit() {
     cy.visit("/view_cart");
   }
 
-  // Getter: visible rows in cart table
   getVisibleRows() {
-    return cy.get(".cart_info tbody tr:visible");
+    return this.elements.visibleRows();
   }
 
-  // Getter: all rows (not filtered by :visible)
   getRows() {
-    return cy.get("#cart_info_table tbody tr");
+    return this.elements.rows();
   }
 
-  // Getter: one row by index (0-based)
   getRow(index) {
-    return this.getRows().eq(index);
+    return this.elements.rows().eq(index);
   }
 
-  // Action: remove first item
   removeFirstItem() {
-    cy.get('.cart_quantity_delete, a[title="Delete"]')
-      .first()
-      .click({ force: true });
+    this.elements.deleteBtns().first().click({ force: true });
   }
 
-  // Getter: first item quantity cell
   getFirstItemQuantityCell() {
-    return cy.get(".cart_info tbody tr").first().find(".cart_quantity");
+    return this.elements.firstItemQuantityCell();
   }
 
-  // Action: proceed to checkout
   proceedToCheckout() {
-    cy.contains(/Proceed To Checkout/i).click({ force: true });
+    this.elements.checkoutBtn().click({ force: true });
   }
 
-  // Click "Register / Login" inside the checkout modal
   clickRegisterFromCheckoutModal() {
-    cy.get(".modal-content", { timeout: 10000 })
+    this.elements
+      .checkoutModal()
       .should("be.visible")
       .within(() => {
-        cy.get('a[href="/login"]').click({ force: true });
+        this.elements.registerLoginFromModal().click({ force: true });
       });
   }
 
-  // Helper getters if you want to assert in spec
   getHeader() {
-    return cy.contains(/shopping cart/i);
+    return this.elements.header();
   }
-  // Click "Register / Login" in the modal and go to /login
+
   clickRegisterLoginOnModal() {
-    cy.contains("Register / Login").click();
+    this.elements.registerLoginLink().click();
     cy.visit("/login");
   }
 }

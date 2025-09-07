@@ -1,25 +1,26 @@
 // cypress/support/pages/brandsPage.js
-// @ts-check
 /// <reference types="cypress" />
 
 export class BrandsSidebar {
-  // Sidebar container
+  elements = {
+    sidebar: () => cy.get(".brands_products"),
+    brandHeader: () => cy.contains(/BRAND\s*-\s*.*\s*PRODUCTS/i),
+    productsGrid: () => cy.get(".features_items"),
+  };
+
   getSidebar() {
-    return cy.get(".brands_products");
+    return this.elements.sidebar();
   }
 
-  // Click brand by index (0-based)
   clickBrandByIndex(index) {
-    this.getSidebar().find("a").eq(index).click({ force: true });
+    this.elements.sidebar().find("a").eq(index).click({ force: true });
   }
 
-  // Header on brand products page
   getBrandHeader() {
-    return cy.contains(/BRAND\s*-\s*.*\s*PRODUCTS/i);
+    return this.elements.brandHeader();
   }
 
-  // Products grid
   getProductsGrid() {
-    return cy.get(".features_items");
+    return this.elements.productsGrid();
   }
 }

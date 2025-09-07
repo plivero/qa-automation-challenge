@@ -1,37 +1,45 @@
 // cypress/support/pages/categoriesPage.js
-// @ts-check
 /// <reference types="cypress" />
 
 export class CategoriesSidebar {
-  // Container on the left
+  elements = {
+    sidebar: () => cy.get(".left-sidebar"),
+    womenAccord: () => cy.get('#accordian a[href="#Women"]'),
+    menAccord: () => cy.get('#accordian a[href="#Men"]'),
+    womenSection: () => cy.get("#Women"),
+    menSection: () => cy.get("#Men"),
+    womenTopsHeader: () => cy.contains(/WOMEN\s*-\s*TOPS\s*PRODUCTS/i),
+    menTshirtsHeader: () => cy.contains(/MEN\s*-\s*TSHIRTS\s*PRODUCTS/i),
+  };
+
   getSidebar() {
-    return cy.get(".left-sidebar");
+    return this.elements.sidebar();
   }
 
-  // Rxpand accordions
   expandWomen() {
-    cy.get('#accordian a[href="#Women"]').click({ force: true });
+    this.elements.womenAccord().click({ force: true });
   }
 
   expandMen() {
-    cy.get('#accordian a[href="#Men"]').click({ force: true });
+    this.elements.menAccord().click({ force: true });
   }
 
-  // Click subcategories
   clickWomenTops() {
-    cy.get("#Women").should("be.visible");
-    cy.get("#Women").contains(/Tops/i).click({ force: true });
+    this.elements.womenSection().contains(/Tops/i).click({ force: true });
   }
 
   clickMenTshirts() {
-    cy.get("#Men").should("be.visible");
-    cy.get("#Men")
+    this.elements
+      .menSection()
       .contains(/Tshirts/i)
       .click({ force: true });
   }
 
-  // Header on category products page
-  getCategoryHeader(regex) {
-    return cy.contains(regex);
+  getWomenTopsHeader() {
+    return this.elements.womenTopsHeader();
+  }
+
+  getMenTshirtsHeader() {
+    return this.elements.menTshirtsHeader();
   }
 }

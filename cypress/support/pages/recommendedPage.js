@@ -1,15 +1,28 @@
 // cypress/support/pages/recommendedPage.js
-// @ts-check
 /// <reference types="cypress" />
 
 export class RecommendedPage {
+  elements = {
+    sectionTitle: () => cy.contains(/RECOMMENDED ITEMS/i),
+
+    recNames: () => cy.get(".recommended_items .productinfo p"),
+    firstRecName: () => cy.get(".recommended_items .productinfo p").first(),
+
+    recCards: () => cy.get(".recommended_items .product-image-wrapper"),
+    firstRecCard: () =>
+      cy.get(".recommended_items .product-image-wrapper").first(),
+
+    viewCartBtn: () => cy.contains(/View Cart/i, { timeout: 10000 }),
+    cartTable: () => cy.get("#cart_info_table"),
+  };
+
   visitAndScrollToSection() {
     cy.visit("/");
-    cy.scrollTo("bottom", { duration: 500 });
+    this.elements.sectionTitle().scrollIntoView();
   }
 
   getSectionTitle() {
-    return cy.contains(/RECOMMENDED ITEMS/i);
+    return this.elements.sectionTitle();
   }
 
   getSection() {
@@ -17,25 +30,14 @@ export class RecommendedPage {
   }
 
   addFirstRecommendedToCart() {
-    cy.get(".recommended_items .productinfo p")
-      .first()
-      .invoke("text")
-      .then((t) => cy.wrap(t.trim()).as("recName"));
-
-    cy.get(".recommended_items .product-image-wrapper")
-      .first()
-      .within(() => {
-        cy.contains(/Add to cart/i).click({ force: true });
-      });
+    this.elements.firstRecCard().contains("Add to cart").click({ force: true });
   }
 
   openCartFromModal() {
-    cy.contains(/View Cart/i, { timeout: 10000 }).click();
+    this.elements.viewCartBtn().click();
   }
 
-  assertFirstRecommendedInCart() {
-    cy.get("@recName").then((name) => {
-      cy.get("#cart_info_table").should("contain.text", name);
-    });
+  getCartTable() {
+    return this.elements.cartTable();
   }
 }
