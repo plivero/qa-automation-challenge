@@ -2,9 +2,14 @@
 
 import { HomePage } from "../../../support/pages/homePage";
 import { SignupPage } from "../../../support/pages/signupPage";
+import { createUserAPI } from "../../../support/helpers/userApi";
 
 const homePage = new HomePage();
 const signupPage = new SignupPage();
+
+before(() => {
+  createUserAPI();
+});
 
 describe("UI Platform - TC5: Register with existing email", () => {
   it("shows 'Email Address already exist!' error", () => {
@@ -24,7 +29,6 @@ describe("UI Platform - TC5: Register with existing email", () => {
     signupPage.getNewUserHeader().should("be.visible");
 
     // Step 6 + 7: Enter name + existing email and click 'Signup'
-    // (PO reads USER_EMAIL from env; spec não digita nada)
     signupPage.startSignupWithExistingFromEnv();
 
     // Step 8: Error visible

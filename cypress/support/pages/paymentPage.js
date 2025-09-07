@@ -33,32 +33,17 @@ export class PaymentPage {
     this.elements.expiryYear().clear().type(year);
   }
 
-  clickPay() {
+  clickPayBtn() {
     this.elements.payButton().click({ force: true });
   }
 
-  fillAndPay({ name, number, cvc, month, year }) {
-    this.fillFields({ name, number, cvc, month, year });
-    this.clickPay();
-  }
-
-  payWithDefaults() {
-    this.fillAndPay({
-      name: "QA User",
-      number: "4111111111111111",
-      cvc: "123",
-      month: "12",
-      year: "2030",
-    });
-  }
-
   payWithTestCard() {
-    this.fillAndPay({
+    this.fillFields({
       name: "QA Test",
       number: "4111111111111111",
       cvc: "123",
       month: "12",
-      year: "2026",
+      year: "2030",
     });
   }
 

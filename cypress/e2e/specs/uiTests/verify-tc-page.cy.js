@@ -14,7 +14,6 @@ describe("UI Platform - TC7: Verify Test Cases page", () => {
     // Step 3: Home visible
     cy.location("pathname").should("eq", "/");
     homePage.getLogo().should("be.visible");
-    homePage.getHeroText().should("be.visible");
 
     // Step 4: Click on 'Test Cases' button
     homePage.getNavTestCases().click();

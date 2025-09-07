@@ -11,7 +11,6 @@ describe("UI Platform - TC12: Add Products in Cart", () => {
     const toNumber = (s) => Number(String(s).replace(/\D/g, "")); // digits only
 
     // Step 1: Launch browser
-    // (handled by Cypress runner)
 
     // Step 2: Navigate to url 'http://automationexercise.com'
     productsPage.visit();
@@ -21,7 +20,6 @@ describe("UI Platform - TC12: Add Products in Cart", () => {
     productsPage.getGrid().should("exist");
 
     // Step 4: Click 'Products' button
-    // (already on /products via visit; page elements are visible)
 
     // Step 5: Hover over first product and click 'Add to cart'
     productsPage.addItemByIndex(0);

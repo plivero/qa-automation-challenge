@@ -75,6 +75,7 @@ describe("UI Platform - TC24: Download Invoice after purchase order", () => {
     paymentPage.payWithTestCard();
 
     // Step 17: 'Pay and Confirm Order'
+    paymentPage.clickPayBtn();
 
     // Step 18: confirm
     paymentPage.getOrderPlacedMessage().should("be.visible");

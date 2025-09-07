@@ -1,4 +1,3 @@
-// cypress/e2e/specs/apiTests/api-11-createAccount.cy.js
 import {
   buildAccountPayload,
   accountEdgeCases,

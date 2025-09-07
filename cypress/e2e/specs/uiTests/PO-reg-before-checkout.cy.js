@@ -66,6 +66,7 @@ describe("UI Platform - TC15: Place Order (register before checkout)", () => {
 
     // Step 12: payment with test card (keeps spec clean)
     paymentPage.payWithTestCard();
+    paymentPage.clickPayBtn();
 
     // Step 13: success message
     paymentPage.getOrderPlacedMessage().should("be.visible");

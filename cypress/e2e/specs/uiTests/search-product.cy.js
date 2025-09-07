@@ -20,10 +20,10 @@ describe("UI Platform - TC9: Search Product", () => {
     productsPage.getTitle().should("be.visible");
 
     // Step 6: Enter product name and click search
-    productsPage.searchDress();
+    productsPage.search("dress");
 
     // Step 7: Verify 'SEARCHED PRODUCTS' is visible
-    productsPage.getSearchedProductsTitle().should("be.visible");
+    cy.contains(/Searched Products/i).should("be.visible");
 
     // Step 8: Verify all related products are visible
     productsPage.getProductCards().should("have.length.greaterThan", 0);

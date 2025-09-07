@@ -16,6 +16,6 @@ describe("UI Platform - TC10: Subscription (home footer)", () => {
     homePage.subscribeFooterWithDefaults();
 
     // Step 7: success message visible
-    homePage.getSubscriptionSuccessMessage().should("be.visible");
+    cy.contains(/you have been successfully subscribed!/i).should("be.visible");
   });
 });

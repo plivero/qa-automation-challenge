@@ -16,12 +16,14 @@ describe("UI Platform - TC25: Scroll Down & Arrow Scroll Up", () => {
     homePage.scrollToBottom();
 
     // Step 5: check 'SUBSCRIPTION'
-    homePage.getSubscriptionTitle().should("be.visible");
+    cy.contains(/SUBSCRIPTION/i).should("be.visible");
 
     // Step 6: click scroll up arrow
     homePage.clickScrollUpArrow();
 
     // Step 7: hero text visible again (means we are at the top)
-    homePage.getHeroText().should("be.visible");
+    cy.contains(
+      /Full-Fledged practice website for Automation Engineers/i
+    ).should("be.visible");
   });
 });

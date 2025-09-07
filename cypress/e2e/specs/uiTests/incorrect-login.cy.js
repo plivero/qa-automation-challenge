@@ -28,7 +28,6 @@ describe("UI Platform - TC3: Login with incorrect email and password", () => {
     loginPage.getLoginPageHeader().should("be.visible");
 
     // Step 6 + 7: Enter incorrect email/password and click 'login'
-    // (PO generates wrong creds and clicks the button)
     loginPage.loginWithInvalidDefaults();
 
     // Step 8: Verify error 'Your email or password is incorrect!' is visible

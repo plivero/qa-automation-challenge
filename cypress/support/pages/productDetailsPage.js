@@ -44,7 +44,7 @@ export class ProductDetailsPage {
   }
 
   setQuantity(qty) {
-    this.elements.quantityInput().clear().type(String(qty));
+    this.elements.quantityInput().clear().type(qty);
   }
   addToCartFromDetails() {
     this.elements.addToCartBtn().click({ force: true });

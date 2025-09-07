@@ -60,6 +60,7 @@ describe("UI Platform - TC16: Place Order (login before checkout)", () => {
 
     // Step 10: payment with test card
     paymentPage.payWithTestCard();
+    paymentPage.clickPayBtn();
 
     // Step 11: success message
     paymentPage.getOrderPlacedMessage().should("be.visible");
