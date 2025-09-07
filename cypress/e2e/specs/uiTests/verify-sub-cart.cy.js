@@ -20,6 +20,6 @@ describe("UI Platform - TC11: Subscription (cart footer)", () => {
     homePage.subscribeFooterWithDefaults();
 
     // Step 8: success message visible
-    homePage.getSubscriptionSuccessMessage().should("be.visible");
+    cy.contains(/you have been successfully subscribed!/i).should("be.visible");
   });
 });

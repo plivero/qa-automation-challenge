@@ -21,7 +21,6 @@ export class ContactUsPage {
     cy.visit("/contact_us");
   }
 
-  // versão nova simplificada
   getHeader() {
     return this.elements.header();
   }
@@ -45,13 +44,11 @@ export class ContactUsPage {
     this.elements.home().click();
   }
 
-  // ---------- "apelidos" p/ compatibilidade com as specs ----------
   getGetInTouchHeader() {
     return this.getHeader();
   }
 
   fillAttachAndSubmitWithDefaults() {
-    // agora usando faker 💥
     this.fillForm({
       name: faker.person.fullName(),
       email: faker.internet.email(),

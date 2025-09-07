@@ -69,6 +69,7 @@ describe("UI Platform - TC14: Place Order (register during checkout)", () => {
 
     // Step 13: payment (use test card inside PO)
     paymentPage.payWithTestCard();
+    paymentPage.clickPayBtn();
 
     // Step 14: success message
     paymentPage.getOrderPlacedMessage().should("be.visible");

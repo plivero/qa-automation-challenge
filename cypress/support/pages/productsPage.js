@@ -9,8 +9,6 @@ export class ProductsPage {
 
     searchInput: () => cy.get("#search_product"),
     searchBtn: () => cy.get("#submit_search"),
-    searchedProductsTitle: () => cy.contains(/Searched Products/i),
-
     cards: () => cy.get(".features_items .product-image-wrapper"),
     cardByName: (name) => cy.get(".productinfo").contains(name),
 
@@ -80,27 +78,5 @@ export class ProductsPage {
 
   clickContinueShoppingInModal() {
     this.elements.continueShoppingBtn().click();
-  }
-  getSearchedProductsTitle() {
-    return this.elements.searchedProductsTitle();
-  }
-
-  searchDress() {
-    this.search("dress");
-  }
-  searchTops() {
-    this.search("tops");
-  }
-  searchSaree() {
-    this.search("saree");
-  }
-  searchJeans() {
-    this.search("jeans");
-  }
-  searchTshirt() {
-    this.search("t-shirt");
-  }
-  searchInvalid() {
-    this.search("xxxxx");
   }
 }

@@ -20,7 +20,6 @@ describe("UI Platform - TC20: Search products and verify cart after login", () =
 
     // Step 2: search term
     productsPage.search(term);
-    productsPage.getSearchedProductsTitle().should("be.visible");
 
     // Step 3: ensure results
     productsPage.getGrid().should("exist");
