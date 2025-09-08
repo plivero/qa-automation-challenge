@@ -7,9 +7,42 @@
 ## About
 
 This repository contains a complete test suite built with **Cypress**, combining **UI** and **API** coverage.  
-The project applies best practices such as Page Object Model, dynamic test data with faker-js, environment variables for secure configuration, code quality enforcement with ESLint, and CI/CD pipelines with GitHub Actions.
+It showcases modern testing practices such as the Page Object Model, environment variables for secure configuration, dynamic test data generation, and code quality enforcement with **ESLint**, all integrated with **GitHub Actions** for continuous integration.
+
+The project demonstrates how automated tests can be structured to be **scalable, maintainable, and reproducible**.  
+It emphasizes cross-browser validation, environment isolation, and a well-organized execution flow — qualities essential for reliable QA automation in real-world applications.
 
 ---
+
+# Tech Stack & Versions
+
+![Node](https://img.shields.io/badge/node-v22.14.0-339933?logo=node.js&logoColor=white)
+![npm](https://img.shields.io/badge/npm-v11.3.0-CB3837?logo=npm&logoColor=white)
+![Cypress](https://img.shields.io/badge/cypress-v14.5.2-04C38E?logo=cypress&logoColor=white)
+![Faker](https://img.shields.io/badge/faker-v9.9.0-FF6F00)
+![ESLint](https://img.shields.io/badge/eslint-v9.31.0-4B32C3?logo=eslint&logoColor=white)
+![Chrome](https://img.shields.io/badge/chrome-139.0-4285F4?logo=googlechrome&logoColor=white)
+![Edge](https://img.shields.io/badge/edge-140.0-0078D7?logo=microsoftedge&logoColor=white)
+![Firefox](https://img.shields.io/badge/firefox-140.0-FB542B?logo=firefoxbrowser&logoColor=white)
+![Build](https://img.shields.io/github/actions/workflow/status/plivero/qa-automation-challenge/cypress-browsers.yml?logo=github)
+
+---
+
+## Table of Contents
+
+- [About](#about)
+- [Tech Stack & Versions](#tech-stack--versions)
+- [Project Structure](#project-structure)
+- [Folders & Files Overview](#folders--files-overview)
+- [Best Practices](#best-practices)
+- [Prerequisites](#prerequisites)
+- [How to Run](#how-to-run)
+- [Environment Variables](#environment-variables)
+- [Test Strategy](#test-strategy)
+- [Test Design](#test-design)
+- [API Tests](#api-tests)
+- [UI Tests](#ui-tests)
+- [References](#references)
 
 ## Project Structure
 
@@ -39,7 +72,7 @@ qa-automation-challenge/
 - **workflows/** → GitHub Actions workflows.
 - **apiTests/** → API endpoint validation.
 - **uiTests/** → UI flows (signup, login, cart, checkout, etc.).
-- **factories/** → Factories for test data (faker-js) for generating dynamic data.
+- **factories/** → Factories for test data for generating dynamic data.
 - **helpers/** → Reusable utilities (`userApi.js` for creating/verifying users via API before UI tests).
 - **pages/** → Page Objects(POM) with locators and actions only.
 
@@ -48,18 +81,23 @@ qa-automation-challenge/
 ## Best Practices
 
 - **Page Object Model (POM):** UI interactions encapsulated in `cypress/support/pages/`, keeping specs clean.
-- **faker-js:** used for dynamic test data to avoid collisions.
 - **Environment variables:** secure configuration for sensitive values.
 - **Semantic commits:** following [Conventional Commits](https://www.conventionalcommits.org/).
-- **Code quality:** enforced by ESLint + Prettier.
-- **Cross-browser:** validated on Chrome, Edge, and Firefox.
+- **Code quality:** enforced by ESLint.
 - **Assertion-driven waits:** replace sleeps, leveraging Cypress retry-ability.
 - **Timeout tuning:** adjusted to handle slow responses without false negatives.
 - **Line endings:** LF enforced to avoid cross-OS conflicts.
-- **Platform-specific adaptations:**
-  - APIs always return `200`; assertions rely on `statusResponse` in the body.
-  - Some endpoints return text instead of JSON; handled with `JSON.parse`.
+- **Platform-specific adaptation:** the API always returns HTTP `200`.  
+  Tests rely on the `statusResponse` field in the body to distinguish success or errors.  
+  Some endpoints return text instead of JSON; handled with `JSON.parse`.
 - **CI-ready:** stable for headless execution in GitHub Actions.
+
+---
+
+## Prerequisites
+
+- Node.js >= 18.x
+- npm >= 9.x
 
 ---
 
@@ -106,7 +144,6 @@ Sensitive or configurable data is externalized through environment variables.
 
 - **Local development** → stored in `cypress.env.json` (ignored by Git).
 - **CI/CD pipelines** → stored as **GitHub Actions secrets**.
-- **Dynamic data** → combined with faker-js to generate unique users/inputs per run.
 
 Example (`cypress.env.json`):
 
@@ -164,3 +201,10 @@ Applied testing techniques to ensure meaningful coverage:
 - **Stability:** assertion-driven waits for elements; selectors prioritize `data-*`.
 - **Cross-browser:** validated in Chrome, Edge, Firefox via CI/CD.  
   Local runs default to `npx cypress run` (Electron), with optional `--browser` for specific cases.
+
+---
+
+## References
+
+- [Cypress Documentation](https://docs.cypress.io/)
+- [faker-js Documentation](https://fakerjs.dev/)
