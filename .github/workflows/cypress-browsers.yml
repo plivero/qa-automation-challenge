@@ -11,8 +11,6 @@ jobs:
       matrix:
         browser: [chrome, edge, firefox]
 
-    container: cypress/browsers:node-22.0.0-chrome-131.0.0-edge-131.0.0-firefox-133.0.0
-
     env:
       CYPRESS_USER_EMAIL: ${{ secrets.CYPRESS_USER_EMAIL }}
       CYPRESS_USER_PASSWORD: ${{ secrets.CYPRESS_USER_PASSWORD }}
@@ -22,12 +20,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Use Node 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
       - name: Install deps
         run: npm ci
 
+      - name: Show browser versions (debug)
+        run: |
+          google-chrome --version || true
+          microsoft-edge --version || true
+          firefox --version || true
+
       - name: Run Cypress (${{ matrix.browser }})
         run: |
-          echo "Running on ${{ matrix.browser }}"
+          echo "Running daily tests on ${{ matrix.browser }}"
           npx cypress run \
             --browser ${{ matrix.browser }} \
             --headless \
