@@ -24,22 +24,19 @@ It emphasizes cross-browser validation, environment isolation, and a well-organi
 ![Chrome](https://img.shields.io/badge/chrome-139.0-4285F4?logo=googlechrome&logoColor=white)
 ![Edge](https://img.shields.io/badge/edge-140.0-0078D7?logo=microsoftedge&logoColor=white)
 ![Firefox](https://img.shields.io/badge/firefox-140.0-FB542B?logo=firefoxbrowser&logoColor=white)
-![Build](https://img.shields.io/github/actions/workflow/status/plivero/qa-automation-challenge/cypress-browsers.yml?logo=github)
+![Build](https://img.shields.io/github/actions/workflow/status/plivero/qa-automation-challenge/cypress-browsers.yml?branch=main)
 
 ---
 
 ## Table of Contents
 
-- [About](#about)
-- [Tech Stack & Versions](#tech-stack--versions)
 - [Project Structure](#project-structure)
 - [Folders & Files Overview](#folders--files-overview)
 - [Best Practices](#best-practices)
 - [Prerequisites](#prerequisites)
 - [How to Run](#how-to-run)
 - [Environment Variables](#environment-variables)
-- [Test Strategy](#test-strategy)
-- [Test Design](#test-design)
+- [Test Strategy & Design](#test-strategy--design)
 - [API Tests](#api-tests)
 - [UI Tests](#ui-tests)
 - [References](#references)
@@ -157,7 +154,11 @@ Example (`cypress.env.json`):
 
 ---
 
-## Test Strategy
+## Test Strategy & Design
+
+The testing approach was structured to balance **efficiency, coverage, and reliability**. The suite prioritizes API-first validations to ensure a stable foundation, complemented by UI flows that focus on business-critical paths. Core design techniques such as **Equivalence Partitioning (EP)** and **Boundary Value Analysis (BVA)** were applied to reduce redundancy while covering high-risk input ranges. In addition, **use case–based scenarios** ensure alignment with real user workflows, while **experience-based techniques** introduce exploratory insights to capture edge behaviors often missed in formal requirements.
+
+This combination enables tests that are **scalable** (easy to extend with new cases), **maintainable** (clean separation of assertions and actions), and **practical** (reflecting both business needs and technical risks).
 
 ### Principles
 
@@ -171,13 +172,13 @@ Example (`cypress.env.json`):
 - **Environment variables:** provide reusable credentials and safe configuration.
 - **API setup:** accounts are created before UI runs, ensuring order-independent execution.
 
-## Test Design
+### Coverage Techniques
 
-Applied testing techniques to ensure meaningful coverage:
-
-- **Positive/Negative/Edge cases:** applied to both API and UI (valid/invalid inputs, existing/non-existing users).
-- **Equivalence Partitioning & Boundary Value Analysis:** cover input ranges such as mandatory fields, limits, and invalid values.
-- **Edge cases:** non-existent product search, invalid login, missing required inputs, unexpected API responses.
+- **Positive/Negative/Edge cases:** valid/invalid inputs, existing/non-existing users.
+- **Equivalence Partitioning (EP):** group inputs into valid/invalid classes to minimize duplication.
+- **Boundary Value Analysis (BVA):** test edge limits where failures are most likely.
+- **Use Case–Based:** scenarios modeled from real workflows like signup, checkout, and login.
+- **Experience-Based:** exploratory insights leveraged to anticipate unexpected system behavior.
 
 ---
 
